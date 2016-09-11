@@ -12,7 +12,15 @@ int main(){
 
   myGame.getFileName(myFile);
   myGame.getBoardLayout(myFile);
+  myGame.getDiceRolls(myFile);
+  myGame.printResults();
   return 0;
+}
+
+//******************************************************************************
+
+SnakesAndLadders::SnakesAndLadders(){
+  currentPosition = 0;
 }
 
 //******************************************************************************
@@ -57,4 +65,65 @@ void SnakesAndLadders::getBoardLayout(ifstream &myFile){
     endSquare.push_back(end);
   }
 }
+//******************************************************************************
+
+void SnakesAndLadders::getDiceRolls(ifstream &myFile){
+  int numOfSequences;
+  int numOfRolls;
+  int diceValue;
+
+  myFile >> numOfSequences;
+
+  for(int x = 0; x < numOfSequences; x++){
+    myFile >> numOfRolls;
+    //cout << numOfRolls << endl;
+    for(int y = 0; y < numOfRolls; y++){
+      myFile >> diceValue;
+      diceValues.push_back(diceValue);
+    }
+
+    analyzeDiceRolls();
+    if(currentPosition >= maxSquareNumber){
+      gameResults.push_back("Winner!");
+    }
+    else{
+      gameResults.push_back("Did not make it!");
+    }
+
+    diceValues.clear();
+    currentPosition = 0;
+  }
+}
+
+//******************************************************************************
+
+void SnakesAndLadders::analyzeDiceRolls(){
+  for(int x = 0; x < diceValues.size(); x++){
+    cout << currentPosition << endl;
+    currentPosition += diceValues[x];
+    if(currentPosition >= maxSquareNumber){
+      return;
+    }
+    analyzePosition();
+  }
+}
+
+//******************************************************************************
+
+void SnakesAndLadders::analyzePosition(){
+  for(int x = 0; x < startSquare.size(); x++){
+    if(currentPosition == startSquare[x]){
+      currentPosition = endSquare[x];
+    }
+  }
+}
+
+//******************************************************************************
+
+void SnakesAndLadders::printResults(){
+  for(int x = 0; x < gameResults.size(); x++){
+    cout << gameResults[x] << endl;
+  }
+}
+
 //******************************************************************************
