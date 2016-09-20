@@ -17,10 +17,10 @@
 	char *sval;
 }
 
-%%
-  //grammar goes here
-
-%%
+%token<sval> FUNCTION
+%token<sval> ID
+%token<sval> PARENL
+%token<sval> PARENR
 
 void myCopy(char* &into, const string &from)
 {
