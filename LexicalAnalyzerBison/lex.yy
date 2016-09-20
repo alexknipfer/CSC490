@@ -21,6 +21,75 @@
 %token<sval> ID
 %token<sval> PARENL
 %token<sval> PARENR
+%token<sval> CURLL
+%token<sval> CURLR
+%token<sval> VAR
+%token<sval> SEMICOLON
+%token<sval> COMMA
+%token<sval> ASSIGNOP
+%token<sval> STRING
+%token<sval> IF
+%token<sval> ELSE
+%token<sval> WHILE
+%token<sval> OR
+%token<sval> NOT
+%token<sval> AND
+%token<sval> RELOP
+%token<sval> ADDOP
+%token<sval> MULOP
+%token<sval> NUMBER
+
+%%
+  aplist: expr COMMA aplist
+    | expr
+    | STRING
+
+  assign: ID ASSIGNOP expr
+
+  bexpr: bfactor | bexpr OR bfactor
+
+  bfactor: bneg | bfactor AND bneg
+
+  bneg: bterm | NOT bterm
+
+  bterm: expr RELOP expr | PARENL bterm PARENR
+
+  body: CURLL bodylist CURLR
+
+  bodylist: vardecl bodylist | stmt bodylist | /*epsilon*/
+
+  expr: factor | expr ADDOP factor
+
+  factor: term | factor MULOP term
+
+  fcall: ID PARENL PARENR | ID PARENL aplist PARENR
+
+  fplist: ID COMMA fplist | ID
+
+  function: FUNCTION ID PARENL PARENR body |
+            FUNCTION ID PARENL fplist PARENR body
+
+  if: IF PARENL bexpr PARENR stmt
+    | IF PARENL bexpr PARENR stmt ELSE stmt
+
+  stmt: assign SEMICOLON
+        | fcall SEMICOLON
+        | while
+        | if
+        | body
+
+  term: ID
+        | NUMBER
+        | PARENL expr PARENR
+        | ADDOP term
+        | fcall
+
+  vardecl: VAR varlist SEMICOLON
+
+  varlist: ID COMMA varlist | ID
+
+  while: WHILE PARENL bexpr PARENR stmt
+%%
 
 void myCopy(char* &into, const string &from)
 {

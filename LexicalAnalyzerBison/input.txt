@@ -1,0 +1,5 @@
+function hggtg()
+{
+  print("The answer to life, the universe, and everything is ");
+  print(42);
+}
