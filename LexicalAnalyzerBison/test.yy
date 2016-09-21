@@ -122,20 +122,5 @@ int main(int argc, char *argv[])
 
 int yylex()
 {
-  string currentToken;
-  string readLine;
-  char lookahead;
-  string myNumber = "";
-  string myString = "";
-  int tempX;
-
-  while(getline(inputFile, readLine)){
-     cout << readLine << endl;
-     if(readLine == "function"){
-      myCopy(yylval.sval, currentToken.c_str());
-      return FUNCTION;
-     }
-  }
-
   return -1;
 }
