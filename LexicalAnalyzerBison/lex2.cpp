@@ -46,7 +46,7 @@
 
   pgmpart: vardecl | function;
 
-  vardecl: VAR varlist SEMICOLON {cout << "its a variable declaration" << endl;};
+  vardecl: VAR varlist SEMICOLON;
 
   varlist: ID COMMA varlist | ID;
 
@@ -65,7 +65,7 @@
     | if
     | body;
 
-  assign: ID ASSIGNOP;
+  assign: ID ASSIGNOP expr;
 
   expr: factor | expr ADDOP factor;
 
@@ -608,11 +608,6 @@ for(int x = 0; x < finalTokens.size(); x++){
 
 int yylex()
 {
-
-  //cout << endl;
-
-  //cout << finalTokens[tokenCount] << endl;
-  //cout << "TokenCount: " << tokenCount << endl;
   if(finalTokens[tokenCount] == "var"){
     tokenCount++;
     return VAR;
@@ -717,6 +712,8 @@ int yylex()
     tokenCount++;
     return NUMBER;
   }
+
+  cout << "The program is correct, and contains:" << endl;
 
   return -1;
 }
