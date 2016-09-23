@@ -533,8 +533,8 @@ while(getline(inputFile, readLine)){
       for(int y = 0; y < token.size(); y++){
         myNumber += token[y];
       }
-        //print token
-      cout << "TOKEN:NUMBER            " << myNumber << endl;
+
+      finalTokens.push_back("number");
       myNumber = "";
       token.clear();
     }
@@ -562,7 +562,7 @@ while(getline(inputFile, readLine)){
       }
       x++;
 
-      cout << "TOKEN:STRING            " << "\"" << myString << "\"" << endl;
+      finalTokens.push_back("string");
       myString = "";
       token.clear();
     }
@@ -626,6 +626,96 @@ int yylex()
   else if(finalTokens[tokenCount] == "semicolon"){
     tokenCount++;
     return SEMICOLON;
+  }
+
+  else if(finalTokens[tokenCount] == "function"){
+    tokenCount++;
+    return FUNCTION;
+  }
+
+  else if(finalTokens[tokenCount] == "parenL"){
+    tokenCount++;
+    return PARENL;
+  }
+
+  else if(finalTokens[tokenCount] == "parenR"){
+    tokenCount++;
+    return PARENR;
+  }
+
+  else if(finalTokens[tokenCount] == "curlL"){
+    tokenCount++;
+    return CURLL;
+  }
+
+  else if(finalTokens[tokenCount] == "curlR"){
+    tokenCount++;
+    return CURLR;
+  }
+
+  else if(finalTokens[tokenCount] == "comma"){
+    tokenCount++;
+    return COMMA;
+  }
+
+  else if(finalTokens[tokenCount] == "assignOp"){
+    tokenCount++;
+    return ASSIGNOP;
+  }
+
+  else if(finalTokens[tokenCount] == "string"){
+    tokenCount++;
+    return STRING;
+  }
+
+  else if(finalTokens[tokenCount] == "if"){
+    tokenCount++;
+    return IF;
+  }
+
+  else if(finalTokens[tokenCount] == "else"){
+    tokenCount++;
+    return ELSE;
+  }
+
+  else if(finalTokens[tokenCount] == "while"){
+    tokenCount++;
+    return WHILE;
+  }
+
+  else if(finalTokens[tokenCount] == "or"){
+    tokenCount++;
+    return OR;
+  }
+
+  else if(finalTokens[tokenCount] == "not"){
+    tokenCount++;
+    return NOT;
+  }
+
+  else if(finalTokens[tokenCount] == "and"){
+    tokenCount++;
+    return AND;
+  }
+
+  else if(finalTokens[tokenCount] == "relop"){
+    tokenCount++;
+    return RELOP;
+  }
+
+  else if(finalTokens[tokenCount] == "addOp"){
+    tokenCount++;
+    return ADDOP;
+  }
+
+  else if(finalTokens[tokenCount] == "mulOp"){
+    tokenCount++;
+    return MULOP;
+  }
+
+  else if(finalTokens[tokenCount] == "number"){
+    tokenCount++;
+    return NUMBER;
   }
 
   return -1;
