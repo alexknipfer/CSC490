@@ -42,13 +42,60 @@
 
 %%
 
+  pgm: pgmpart pgm | pgmpart;
 
+  pgmpart: vardecl | function;
 
-  vardecl: VAR varlist SEMICOLON {cout << "ITS a variable declaration" << endl;};
+  vardecl: VAR varlist SEMICOLON {cout << "its a variable declaration" << endl;};
 
-  varlist: ID COMMA varlist | ID {cout << "its an ID" << endl;};
+  varlist: ID COMMA varlist | ID;
 
+  function: FUNCTION ID PARENL PARENR body
+    | FUNCTION ID PARENL fplist PARENR body;
 
+  body: CURLL bodylist CURLR;
+
+  fplist: ID COMMA fplist | ID;
+
+  bodylist: vardecl bodylist | stmt bodylist | ;
+
+  stmt: assign SEMICOLON
+    | fcall SEMICOLON
+    | while
+    | if
+    | body;
+
+  assign: ID ASSIGNOP;
+
+  expr: factor | expr ADDOP factor;
+
+  factor: term | factor MULOP term;
+
+  term: ID
+    | NUMBER
+    | PARENL expr PARENR
+    | ADDOP term
+    | fcall;
+
+  bexpr: bfactor | bexpr OR bfactor;
+
+  bfactor: bneg | bfactor AND bneg;
+
+  bneg: bterm | NOT bterm;
+
+  bterm: expr RELOP expr | PARENL bterm PARENR;
+
+  fcall: ID PARENL PARENR
+    | ID PARENL aplist PARENR;
+
+  aplist: expr COMMA aplist
+    | expr
+    | STRING;
+
+  while: WHILE PARENL bexpr PARENR stmt;
+
+  if: IF PARENL bexpr PARENR stmt
+    | IF PARENL bexpr PARENR stmt ELSE stmt;
 
 %%
 
@@ -60,6 +107,8 @@ void myCopy(char* &into, const string &from)
 
 ifstream inputFile;
 vector<char> token;
+vector<string> finalTokens;
+int tokenCount;
 
 bool isAssignOp(char ch){
   if(ch == '<' || ch == '-'){
@@ -332,95 +381,95 @@ string analyzeToken(vector<char> token){
   }
     //checks if token is a function keyword
   if(isFunction(currentToken)){
-    return "function";
+    finalTokens.push_back("function");
   }
 
   else if(isAssignmentOperator(currentToken)){
-    return "ASSIGNOP";
+    finalTokens.push_back("assignOp");
   }
 
     //checks if token is a if keyword
   else if(isIf(currentToken)){
-    return "if";
+    finalTokens.push_back("if");
   }
 
     //checks if token is a else keyword
   else if(isElse(currentToken)){
-    return "else";
+    finalTokens.push_back("else");
   }
 
     //checks if token is a not symbol
   else if(isNot(currentToken)){
-    return "not";
+    finalTokens.push_back("not");
   }
 
     //checks if token is a or keyword
   else if(isOr(currentToken)){
-    return "or";
+    finalTokens.push_back("or");
   }
 
     //checks if token is a VAR keyword
   else if(isVar(currentToken)){
-    return "var";
+    finalTokens.push_back("var");
   }
 
     //checks if token is a WHILE keyword
   else if(isWhile(currentToken)){
-    return "while";
+    finalTokens.push_back("while");
   }
 
   //checks if token is a semicolon
   else if(isSemicolon(currentToken)){
-    return "semicolon";
+    finalTokens.push_back("semicolon");
   }
 
     //checks if token is a left parentesis
   else if(isParenL(currentToken)){
-    return "parenL";
+    finalTokens.push_back("parenL");
   }
 
   else if(isParenR(currentToken)){
-    return "parenR";
+    finalTokens.push_back("parenR");
   }
 
     //checks if token is a comma
   else if(isComma(currentToken)){
-    return "comma";
+    finalTokens.push_back("comma");
   }
 
     //checks if token is left curly
   else if(isCurlL(currentToken)){
-    return "curlL";
+    finalTokens.push_back("curlL");
   }
 
     //checks if token is right curly
   else if(isCurlR(currentToken)){
-    return "curlR";
+    finalTokens.push_back("curlR");
   }
 
     //checks if token is a ADDOP (+ or -)
   else if(isAddOp(currentToken)){
-    return "addOp";
+    finalTokens.push_back("addOp");
   }
 
     //checks if token is a MULLOP (/ or *)
   else if(isMulOp(currentToken)){
-    return "mulOp";
+    finalTokens.push_back("mulOp");
   }
 
     //checks if token is an AND
   else if(isAnd(currentToken)){
-    return "and";
+    finalTokens.push_back("and");
   }
 
     //checks if token is a RELOP
   else if(isRelopString(currentToken)){
-    return "relop";
+    finalTokens.push_back("relop");
   }
 
     //checks if token is a ID
   else if(isID(currentToken)){
-    return "id";
+    finalTokens.push_back("id");
   }
 
   return "";
@@ -429,6 +478,13 @@ string analyzeToken(vector<char> token){
 int main(int argc, char *argv[])
 {
 	inputFile.open(argv[1], ifstream::in);
+  string currentToken;
+  string readLine;
+  char lookahead;
+  string myNumber = "";
+  string myString = "";
+  int tempX;
+  tokenCount = 0;
 
 	if(!inputFile)
 	{
@@ -436,6 +492,115 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 
+  //continue to go through input file line by line
+while(getline(inputFile, readLine)){
+    //parse line to get tokens
+  for(int x = 0; x < readLine.length(); x++){
+    tempX = x;
+    lookahead = readLine[x];
+
+      //add character to vector to keep track of token
+    token.push_back(readLine[x]);
+
+      //analyze token since white space is read
+    if(isWhiteSpace(lookahead)){
+      token.pop_back();
+      analyzeToken(token);
+      token.clear();
+    }
+
+      //analyze token since symbol is read
+      //once a symbol is reached, pop the symbol off the vector because the
+      //previously a token was reached
+    else if(isSymbol(lookahead)){
+      token.pop_back();
+      analyzeToken(token);
+      token.clear();
+      token.push_back(lookahead);
+      analyzeToken(token);
+      token.clear();
+    }
+
+      //analyze number to see if it is a integer or a part of a string
+      //make sure it is a INTEGER
+    else if(isdigit(lookahead) && !isalpha(readLine[x-1])){
+        //keep getting integer values
+      while(isdigit(readLine[x+1])){
+        token.push_back(readLine[x+1]);
+        x++;
+      }
+        //add integer to string for printing
+      for(int y = 0; y < token.size(); y++){
+        myNumber += token[y];
+      }
+        //print token
+      cout << "TOKEN:NUMBER            " << myNumber << endl;
+      myNumber = "";
+      token.clear();
+    }
+
+      //if a comment is reached (#), exit loop and don't print line
+    else if(isComment(lookahead)){
+      token.clear();
+      break;
+    }
+
+        //if a " is reached the current token is a string
+        //continue reading in string value
+    else if(isString(lookahead)){
+      token.pop_back();
+
+        //keep reading until end of string
+      while(readLine[x+1] != '"'){
+        token.push_back(readLine[x+1]);
+        x++;
+      }
+
+        //add token (in vector) to string for printing
+      for(int y = 0; y < token.size(); y++){
+        myString += token[y];
+      }
+      x++;
+
+      cout << "TOKEN:STRING            " << "\"" << myString << "\"" << endl;
+      myString = "";
+      token.clear();
+    }
+
+      //check to see if value read in is a RELOP
+    else if(isRelop(lookahead)){
+      token.pop_back();
+
+        //check next character to see if it's a valid RELOP
+      if(isRelop(readLine[x+1])){
+        token.push_back(lookahead);
+        token.push_back(readLine[x+1]);
+        x = x + 2;
+        analyzeToken(token);
+        token.clear();
+      }
+
+        //check to see if next character creates an assignment operator
+      else if(isAssignOp(readLine[x+1])){
+        token.push_back(lookahead);
+        token.push_back(readLine[x+1]);
+        x = x + 1;
+        analyzeToken(token);
+        token.clear();
+      }
+
+      else if(lookahead == '<' || lookahead == '>'){
+        token.push_back(lookahead);
+        analyzeToken(token);
+        x++;
+        token.clear();
+      }
+    }
+  }
+}
+for(int x = 0; x < finalTokens.size(); x++){
+  cout << finalTokens[x] << endl;
+}
 	yyparse();
 
 	return 0;
@@ -443,63 +608,25 @@ int main(int argc, char *argv[])
 
 int yylex()
 {
-  string currentToken;
-  string myToken;
-  string readLine;
-  char lookahead;
-  string myNumber = "";
-  string myString = "";
-  int tempX;
 
-  getline(inputFile, readLine);
-  cout << readLine << endl;
-        //parse line to get tokens
-      for(int x = 0; x < readLine.length(); x++){
-        tempX = x;
-        lookahead = readLine[x];
+  //cout << endl;
 
-          //add character to vector to keep track of token
-        token.push_back(readLine[x]);
+  //cout << finalTokens[tokenCount] << endl;
+  //cout << "TokenCount: " << tokenCount << endl;
+  if(finalTokens[tokenCount] == "var"){
+    tokenCount++;
+    return VAR;
+  }
 
-          //analyze token since white space is read
-        if(isWhiteSpace(lookahead)){
-          token.pop_back();
-          myToken = analyzeToken(token);
-          cout << myToken << endl;
-          if(myToken == "var"){
-            myCopy(yylval.sval, myToken.c_str());
-            return VAR;
-          }
-          token.clear();
-        }
+  else if(finalTokens[tokenCount] == "id"){
+    tokenCount++;
+    return ID;
+  }
 
-          //analyze token since symbol is read
-          //once a symbol is reached, pop the symbol off the vector because the
-          //previously a token was reached
-        else if(isSymbol(lookahead)){
-          token.pop_back();
-          myToken = analyzeToken(token);
-          cout << myToken << endl;
+  else if(finalTokens[tokenCount] == "semicolon"){
+    tokenCount++;
+    return SEMICOLON;
+  }
 
-          if(myToken == "id"){
-            myCopy(yylval.sval, myToken.c_str());
-            return ID;
-          }
-
-          token.clear();
-          token.push_back(lookahead);
-          myToken = analyzeToken(token);
-          cout << myToken << endl;
-
-          if(myToken == "semicolon"){
-            myCopy(yylval.sval, myToken.c_str());
-            return SEMICOLON;
-          }
-
-          token.clear();
-        }
-
-
-        }
-      return -1;
-    }
+  return -1;
+}
