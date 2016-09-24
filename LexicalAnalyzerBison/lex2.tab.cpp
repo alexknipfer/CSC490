@@ -2129,18 +2129,25 @@ while(getline(inputFile, readLine)){
       //check to see if value read in is a RELOP
     else if(isRelop(lookahead)){
       token.pop_back();
+      /*for(int x = 0; x < token.size(); x++){
+        cout << token[x] << " ";
+      }
+      cout << endl;*/
+      analyzeToken(token);
+      token.clear();
 
         //check next character to see if it's a valid RELOP
       if(isRelop(readLine[x+1])){
         token.push_back(lookahead);
         token.push_back(readLine[x+1]);
-        x = x + 2;
+        //x = x + 1;
         analyzeToken(token);
         token.clear();
       }
 
         //check to see if next character creates an assignment operator
       else if(isAssignOp(readLine[x+1])){
+        token.clear();
         token.push_back(lookahead);
         token.push_back(readLine[x+1]);
         x = x + 1;
@@ -2151,7 +2158,7 @@ while(getline(inputFile, readLine)){
       else if(lookahead == '<' || lookahead == '>'){
         token.push_back(lookahead);
         analyzeToken(token);
-        x++;
+        //x++;
         token.clear();
       }
     }
