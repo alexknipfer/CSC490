@@ -109,6 +109,8 @@ ifstream inputFile;
 vector<char> token;
 vector<string> finalTokens;
 int tokenCount;
+int statementCount;
+int functionCount;
 
 bool isAssignOp(char ch){
   if(ch == '<' || ch == '-'){
@@ -485,6 +487,8 @@ int main(int argc, char *argv[])
   string myString = "";
   int tempX;
   tokenCount = 0;
+  statementCount = 0;
+  functionCount = 0;
 
 	if(!inputFile)
 	{
@@ -570,10 +574,6 @@ while(getline(inputFile, readLine)){
       //check to see if value read in is a RELOP
     else if(isRelop(lookahead)){
       token.pop_back();
-      /*for(int x = 0; x < token.size(); x++){
-        cout << token[x] << " ";
-      }
-      cout << endl;*/
       analyzeToken(token);
       token.clear();
 
@@ -581,7 +581,6 @@ while(getline(inputFile, readLine)){
       if(isRelop(readLine[x+1])){
         token.push_back(lookahead);
         token.push_back(readLine[x+1]);
-        //x = x + 1;
         analyzeToken(token);
         token.clear();
       }
@@ -599,15 +598,12 @@ while(getline(inputFile, readLine)){
       else if(lookahead == '<' || lookahead == '>'){
         token.push_back(lookahead);
         analyzeToken(token);
-        //x++;
         token.clear();
       }
     }
   }
 }
-for(int x = 0; x < finalTokens.size(); x++){
-  cout << finalTokens[x] << endl;
-}
+
 	yyparse();
 
 	return 0;
@@ -632,6 +628,7 @@ int yylex()
 
   else if(finalTokens[tokenCount] == "function"){
     tokenCount++;
+    functionCount++;
     return FUNCTION;
   }
 
@@ -662,6 +659,7 @@ int yylex()
 
   else if(finalTokens[tokenCount] == "assignOp"){
     tokenCount++;
+    statementCount++;
     return ASSIGNOP;
   }
 
@@ -702,6 +700,7 @@ int yylex()
 
   else if(finalTokens[tokenCount] == "relop"){
     tokenCount++;
+    statementCount++;
     return RELOP;
   }
 
@@ -721,6 +720,8 @@ int yylex()
   }
 
   cout << "The program is correct, and contains:" << endl;
+  cout << statementCount << " statements" << endl;
+  cout << functionCount << " function definitions" << endl;
 
   return -1;
 }
