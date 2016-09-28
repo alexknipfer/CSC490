@@ -116,7 +116,7 @@
 
 
 /* Copy the first part of user declarations.  */
-#line 1 "lex2.cpp"
+#line 1 "lex.cpp"
 
   #include <cstring>
   #include <fstream>
@@ -151,13 +151,13 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 16 "lex2.cpp"
+#line 16 "lex.cpp"
 {
 	double dval;
 	char *sval;
 }
 /* Line 193 of yacc.c.  */
-#line 161 "lex2.tab.cpp"
+#line 161 "lex.tab.cpp"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -170,7 +170,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 174 "lex2.tab.cpp"
+#line 174 "lex.tab.cpp"
 
 #ifdef short
 # undef short
@@ -1441,7 +1441,7 @@ yyreduce:
     {
       
 /* Line 1267 of yacc.c.  */
-#line 1445 "lex2.tab.cpp"
+#line 1445 "lex.tab.cpp"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1655,7 +1655,7 @@ yyreturn:
 }
 
 
-#line 100 "lex2.cpp"
+#line 100 "lex.cpp"
 
 
 void myCopy(char* &into, const string &from)
@@ -2170,109 +2170,132 @@ while(getline(inputFile, readLine)){
 
 int yylex()
 {
+    //see if token is a variable, return the token
   if(finalTokens[tokenCount] == "var"){
     tokenCount++;
     return VAR;
   }
 
+    //see if token is an ID, return the token
   else if(finalTokens[tokenCount] == "id"){
     tokenCount++;
     return ID;
   }
 
+    //see if token is a semicolon, return the token
   else if(finalTokens[tokenCount] == "semicolon"){
     tokenCount++;
     return SEMICOLON;
   }
 
+    //see if token is a function keyword, return the token
   else if(finalTokens[tokenCount] == "function"){
     tokenCount++;
     functionCount++;
     return FUNCTION;
   }
 
+    //see if token is a left parenthesis, return the token
   else if(finalTokens[tokenCount] == "parenL"){
     tokenCount++;
     return PARENL;
   }
 
+    //see if the token is a right parenthesis, return the token
   else if(finalTokens[tokenCount] == "parenR"){
     tokenCount++;
     return PARENR;
   }
 
+    //see if the token is a left curly brace, return the token
   else if(finalTokens[tokenCount] == "curlL"){
     tokenCount++;
     return CURLL;
   }
 
+    //see if the token is a right curly brace, return the token
   else if(finalTokens[tokenCount] == "curlR"){
     tokenCount++;
     return CURLR;
   }
 
+    //see if the token is a comma, return the token
   else if(finalTokens[tokenCount] == "comma"){
     tokenCount++;
     return COMMA;
   }
 
+    //see if the token is a assignment operator, return the token
   else if(finalTokens[tokenCount] == "assignOp"){
     tokenCount++;
-    statementCount++;
+    //statementCount++;
     return ASSIGNOP;
   }
 
+    //see if the token is a string, return the token
   else if(finalTokens[tokenCount] == "string"){
     tokenCount++;
     return STRING;
   }
 
+    //see if the token is a if, return the token
   else if(finalTokens[tokenCount] == "if"){
     tokenCount++;
+    //statementCount++;
     return IF;
   }
 
+    //see if the token is a else, return the token
   else if(finalTokens[tokenCount] == "else"){
     tokenCount++;
     return ELSE;
   }
 
+    //see if the token is a while, return the token
   else if(finalTokens[tokenCount] == "while"){
     tokenCount++;
+    //statementCount++;
     return WHILE;
   }
 
+
+    //see if the token is a or, return the token
   else if(finalTokens[tokenCount] == "or"){
     tokenCount++;
     return OR;
   }
 
+    //see if the token is a not, return the token
   else if(finalTokens[tokenCount] == "not"){
     tokenCount++;
     return NOT;
   }
 
+    //see if the token is a and, return the token
   else if(finalTokens[tokenCount] == "and"){
     tokenCount++;
     return AND;
   }
 
+    //see if the token is a relop, return the token
   else if(finalTokens[tokenCount] == "relop"){
     tokenCount++;
-    statementCount++;
     return RELOP;
   }
 
+    //see if the token is a add operator, return the token
   else if(finalTokens[tokenCount] == "addOp"){
     tokenCount++;
     return ADDOP;
   }
 
+    //see if the token is a multiplication operator, return the token
   else if(finalTokens[tokenCount] == "mulOp"){
     tokenCount++;
     return MULOP;
   }
 
+    //see if the token is a number, return the token
   else if(finalTokens[tokenCount] == "number"){
     tokenCount++;
     return NUMBER;
