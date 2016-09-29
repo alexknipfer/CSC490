@@ -10,6 +10,8 @@
   int yylex();
   int yyerror(const char *message){cerr << "Error!!" << endl; return 0;};
 
+  int statementCount = 0;
+
 %}
 
 %union
@@ -39,7 +41,6 @@
 %token<sval> ADDOP
 %token<sval> MULOP
 %token<sval> NUMBER
-
 %%
 
   pgm: pgmpart pgm | pgmpart;
@@ -59,10 +60,10 @@
 
   bodylist: vardecl bodylist | stmt bodylist | ;
 
-  stmt: assign SEMICOLON
-    | fcall SEMICOLON
-    | while
-    | if
+  stmt: assign SEMICOLON {statementCount++;}
+    | fcall SEMICOLON {statementCount++;}
+    | while {statementCount++;}
+    | if {statementCount++;}
     | body;
 
   assign: ID ASSIGNOP expr;
@@ -109,7 +110,7 @@ ifstream inputFile;
 vector<char> token;
 vector<string> finalTokens;
 int tokenCount;
-int statementCount;
+//int statementCount;
 int functionCount;
 
 bool isAssignOp(char ch){
@@ -487,7 +488,7 @@ int main(int argc, char *argv[])
   string myString = "";
   int tempX;
   tokenCount = 0;
-  statementCount = 0;
+  //statementCount = 0;
   functionCount = 0;
 
 	if(!inputFile)

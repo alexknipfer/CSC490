@@ -129,6 +129,8 @@
   int yylex();
   int yyerror(const char *message){cerr << "Error!!" << endl; return 0;};
 
+  int statementCount = 0;
+
 
 
 /* Enabling traces.  */
@@ -151,13 +153,13 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 16 "lex.cpp"
+#line 18 "lex.cpp"
 {
 	double dval;
 	char *sval;
 }
 /* Line 193 of yacc.c.  */
-#line 161 "lex.tab.cpp"
+#line 163 "lex.tab.cpp"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -170,7 +172,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 174 "lex.tab.cpp"
+#line 176 "lex.tab.cpp"
 
 #ifdef short
 # undef short
@@ -472,11 +474,11 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    45,    45,    45,    47,    47,    49,    51,    51,    53,
-      54,    56,    58,    58,    60,    60,    60,    62,    63,    64,
-      65,    66,    68,    70,    70,    72,    72,    74,    75,    76,
-      77,    78,    80,    80,    82,    82,    84,    84,    86,    86,
-      88,    89,    91,    92,    93,    95,    97,    98
+       0,    46,    46,    46,    48,    48,    50,    52,    52,    54,
+      55,    57,    59,    59,    61,    61,    61,    63,    64,    65,
+      66,    67,    69,    71,    71,    73,    73,    75,    76,    77,
+      78,    79,    81,    81,    83,    83,    85,    85,    87,    87,
+      89,    90,    92,    93,    94,    96,    98,    99
 };
 #endif
 
@@ -1439,9 +1441,29 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-      
+        case 17:
+#line 63 "lex.cpp"
+    {statementCount++;;}
+    break;
+
+  case 18:
+#line 64 "lex.cpp"
+    {statementCount++;;}
+    break;
+
+  case 19:
+#line 65 "lex.cpp"
+    {statementCount++;;}
+    break;
+
+  case 20:
+#line 66 "lex.cpp"
+    {statementCount++;;}
+    break;
+
+
 /* Line 1267 of yacc.c.  */
-#line 1445 "lex.tab.cpp"
+#line 1467 "lex.tab.cpp"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1655,7 +1677,7 @@ yyreturn:
 }
 
 
-#line 100 "lex.cpp"
+#line 101 "lex.cpp"
 
 
 void myCopy(char* &into, const string &from)
@@ -1668,7 +1690,7 @@ ifstream inputFile;
 vector<char> token;
 vector<string> finalTokens;
 int tokenCount;
-int statementCount;
+//int statementCount;
 int functionCount;
 
 bool isAssignOp(char ch){
@@ -2046,7 +2068,7 @@ int main(int argc, char *argv[])
   string myString = "";
   int tempX;
   tokenCount = 0;
-  statementCount = 0;
+  //statementCount = 0;
   functionCount = 0;
 
 	if(!inputFile)
