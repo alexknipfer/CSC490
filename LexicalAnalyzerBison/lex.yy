@@ -388,6 +388,7 @@ string analyzeToken(vector<char> token){
     finalTokens.push_back("function");
   }
 
+    //checks if token is a assignment operator
   else if(isAssignmentOperator(currentToken)){
     finalTokens.push_back("assignOp");
   }
@@ -489,7 +490,6 @@ int main(int argc, char *argv[])
   string myString = "";
   int tempX;
   tokenCount = 0;
-  //functionCount = 0;
 
 	if(!inputFile)
 	{
@@ -633,7 +633,6 @@ int yylex()
     //see if token is a function keyword, return the token
   else if(finalTokens[tokenCount] == "function"){
     tokenCount++;
-    //functionCount++;
     return FUNCTION;
   }
 
