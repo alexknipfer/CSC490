@@ -127,9 +127,12 @@
   using namespace std;
 
   int yylex();
-  int yyerror(const char *message){cerr << "Error!!" << endl; return 0;};
+  int yyerror(const char *message){cerr << "This program is incorrect, error!" << endl; return 0;};
 
+    //initialize statement count and function count
   int statementCount = 0;
+  int functionCount = 0;
+
 
 
 
@@ -153,13 +156,13 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 18 "lex.cpp"
+#line 21 "lex.cpp"
 {
 	double dval;
 	char *sval;
 }
 /* Line 193 of yacc.c.  */
-#line 163 "lex.tab.cpp"
+#line 166 "lex.tab.cpp"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -172,7 +175,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 176 "lex.tab.cpp"
+#line 179 "lex.tab.cpp"
 
 #ifdef short
 # undef short
@@ -474,11 +477,11 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    46,    46,    46,    48,    48,    50,    52,    52,    54,
-      55,    57,    59,    59,    61,    61,    61,    63,    64,    65,
-      66,    67,    69,    71,    71,    73,    73,    75,    76,    77,
-      78,    79,    81,    81,    83,    83,    85,    85,    87,    87,
-      89,    90,    92,    93,    94,    96,    98,    99
+       0,    49,    49,    49,    51,    51,    53,    55,    55,    57,
+      58,    60,    62,    62,    64,    64,    64,    66,    67,    68,
+      69,    70,    72,    74,    74,    76,    76,    78,    79,    80,
+      81,    82,    84,    84,    86,    86,    88,    88,    90,    90,
+      92,    93,    95,    96,    97,    99,   101,   102
 };
 #endif
 
@@ -1441,29 +1444,39 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
-        case 17:
-#line 63 "lex.cpp"
+        case 9:
+#line 57 "lex.cpp"
+    {functionCount++;;}
+    break;
+
+  case 10:
+#line 58 "lex.cpp"
+    {functionCount++;;}
+    break;
+
+  case 17:
+#line 66 "lex.cpp"
     {statementCount++;;}
     break;
 
   case 18:
-#line 64 "lex.cpp"
+#line 67 "lex.cpp"
     {statementCount++;;}
     break;
 
   case 19:
-#line 65 "lex.cpp"
+#line 68 "lex.cpp"
     {statementCount++;;}
     break;
 
   case 20:
-#line 66 "lex.cpp"
+#line 69 "lex.cpp"
     {statementCount++;;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1467 "lex.tab.cpp"
+#line 1480 "lex.tab.cpp"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1677,7 +1690,7 @@ yyreturn:
 }
 
 
-#line 101 "lex.cpp"
+#line 104 "lex.cpp"
 
 
 void myCopy(char* &into, const string &from)
@@ -1690,8 +1703,6 @@ ifstream inputFile;
 vector<char> token;
 vector<string> finalTokens;
 int tokenCount;
-//int statementCount;
-int functionCount;
 
 bool isAssignOp(char ch){
   if(ch == '<' || ch == '-'){
@@ -2068,8 +2079,7 @@ int main(int argc, char *argv[])
   string myString = "";
   int tempX;
   tokenCount = 0;
-  //statementCount = 0;
-  functionCount = 0;
+  //functionCount = 0;
 
 	if(!inputFile)
 	{
@@ -2213,7 +2223,7 @@ int yylex()
     //see if token is a function keyword, return the token
   else if(finalTokens[tokenCount] == "function"){
     tokenCount++;
-    functionCount++;
+    //functionCount++;
     return FUNCTION;
   }
 
@@ -2250,7 +2260,6 @@ int yylex()
     //see if the token is a assignment operator, return the token
   else if(finalTokens[tokenCount] == "assignOp"){
     tokenCount++;
-    //statementCount++;
     return ASSIGNOP;
   }
 
@@ -2263,7 +2272,6 @@ int yylex()
     //see if the token is a if, return the token
   else if(finalTokens[tokenCount] == "if"){
     tokenCount++;
-    //statementCount++;
     return IF;
   }
 
@@ -2276,7 +2284,6 @@ int yylex()
     //see if the token is a while, return the token
   else if(finalTokens[tokenCount] == "while"){
     tokenCount++;
-    //statementCount++;
     return WHILE;
   }
 

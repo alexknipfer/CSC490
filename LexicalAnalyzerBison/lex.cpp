@@ -8,9 +8,12 @@
   using namespace std;
 
   int yylex();
-  int yyerror(const char *message){cerr << "Error!!" << endl; return 0;};
+  int yyerror(const char *message){cerr << "This program is incorrect, error!" << endl; return 0;};
 
+    //initialize statement count and function count
   int statementCount = 0;
+  int functionCount = 0;
+
 
 %}
 
@@ -51,8 +54,8 @@
 
   varlist: ID COMMA varlist | ID;
 
-  function: FUNCTION ID PARENL PARENR body
-    | FUNCTION ID PARENL fplist PARENR body;
+  function: FUNCTION ID PARENL PARENR body {functionCount++;}
+    | FUNCTION ID PARENL fplist PARENR body {functionCount++;};
 
   body: CURLL bodylist CURLR;
 
@@ -110,8 +113,6 @@ ifstream inputFile;
 vector<char> token;
 vector<string> finalTokens;
 int tokenCount;
-//int statementCount;
-int functionCount;
 
 bool isAssignOp(char ch){
   if(ch == '<' || ch == '-'){
@@ -488,8 +489,7 @@ int main(int argc, char *argv[])
   string myString = "";
   int tempX;
   tokenCount = 0;
-  //statementCount = 0;
-  functionCount = 0;
+  //functionCount = 0;
 
 	if(!inputFile)
 	{
@@ -633,7 +633,7 @@ int yylex()
     //see if token is a function keyword, return the token
   else if(finalTokens[tokenCount] == "function"){
     tokenCount++;
-    functionCount++;
+    //functionCount++;
     return FUNCTION;
   }
 
@@ -670,7 +670,6 @@ int yylex()
     //see if the token is a assignment operator, return the token
   else if(finalTokens[tokenCount] == "assignOp"){
     tokenCount++;
-    //statementCount++;
     return ASSIGNOP;
   }
 
@@ -683,7 +682,6 @@ int yylex()
     //see if the token is a if, return the token
   else if(finalTokens[tokenCount] == "if"){
     tokenCount++;
-    //statementCount++;
     return IF;
   }
 
@@ -696,7 +694,6 @@ int yylex()
     //see if the token is a while, return the token
   else if(finalTokens[tokenCount] == "while"){
     tokenCount++;
-    //statementCount++;
     return WHILE;
   }
 
