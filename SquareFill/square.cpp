@@ -26,13 +26,13 @@ int findOddMinimum(int squareSize, unsigned int n){
 
   int res = n;
 
-  for(int x = 1; x <= squareSize - 1; x++){
+  for(int x = 1; x <= (squareSize - 1); x++){
     int temp = x*x;
     if(temp > n){
       break;
     }
     else{
-      res = min(res, 1+ findOddMinimum(squareSize, n - temp));
+      res = min(res, 1+ findOddMinimum(squareSize, n - (squareSize - 1)));
     }
   }
   return res;
