@@ -1,6 +1,4 @@
 import java.util.*;
-import java.io.*;
-
 
 public class Project5 {
     public static void main(String[] args){
@@ -9,6 +7,7 @@ public class Project5 {
         int vertX;
         int horzY;
 
+            //get set of cities
         vertX = sc.nextInt();
         horzY = sc.nextInt();
 
@@ -23,18 +22,19 @@ public class Project5 {
 
             int matrix[][] = buildMatrix(row, col, nodes, sc);
 
-            for(int x = 0; x < nodes; x++){
-                for(int y = 0; y < nodes; y++){
-                    System.out.print(matrix[x][y] + " ");
-                }
-                System.out.println();
+            int smallestDistance = dijkstra(nodes, 0, matrix);
+
+                //print route distance in blips
+            if(smallestDistance != Integer.MAX_VALUE){
+                System.out.println(smallestDistance + " blips");
             }
 
-            int value = dijkstra(nodes, 0, matrix);
+                //no route exists
+            else{
+                System.out.println("Holiday");
+            }
 
-            System.out.println(value);
-
-                //get next city blocks
+                //get next set of cities
             vertX = sc.nextInt();
             horzY = sc.nextInt();
 
@@ -51,54 +51,70 @@ public class Project5 {
             //the street details (ie. E to W,etc) always needs pairs of two, so max is double
         int streetDetails = 2 * row;
 
+            //place values (speed limits) in proper place in adjacency matrix
         for(int x = 0; x < streetDetails - 1; x++){
-                int r = x / 2;
+                int addToNode = x / 2;
 
-                // East/west row
-                if ( x % 2 == 0 ) {
-                    for ( int c = 0; c < col - 1; c++ ) {
+                //System.out.println("addToNode: " +  + " col: " + col);
+
+                    //if value is even, placing value in matrix for east and west
+                if (x % 2 == 0){
+                    for (int c = 0; c < col - 1; c++) {
                         int speedLimit = sc.nextInt(); // speed limit
                         String direction = sc.next();
 
+                            //calculate placement for east and west nodes
+                        int westNode = (addToNode * col) + c;
+                        int eastNode = westNode + 1;
+
                             //road is closed if speed limit is 0, don't add
-                        if(speedLimit == 0){
+                        if(speedLimit == 0) {
                             continue;
                         }
 
-                        int w = r * col + c; // west node
-                        int e = w + 1;        // east node
-                        if ( direction.equals( "*" ) || direction.equals( ">" ) ){
-                            matrix[w][e] = speedLimit;
-                        }
+                            //check direction indicator to place value in matrix
+                        switch(direction) {
+                            case "*":
+                                matrix[westNode][eastNode] = speedLimit;
+                                break;
 
-                        if ( direction.equals( "*" ) || direction.equals( "<" ) ){
-                            matrix[e][w] = speedLimit;
-                        }
+                            case ">":
+                                matrix[westNode][eastNode] = speedLimit;
+                                break;
 
+                            case "<":
+                                matrix[eastNode][westNode] = speedLimit;
+                                break;
+                        }
                     }
                 }
 
-                // North/South row
-                else {
-                    for ( int c = 0; c < col; c++ ) {
+                    //value is odd, place for north and south
+                else{
+                    for(int c = 0; c < col; c++) {
                         int speedLimit = sc.nextInt(); // speed limit
                         String direction = sc.next();
+
+                            //calculate values for north and south nodes for matrix placement
+                        int northNode = (addToNode * col) + c; // north node
+                        int southNode = northNode + col;     // south node
 
                             //road is closed if speed limit is 0, don't add
                         if(speedLimit == 0){
                             continue;
                         }
 
-                        int n = r * col + c; // north node
-                        int s = n + col;     // south node
-                        if ( direction.equals( "*" ) || direction.equals( "v" ) ){
-                            matrix[n][s] = speedLimit;
-                        }
+                            //check direction indicator to place value in matrix
+                        switch(direction){
+                            case "*": matrix[northNode][southNode] = speedLimit;
+                                break;
 
-                        if ( direction.equals( "*" ) || direction.equals( "^" ) ){
-                            matrix[s][n] = speedLimit;
-                        }
+                            case "v": matrix[northNode][southNode] = speedLimit;
+                                break;
 
+                            case "^": matrix[southNode][northNode] = speedLimit;
+                                break;
+                        }
                     }
                 }
         }   //end row loop
