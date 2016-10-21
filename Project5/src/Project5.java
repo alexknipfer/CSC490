@@ -30,12 +30,18 @@ public class Project5 {
                 System.out.println();
             }
 
+            int value = dijkstra(nodes, 0, matrix);
+
+            System.out.println(value);
+
                 //get next city blocks
             vertX = sc.nextInt();
             horzY = sc.nextInt();
 
         }
     }
+
+    //******************************************************************************************************************
 
     public static int[][] buildMatrix(int row, int col, int nodes, Scanner sc){
 
@@ -111,5 +117,67 @@ public class Project5 {
             }
         }
         return matrix;
+    }
+
+    //******************************************************************************************************************
+
+        //use dijkstra's algorithm to find smallest path, method takes in the adjacency matrix
+
+    public static int dijkstra(int node, int start, int[][] matrix)
+    {
+        boolean pathFound[] = new boolean[node];
+        int vertDistance[] = new int[node];
+        int parent[] = new int[node];
+
+            //initialize arrays, path found to false and vert distance to "infinity"
+        for(int i=0; i < node; i++)
+        {
+            pathFound[i] = false;
+            vertDistance[i] = Integer.MAX_VALUE;
+            parent[i] = -1;
+        }
+
+        // distance to start is 0 ...
+        vertDistance[start] = 0;
+
+        // guaranteed that starting vertex is cheapest from start, so add it first.
+        int toV = start;
+
+        // stop when the cheapest node left has already been located
+        while (!pathFound[toV]) {
+
+            // add best visible right now into result ...
+            pathFound[toV] = true;
+
+            // adjust all weights according to the newly added vertex
+            for (int toW = 0; toW < node; toW++) {
+
+                    //if weight is 0, start over
+                if (toW == toV || matrix[toV][toW] == 0) {
+                    continue;
+                }
+
+                    //set weight to current matrix value
+                int weight = matrix[toV][toW];
+
+                if (vertDistance[toW] > vertDistance[toV] + weight) {
+                    vertDistance[toW] = vertDistance[toV] + weight;
+                    parent[toW] = toV;
+                }
+            }
+
+            // find next minimum vertex ...
+            toV = 0;
+            int lowestDist = Integer.MAX_VALUE;
+
+                //go through and find the lowest distance
+            for (int testV = 1; testV < node; testV++) {
+                if (!pathFound[testV] && vertDistance[testV] < lowestDist) {
+                    lowestDist = vertDistance[testV];
+                    toV = testV;
+                }
+            }
+        }
+        return vertDistance[node - 1];
     }
 }
