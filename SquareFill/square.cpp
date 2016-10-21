@@ -82,6 +82,39 @@ void getThirteen(int n){
   cout << "7 6 6" << endl;
 }
 
+void getSeventeen(int n){
+  cout << "12" << endl;
+  cout << "5 0 0" << endl;
+  cout << "4 5 0" << endl;
+  cout << "8 9 0" << endl;
+  cout << "1 5 4" << endl;
+  cout << "3 6 4" << endl;
+  cout << "4 0 5" << endl;
+  cout << "2 4 5" << endl;
+  cout << "2 4 7" << endl;
+  cout << "2 6 7" << endl;
+  cout << "1 8 7" << endl;
+  cout << "8 0 9" << endl;
+  cout << "9 8 8" << endl;
+}
+
+void getNineteen(int n){
+  cout << "13" << endl;
+  cout << "5 0 0" << endl;
+  cout << "5 5 0" << endl;
+  cout << "9 10 0" << endl;
+  cout << "5 0 5" << endl;
+  cout << "3 5 5" << endl;
+  cout << "2 8 5" << endl;
+  cout << "2 5 8" << endl;
+  cout << "2 7 8" << endl;
+  cout << "1 8 7" << endl;
+  cout << "1 9 7" << endl;
+  cout << "1 9 8" << endl;
+  cout << "9 0 10" << endl;
+  cout << "10 9 9" << endl;
+}
+
 //******************************************************************************
 
   //returns the minimum value of squares that will fit in given squares
@@ -208,6 +241,16 @@ int main(){
     //see if board size is 13x13
   else if(squareSize == 13){
     getThirteen(squareSize);
+  }
+
+    //see if board size is 17x17
+  else if(squareSize == 17){
+    getSeventeen(squareSize);
+  }
+
+    //see if board size is 19x19
+  else if(squareSize == 19){
+    getNineteen(squareSize);
   }
 
   else{
