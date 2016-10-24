@@ -93,7 +93,7 @@ public class Project5 {
                 else{
                     for(int c = 0; c < col; c++) {
                         int speedLimit = sc.nextInt(); // speed limit
-                        String direction = sc.next();
+                        String direction = sc.next(); //direction
 
                             //calculate values for north and south nodes for matrix placement
                         int northNode = (addToNode * col) + c; // north node
