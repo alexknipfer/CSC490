@@ -92,9 +92,20 @@ void maxFlow(int s, int t){
 			}
 		}
 
+		for(int x = 0; x < n; x++){
+			for(int y = 0; y < m; y++){
+				if(LizardMap[x][y] == 'L'){
+					int x = (x * m + y) * 2;
+					used_edges.push_back(edge(s, x, 1));
+				}
+			}
+		}
+
     //cout << n << " " << max_flow << " " << used_edges.size() << endl;
-    for (int i=0;i<used_edges.size();i++)
-    	cout << used_edges[i].u << " " << used_edges[i].v << " " << used_edges[i].w << endl;
+    /*for (int i=0;i<used_edges.size();i++)
+    	cout << used_edges[i].u << " " << used_edges[i].v << " " << used_edges[i].w << endl;*/
+
+		max_flow = used_edges[0].u;
 
 		cout << max_flow << endl;
 }
