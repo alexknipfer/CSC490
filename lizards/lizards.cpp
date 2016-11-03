@@ -14,7 +14,7 @@ long long g[N][N],
 					f[N],
 					max_flow, path_flow;
 int p[N];
-int n, d, m, u, v, w;
+int n, d, m, u, v, w, ans = 0;
 
 struct edge{
 	int u, v, w;
@@ -23,6 +23,8 @@ struct edge{
 
 // find path from source to sink.
 long long bfs(int s, int t){
+
+	//cout << s << " " << t << endl;
 
     // we have not visited any nodes except source  yet
     bool visited[n];
@@ -60,17 +62,18 @@ long long bfs(int s, int t){
         }
     }
 
-    if (visited[t])
-      return f[t];
+    if (visited[t]){
+			return f[t];
+		}
     else
       return 0;
 }
 
 
-void maxFlow(int s, int t){
+int maxFlow(int s, int t){
     max_flow = 0;
-
     path_flow = bfs(s,t);
+		cout << path_flow << endl;
     while (path_flow >0){
         for (v=t; v != s; v=p[v]){
             u = p[v];
@@ -81,8 +84,10 @@ void maxFlow(int s, int t){
 	      path_flow = bfs(s,t);
     }
 
-    // build list of edges with flow
+    	//build list of edges with flow
     vector<edge> used_edges;
+
+			//build the edges for the pilar map layout
     for (int i=0;i<n;i++){
 			for (int j=0;j<m;j++){
 					// if there is an edge and we used it at all ...
@@ -92,6 +97,7 @@ void maxFlow(int s, int t){
 			}
 		}
 
+			//build the edges for the lizard layout map
 		for(int x = 0; x < n; x++){
 			for(int y = 0; y < m; y++){
 				if(LizardMap[x][y] == 'L'){
@@ -101,47 +107,54 @@ void maxFlow(int s, int t){
 			}
 		}
 
-    //cout << n << " " << max_flow << " " << used_edges.size() << endl;
-    /*for (int i=0;i<used_edges.size();i++)
-    	cout << used_edges[i].u << " " << used_edges[i].v << " " << used_edges[i].w << endl;*/
+		max_flow = used_edges[1].u;
 
-		max_flow = used_edges[0].u;
-
-		cout << max_flow << endl;
+		return max_flow;
 }
-
-/*void createGraph(int d, int n, int m, int source, int sink){
-	for(int x = 0; x < n; x++){
-		for(int y = 0; y < m; y++){
-			//do something here
-		}
-	}
-}*/
 
 int main(){
   int testCases;
+	int count = 1;
   string line;
 
+		//get number of test cases
   cin >> testCases;
 
+		//go through test cases
   for(int x = 0; x < testCases; x++){
+			//get number of rows in map
     cin >> n >> d;
 
+			//read in the values for pilar map
     for(int i = 0; i < n; i++){
       cin >> PilarMap[i];
     }
 
+			//read in values for lizard placement in map
     for(int j = 0; j < n; j++){
       cin >> LizardMap[j];
     }
 
       //get m for size n x m grid
     m = strlen(PilarMap[0]);
+
+			//get source for maxflow
     int source = m * n * 2;
+
+			//get sink for maxflow
     int sink = source + 1;
-		cout << source << " " << sink << endl;
-		maxFlow(source, sink);
-    //createGraph(d, n, n, source, sink);
+
+			//calculate maximum flow
+		int answer = maxFlow(source, sink);
+
+		if(answer == 0){
+			cout << "Case #" << count << ": no lizards were left behind." << endl;
+		}
+		else{
+			cout << "Case #" << count << ": " << answer << " lizards were left behind." << endl;
+		}
+
+		count++;
   }
 
   return 0;
