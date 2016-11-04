@@ -8,17 +8,36 @@
 
 using namespace std;
 
-string map[25];       //pilar / map layout
-string lizards[25];   //lizard layout from input
-int source = 0;       //initial source
-int sink = 1;         //intitial sink
-int lizardCount = 0;  //total lizard count
-int nodeCount;        //total nodes for graph
-int caseNumber = 0;   //initialize total cases
-vector< vector<int> > graph2;
+string map[25];
+string lizards[25];
+int lizardCount = 0;
 ifstream inputFile("input.txt");
 
-int searchBFS(vector< vector<int> > &f){
+
+class Lizard{
+  public:
+    Lizard();
+    int searchBFS(vector< vector <int> > &);
+    void readMap();
+    void readLizardMap();
+    int maxFlow();
+    int nodeConnect1(int, int, int);
+    int nodeConnect2(int, int, int);
+    void buildGraph(int, int, int);
+
+  private:
+    int source;
+    int sink;
+    int nodeCount;
+    vector< vector<int> > graph2;
+};
+
+Lizard::Lizard(){
+  source = 0;
+  sink = 1;
+}
+
+int Lizard::searchBFS(vector< vector<int> > &f){
   vector<int> find;
   unordered_set<int> visited;
   int parent[nodeCount];
@@ -71,7 +90,7 @@ int searchBFS(vector< vector<int> > &f){
   return 0;
 }
 
-int maxFlow(){
+int Lizard::maxFlow(){
 
   int flow[nodeCount][nodeCount];
 
@@ -116,19 +135,19 @@ int maxFlow(){
   return result;
 }
 
-int nodeConnect1(int x, int y, int cols){
+int Lizard::nodeConnect1(int x, int y, int cols){
     //node weight going in
   int getValue = (x * cols + y) * 2 + 2;
   return getValue;
 }
 
-int nodeConnect2(int x, int y, int cols){
+int Lizard::nodeConnect2(int x, int y, int cols){
     //node weight going out
   int getValue = (x * cols + y) * 2 + 3;
   return getValue;
 }
 
-void buildGraph(int rows, int cols, int leap){
+void Lizard::buildGraph(int rows, int cols, int leap){
   int maxLeap = leap * leap;
 
   nodeCount = rows * cols * 2 + 2;
@@ -189,18 +208,20 @@ void buildGraph(int rows, int cols, int leap){
 
 int main(){
   int testCase, rows, leap;
+  int caseNumber = 0;
 
     //read in amount of test cases
   inputFile >> testCase;
-
-    //read in map rows and leap value
-  inputFile >> rows >> leap;
 
     //initialize total lizard count
   int mapCount = 0;
 
     //go through test cases
   for(int x = 0; x < testCase; x++){
+    Lizard myLizard;
+
+      //read in map rows and leap value
+    inputFile >> rows >> leap;
 
     caseNumber++;
 
@@ -219,11 +240,12 @@ int main(){
     int cols = map[0].length();
 
       //build the graph
-    buildGraph(rows, cols, leap);
+    myLizard.buildGraph(rows, cols, leap);
 
-      //get solution
-    int answer = lizardCount - maxFlow();
+      //get solution by taking the amount that can leave subtracted from total lizards
+    int answer = lizardCount - myLizard.maxFlow();
 
+      //print the results
     switch(answer){
       case 0: cout << "Case #" << caseNumber << ": no lizard was left behind." << endl;
         break;
@@ -231,6 +253,7 @@ int main(){
         break;
       default: cout << "Case #" << caseNumber << ": " << answer << " lizards were left behind." << endl;
     }
+    lizardCount = 0;
   }
   return 0;
 }

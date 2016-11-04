@@ -5,10 +5,9 @@ Language: C++
 Editor / IDE: Atom
 
 Current Bugs:
-- If I copy and paste the input directly into the console it seems to infinitely
-run. I believe it is due to when I copy and paste I get an extra character (space)
-in each line so the "m" value it calculates includes that extra space. If I type them
-in manually it runs fine. 
+- Sometimes copy and pasting the data into the console resulted in wrong output
+numbers, however I think it's due to the format because I read from file and worked
+fine
 
 How I approached the problem?
 I drew everything out on paper including the test cases. After that I went back
@@ -20,6 +19,10 @@ UPDATE (11/3): After talking about the two nodes in class I was able to come up 
 solution. I ditched the algorithms from class and tried some other "BFS" or search
 functions that worked better. Neither one from class helped me.
 ----------------------------- CHANGELOG ----------------------------------------
+11-04-2016
+- Running multiple test cases at once resulted in WRONG output
+- Switched to using a CLASS so each test case has their "own data (variables)"
+
 11-03-2016
 - Started over again using the ideas from class
 - using a in and out for each "node" to create the graph
