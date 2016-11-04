@@ -1,161 +1,236 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <queue>
 #include <climits>
+#include <unordered_set>
+#include <algorithm>
+#include <fstream>
 
 using namespace std;
 
-#define N 505
-char PilarMap[25][25];
-char LizardMap[25][25];
-long long g[N][N],
-					rg[N][N],
-					f[N],
-					max_flow, path_flow;
-int p[N];
-int n, d, m, u, v, w, ans = 0;
+string map[25];       //pilar / map layout
+string lizards[25];   //lizard layout from input
+int source = 0;       //initial source
+int sink = 1;         //intitial sink
+int lizardCount = 0;  //total lizard count
+int nodeCount;        //total nodes for graph
+int caseNumber = 0;   //initialize total cases
+vector< vector<int> > graph2;
+ifstream inputFile("input.txt");
 
-struct edge{
-	int u, v, w;
-	edge(int _u, int _v, int _w): u(_u), v(_v), w(_w){}
-};
+int searchBFS(vector< vector<int> > &f){
+  vector<int> find;
+  unordered_set<int> visited;
+  int parent[nodeCount];
 
-// find path from source to sink.
-long long bfs(int s, int t){
+    //add calculated source
+  find.push_back(source);
 
-	//cout << s << " " << t << endl;
+    //add source to first visited
+  visited.insert(source);
 
-    // we have not visited any nodes except source  yet
-    bool visited[n];
-    memset(visited,false,sizeof(visited));
-    visited[s] = true;
+  memset(parent, -1, sizeof(parent));
 
-    // keep orderd list of nodes seen ... do far, only source
-    queue <int> q;
-    q.push(s);
+  while(!find.empty()){
+    //cout << "notEmpty" << endl;
+    int u = find.front();
+    //cout << u << endl;
+    //cout << sink << "THIS IS SINK" << endl;
+    find.erase(find.begin());
 
-    p[s] = -1; // source has no parent
+    if(u == sink){
+        //cout << "in here!!!!!!" << endl;
+      int findBy = INT_MAX;
 
-    f[s] = INT_MAX; // flow TO source is max available (infinity)
-
-    // as long as there are still nodes to "grow from"
-    while (!q.empty()){
-
-        // pick out next node (u) to grow from
-        int u = q.front();
-	q.pop();
-
-        // which nodes can we get to? test each node ...
-	for (int v=0; v<n; v++){
-
-	    // make sure we have not already visited and more flow possible
-            if (visited[v]==false && rg[u][v] > 0){
-	        // can get from node u to node v ... v is a new growable node
-                q.push(v);
-                p[v] = u;  // got to v from u
-                visited[v] = true; // now reached v
-
-		// flow to v is min(flow to u, resid from u to v)
-                f[v] = min(f[u],rg[u][v]);
-            }
-        }
+      int n = u;
+      while(n != source){
+        findBy = min(findBy, (graph2[parent[n]][n] - f[parent[n]][n]));
+        n = parent[n];
+      }
+      n = u;
+      while(n != source){
+        f[parent[n]][n] += findBy;
+        f[n][parent[n]] -= findBy;
+        n = parent[n];
+      }
+      return findBy;
     }
+    for(int i = 0; i < nodeCount; i++){
+      //cout << graph2[u][i] - f[u][i] << endl;
+      if(graph2[u][i] - f[u][i] > 0){
+        const bool is_in = visited.find(i) != visited.end();
 
-    if (visited[t]){
-			return f[t];
-		}
-    else
-      return 0;
+        if(!is_in){
+          find.push_back(i);
+          visited.insert(i);
+          parent[i] = u;
+        }
+      }
+    }
+  }
+  return 0;
 }
 
+int maxFlow(){
 
-int maxFlow(int s, int t){
-    max_flow = 0;
-    path_flow = bfs(s,t);
-		cout << path_flow << endl;
-    while (path_flow >0){
-        for (v=t; v != s; v=p[v]){
-            u = p[v];
-            rg[u][v] -= path_flow;
-            rg[v][u] += path_flow;
-        }
-        max_flow += path_flow;
-	      path_flow = bfs(s,t);
+  int flow[nodeCount][nodeCount];
+
+  memset(flow, 0, sizeof(flow));
+
+    //2d vector for graph
+  vector< vector<int> > f(0);
+
+  for(int x = 0; x < nodeCount; x++){
+    vector<int> tempVector;
+    for(int y = 0; y < nodeCount; y++){
+      tempVector.push_back(flow[x][y]);
     }
+    f.push_back(tempVector);
+  }
 
-    	//build list of edges with flow
-    vector<edge> used_edges;
+  /*for(int x = 0; x < nodeCount; x++){
+    for(int y = 0; y < nodeCount; y++){
+      cout << graph2[x][y];
+    }
+    cout << endl;
+  }*/
 
-			//build the edges for the pilar map layout
-    for (int i=0;i<n;i++){
-			for (int j=0;j<m;j++){
-					// if there is an edge and we used it at all ...
-				if (PilarMap[i][j] != '0'){
-					used_edges.push_back(edge(i, j, PilarMap[i][j] - '0'));
-				}
-			}
-		}
+  while(searchBFS(f) > 0){
+    //do something
+    //cout << "hello" << endl;
+  }
 
-			//build the edges for the lizard layout map
-		for(int x = 0; x < n; x++){
-			for(int y = 0; y < m; y++){
-				if(LizardMap[x][y] == 'L'){
-					int x = (x * m + y) * 2;
-					used_edges.push_back(edge(s, x, 1));
-				}
-			}
-		}
+  /*for(int x = 0; x < nodeCount; x++){
+    for(int y = 0; y < nodeCount; y++){
+      cout << f[x][y];
+    }
+    cout << endl;
+  }*/
 
-		max_flow = used_edges[1].u;
+  int result = 0;
 
-		return max_flow;
+    //add values into the final result
+  for(int x = 0; x < nodeCount; x++){
+    result += f[source][x];
+  }
+  return result;
+}
+
+int nodeConnect1(int x, int y, int cols){
+    //node weight going in
+  int getValue = (x * cols + y) * 2 + 2;
+  return getValue;
+}
+
+int nodeConnect2(int x, int y, int cols){
+    //node weight going out
+  int getValue = (x * cols + y) * 2 + 3;
+  return getValue;
+}
+
+void buildGraph(int rows, int cols, int leap){
+  int maxLeap = leap * leap;
+
+  nodeCount = rows * cols * 2 + 2;
+
+  int graph[nodeCount][nodeCount];
+
+    //initialize graph array to 0
+  memset(graph,0,sizeof(graph));
+
+  for(int x = 0; x < rows; x++){
+    for(int y = 0; y < cols; y++){
+        //going into node
+      int goingIn = nodeConnect1(x, y, cols);
+
+        //going out of node
+      int goingOut = nodeConnect2(x, y, cols);
+
+      graph[goingIn][goingOut] = (int)map[x][y] - 48;
+
+        //add a "going in" node if lizard is placed here
+      if(lizards[x][y] == 'L'){
+        graph[source][goingIn] = 1;
+        lizardCount++;
+      }
+
+      if(x < leap || x > rows-1-leap || y < leap || y > cols-1-leap){
+        graph[goingOut][sink] = INT_MAX;
+      }
+
+      for(int a = 0; a < rows; a++){
+        for(int b = 0; b < cols; b++){
+            //calculate distance between row and current row
+          int calcDistanceX = a - x;
+            //calculate distance between col and current col
+          int calcDistanceY = b - y;
+
+            //get the distance between the points
+          int totalDistanceFinal = (calcDistanceX*calcDistanceX) + (calcDistanceY*calcDistanceY);
+          int node = nodeConnect1(a, b, cols);
+          if((x != a || y != b) && totalDistanceFinal <= maxLeap){
+            graph[goingOut][node] = INT_MAX;
+          }
+        }
+      }
+    }
+  }
+
+    //add the current graph to the global 2d vector for use by
+    //searching function
+  for(int x = 0; x < nodeCount; x++){
+    vector<int> tempVector;
+    for(int y = 0; y < nodeCount; y++){
+      tempVector.push_back(graph[x][y]);
+    }
+    graph2.push_back(tempVector);
+  }
 }
 
 int main(){
-  int testCases;
-	int count = 1;
-  string line;
+  int testCase, rows, leap;
 
-		//get number of test cases
-  cin >> testCases;
+    //read in amount of test cases
+  inputFile >> testCase;
 
-		//go through test cases
-  for(int x = 0; x < testCases; x++){
-			//get number of rows in map
-    cin >> n >> d;
+    //read in map rows and leap value
+  inputFile >> rows >> leap;
 
-			//read in the values for pilar map
-    for(int i = 0; i < n; i++){
-      cin >> PilarMap[i];
+    //initialize total lizard count
+  int mapCount = 0;
+
+    //go through test cases
+  for(int x = 0; x < testCase; x++){
+
+    caseNumber++;
+
+      //read in pilar map
+    for(int i = 0; i < rows; i++){
+      inputFile >> map[i];
+      mapCount++;
     }
 
-			//read in values for lizard placement in map
-    for(int j = 0; j < n; j++){
-      cin >> LizardMap[j];
+      //read in lizard placement map
+    for(int j = 0; j < rows; j++){
+      inputFile >> lizards[j];
     }
 
-      //get m for size n x m grid
-    m = strlen(PilarMap[0]);
+      //get the value "m" or the amount of columns
+    int cols = map[0].length();
 
-			//get source for maxflow
-    int source = m * n * 2;
+      //build the graph
+    buildGraph(rows, cols, leap);
 
-			//get sink for maxflow
-    int sink = source + 1;
+      //get solution
+    int answer = lizardCount - maxFlow();
 
-			//calculate maximum flow
-		int answer = maxFlow(source, sink);
-
-		if(answer == 0){
-			cout << "Case #" << count << ": no lizards were left behind." << endl;
-		}
-		else{
-			cout << "Case #" << count << ": " << answer << " lizards were left behind." << endl;
-		}
-
-		count++;
+    switch(answer){
+      case 0: cout << "Case #" << caseNumber << ": no lizard was left behind." << endl;
+        break;
+      case 1: cout << "Case #" << caseNumber << ": " << answer << " lizard was left behind." << endl;
+        break;
+      default: cout << "Case #" << caseNumber << ": " << answer << " lizards were left behind." << endl;
+    }
   }
-
   return 0;
 }

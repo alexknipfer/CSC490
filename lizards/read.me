@@ -5,14 +5,27 @@ Language: C++
 Editor / IDE: Atom
 
 Current Bugs:
-- Output INCORRECT
+- If I copy and paste the input directly into the console it seems to infinitely
+run. I believe it is due to when I copy and paste I get an extra character (space)
+in each line so the "m" value it calculates includes that extra space. If I type them
+in manually it runs fine. 
 
 How I approached the problem?
 I drew everything out on paper including the test cases. After that I went back
 to look at the maximum flow algorithms. I still don't really understand the
 algorithm and find the problem itself pretty confusing. I scratched so many
 versions of this program because I was not able to get the resulting output.
+
+UPDATE (11/3): After talking about the two nodes in class I was able to come up with a
+solution. I ditched the algorithms from class and tried some other "BFS" or search
+functions that worked better. Neither one from class helped me.
 ----------------------------- CHANGELOG ----------------------------------------
+11-03-2016
+- Started over again using the ideas from class
+- using a in and out for each "node" to create the graph
+- Could not get the BFS algorithm from class to work, after research found a
+  different idea in the search
+
 11-02-2016
 - Attempted to rebuild grid and BFS function
 - BFS function still returning 0 for every test case
