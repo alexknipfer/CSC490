@@ -11,8 +11,6 @@ using namespace std;
 string map[25];
 string lizards[25];
 int lizardCount = 0;
-ifstream inputFile("input.txt");
-
 
 class Lizard{
   public:
@@ -32,11 +30,13 @@ class Lizard{
     vector< vector<int> > graph2;
 };
 
+  //intialize source and sink
 Lizard::Lizard(){
   source = 0;
   sink = 1;
 }
 
+  //find path from source to sink
 int Lizard::searchBFS(vector< vector<int> > &f){
   vector<int> find;
   unordered_set<int> visited;
@@ -48,13 +48,16 @@ int Lizard::searchBFS(vector< vector<int> > &f){
     //add source to first visited
   visited.insert(source);
 
+    //initialize parent array to -1
   memset(parent, -1, sizeof(parent));
 
   while(!find.empty()){
     //cout << "notEmpty" << endl;
+      //get first value and store in temp
     int u = find.front();
     //cout << u << endl;
     //cout << sink << "THIS IS SINK" << endl;
+      //get rid of first value in "queue" for next value
     find.erase(find.begin());
 
     if(u == sink){
@@ -63,6 +66,7 @@ int Lizard::searchBFS(vector< vector<int> > &f){
 
       int n = u;
       while(n != source){
+          //compare values to infinity and see which contains 0
         findBy = min(findBy, (graph2[parent[n]][n] - f[parent[n]][n]));
         n = parent[n];
       }
@@ -90,15 +94,18 @@ int Lizard::searchBFS(vector< vector<int> > &f){
   return 0;
 }
 
+  //get maximum flow of lizards
 int Lizard::maxFlow(){
 
   int flow[nodeCount][nodeCount];
 
+    //initialize flow to 0
   memset(flow, 0, sizeof(flow));
 
     //2d vector for graph
   vector< vector<int> > f(0);
 
+    //store flow to nodes in 2d vector
   for(int x = 0; x < nodeCount; x++){
     vector<int> tempVector;
     for(int y = 0; y < nodeCount; y++){
@@ -128,21 +135,22 @@ int Lizard::maxFlow(){
 
   int result = 0;
 
-    //add values into the final result
+    //add values from flow nodes into the final result
   for(int x = 0; x < nodeCount; x++){
     result += f[source][x];
   }
   return result;
 }
 
+  //node goint in
 int Lizard::nodeConnect1(int x, int y, int cols){
-    //node weight going in
+    //node capacity going in
   int getValue = (x * cols + y) * 2 + 2;
   return getValue;
 }
 
 int Lizard::nodeConnect2(int x, int y, int cols){
-    //node weight going out
+    //node capacity going out
   int getValue = (x * cols + y) * 2 + 3;
   return getValue;
 }
@@ -151,6 +159,8 @@ void Lizard::buildGraph(int rows, int cols, int leap){
   int maxLeap = leap * leap;
 
   nodeCount = rows * cols * 2 + 2;
+
+  cout << nodeCount << endl;
 
   int graph[nodeCount][nodeCount];
 
@@ -165,6 +175,7 @@ void Lizard::buildGraph(int rows, int cols, int leap){
         //going out of node
       int goingOut = nodeConnect2(x, y, cols);
 
+        //convert char from read in value into the graph integer matrix
       graph[goingIn][goingOut] = (int)map[x][y] - 48;
 
         //add a "going in" node if lizard is placed here
@@ -174,7 +185,7 @@ void Lizard::buildGraph(int rows, int cols, int leap){
       }
 
       if(x < leap || x > rows-1-leap || y < leap || y > cols-1-leap){
-        graph[goingOut][sink] = INT_MAX;
+        graph[goingOut][sink] = INT_MAX;  //set to infinity
       }
 
       for(int a = 0; a < rows; a++){
@@ -211,7 +222,7 @@ int main(){
   int caseNumber = 0;
 
     //read in amount of test cases
-  inputFile >> testCase;
+  cin >> testCase;
 
     //initialize total lizard count
   int mapCount = 0;
@@ -221,19 +232,19 @@ int main(){
     Lizard myLizard;
 
       //read in map rows and leap value
-    inputFile >> rows >> leap;
+    cin >> rows >> leap;
 
     caseNumber++;
 
       //read in pilar map
     for(int i = 0; i < rows; i++){
-      inputFile >> map[i];
+      cin >> map[i];
       mapCount++;
     }
 
       //read in lizard placement map
     for(int j = 0; j < rows; j++){
-      inputFile >> lizards[j];
+      cin >> lizards[j];
     }
 
       //get the value "m" or the amount of columns
@@ -249,10 +260,13 @@ int main(){
     switch(answer){
       case 0: cout << "Case #" << caseNumber << ": no lizard was left behind." << endl;
         break;
+
+          //only print "lizard" and not "lizards" if there is only 1
       case 1: cout << "Case #" << caseNumber << ": " << answer << " lizard was left behind." << endl;
         break;
       default: cout << "Case #" << caseNumber << ": " << answer << " lizards were left behind." << endl;
     }
+      //reinitialize lizard count for next test case
     lizardCount = 0;
   }
   return 0;
