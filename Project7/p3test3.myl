@@ -1,0 +1,25 @@
+# functin #1
+function fibo (n)
+{
+  var ans1,ans2;
+
+  if (n<2)                  # stmt 1
+    fibo<-1;                # stmt 2
+  else
+    {
+      ans1 <- fibo(n-1);    #stmt 3
+      ans2<-fibo(n-2);      #stmt 4
+
+      fibo <- ans1 + ans2;  #stmt 5
+    }
+}
+
+# function #2
+function main()
+{
+  var input;
+
+  input<-read();            #stmt 6
+
+  print(fibo(input));       #stmt 7
+}
