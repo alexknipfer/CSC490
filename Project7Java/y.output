@@ -1,0 +1,975 @@
+   0  $accept : start $end
+
+   1  start : pgm
+
+   2  pgm : pgmpart pgm
+   3      | pgmpart
+
+   4  pgmpart : vardecl
+   5          | function
+
+   6  vardecl : VAR varlist SEMICOLON
+
+   7  varlist : ID COMMA varlist
+   8          | ID
+
+   9  function : FUNCTION ID PARENL PARENR body
+  10           | FUNCTION ID PARENL fplist PARENR body
+
+  11  body : CURLL bodylist CURLR
+
+  12  fplist : ID COMMA fplist
+  13         | ID
+
+  14  bodylist : vardecl bodylist
+  15           | stmt bodylist
+  16           |
+
+  17  stmt : assign SEMICOLON
+  18       | fcall SEMICOLON
+  19       | while
+  20       | if
+  21       | body
+
+  22  assign : ID ASSIGNOP expr
+
+  23  expr : factor
+  24       | expr ADDOP factor
+
+  25  factor : term
+  26         | factor MULOP term
+
+  27  term : ID
+  28       | NUMBER
+  29       | PARENL expr PARENR
+  30       | ADDOP term
+  31       | fcall
+
+  32  bexpr : bfactor
+  33        | bexpr OR bfactor
+
+  34  bfactor : bneg
+  35          | bfactor AND bneg
+
+  36  bneg : bterm
+  37       | NOT bterm
+
+  38  bterm : expr RELOP expr
+  39        | PARENL bterm PARENR
+
+  40  fcall : ID PARENL PARENR
+  41        | ID PARENL aplist PARENR
+
+  42  aplist : expr COMMA aplist
+  43         | expr
+  44         | STRING
+
+  45  while : WHILE PARENL bexpr PARENR stmt
+
+  46  if : IF PARENL bexpr PARENR stmt
+  47     | IF PARENL bexpr PARENR stmt ELSE stmt
+
+state 0
+	$accept : . start $end  (0)
+
+	FUNCTION  shift 1
+	VAR  shift 2
+	.  error
+
+	start  goto 3
+	pgm  goto 4
+	pgmpart  goto 5
+	vardecl  goto 6
+	function  goto 7
+
+
+state 1
+	function : FUNCTION . ID PARENL PARENR body  (9)
+	function : FUNCTION . ID PARENL fplist PARENR body  (10)
+
+	ID  shift 8
+	.  error
+
+
+state 2
+	vardecl : VAR . varlist SEMICOLON  (6)
+
+	ID  shift 9
+	.  error
+
+	varlist  goto 10
+
+
+state 3
+	$accept : start . $end  (0)
+
+	$end  accept
+
+
+state 4
+	start : pgm .  (1)
+
+	.  reduce 1
+
+
+state 5
+	pgm : pgmpart . pgm  (2)
+	pgm : pgmpart .  (3)
+
+	FUNCTION  shift 1
+	VAR  shift 2
+	$end  reduce 3
+
+	pgm  goto 11
+	pgmpart  goto 5
+	vardecl  goto 6
+	function  goto 7
+
+
+state 6
+	pgmpart : vardecl .  (4)
+
+	.  reduce 4
+
+
+state 7
+	pgmpart : function .  (5)
+
+	.  reduce 5
+
+
+state 8
+	function : FUNCTION ID . PARENL PARENR body  (9)
+	function : FUNCTION ID . PARENL fplist PARENR body  (10)
+
+	PARENL  shift 12
+	.  error
+
+
+state 9
+	varlist : ID . COMMA varlist  (7)
+	varlist : ID .  (8)
+
+	COMMA  shift 13
+	SEMICOLON  reduce 8
+
+
+state 10
+	vardecl : VAR varlist . SEMICOLON  (6)
+
+	SEMICOLON  shift 14
+	.  error
+
+
+state 11
+	pgm : pgmpart pgm .  (2)
+
+	.  reduce 2
+
+
+state 12
+	function : FUNCTION ID PARENL . PARENR body  (9)
+	function : FUNCTION ID PARENL . fplist PARENR body  (10)
+
+	ID  shift 15
+	PARENR  shift 16
+	.  error
+
+	fplist  goto 17
+
+
+state 13
+	varlist : ID COMMA . varlist  (7)
+
+	ID  shift 9
+	.  error
+
+	varlist  goto 18
+
+
+state 14
+	vardecl : VAR varlist SEMICOLON .  (6)
+
+	.  reduce 6
+
+
+state 15
+	fplist : ID . COMMA fplist  (12)
+	fplist : ID .  (13)
+
+	COMMA  shift 19
+	PARENR  reduce 13
+
+
+state 16
+	function : FUNCTION ID PARENL PARENR . body  (9)
+
+	CURLL  shift 20
+	.  error
+
+	body  goto 21
+
+
+state 17
+	function : FUNCTION ID PARENL fplist . PARENR body  (10)
+
+	PARENR  shift 22
+	.  error
+
+
+state 18
+	varlist : ID COMMA varlist .  (7)
+
+	.  reduce 7
+
+
+state 19
+	fplist : ID COMMA . fplist  (12)
+
+	ID  shift 15
+	.  error
+
+	fplist  goto 23
+
+
+state 20
+	body : CURLL . bodylist CURLR  (11)
+	bodylist : .  (16)
+
+	CURLL  shift 20
+	ID  shift 24
+	IF  shift 25
+	VAR  shift 2
+	WHILE  shift 26
+	CURLR  reduce 16
+
+	vardecl  goto 27
+	body  goto 28
+	bodylist  goto 29
+	stmt  goto 30
+	assign  goto 31
+	fcall  goto 32
+	while  goto 33
+	if  goto 34
+
+
+state 21
+	function : FUNCTION ID PARENL PARENR body .  (9)
+
+	.  reduce 9
+
+
+state 22
+	function : FUNCTION ID PARENL fplist PARENR . body  (10)
+
+	CURLL  shift 20
+	.  error
+
+	body  goto 35
+
+
+state 23
+	fplist : ID COMMA fplist .  (12)
+
+	.  reduce 12
+
+
+state 24
+	assign : ID . ASSIGNOP expr  (22)
+	fcall : ID . PARENL PARENR  (40)
+	fcall : ID . PARENL aplist PARENR  (41)
+
+	ASSIGNOP  shift 36
+	PARENL  shift 37
+	.  error
+
+
+state 25
+	if : IF . PARENL bexpr PARENR stmt  (46)
+	if : IF . PARENL bexpr PARENR stmt ELSE stmt  (47)
+
+	PARENL  shift 38
+	.  error
+
+
+state 26
+	while : WHILE . PARENL bexpr PARENR stmt  (45)
+
+	PARENL  shift 39
+	.  error
+
+
+state 27
+	bodylist : vardecl . bodylist  (14)
+	bodylist : .  (16)
+
+	CURLL  shift 20
+	ID  shift 24
+	IF  shift 25
+	VAR  shift 2
+	WHILE  shift 26
+	CURLR  reduce 16
+
+	vardecl  goto 27
+	body  goto 28
+	bodylist  goto 40
+	stmt  goto 30
+	assign  goto 31
+	fcall  goto 32
+	while  goto 33
+	if  goto 34
+
+
+state 28
+	stmt : body .  (21)
+
+	.  reduce 21
+
+
+state 29
+	body : CURLL bodylist . CURLR  (11)
+
+	CURLR  shift 41
+	.  error
+
+
+state 30
+	bodylist : stmt . bodylist  (15)
+	bodylist : .  (16)
+
+	CURLL  shift 20
+	ID  shift 24
+	IF  shift 25
+	VAR  shift 2
+	WHILE  shift 26
+	CURLR  reduce 16
+
+	vardecl  goto 27
+	body  goto 28
+	bodylist  goto 42
+	stmt  goto 30
+	assign  goto 31
+	fcall  goto 32
+	while  goto 33
+	if  goto 34
+
+
+state 31
+	stmt : assign . SEMICOLON  (17)
+
+	SEMICOLON  shift 43
+	.  error
+
+
+state 32
+	stmt : fcall . SEMICOLON  (18)
+
+	SEMICOLON  shift 44
+	.  error
+
+
+state 33
+	stmt : while .  (19)
+
+	.  reduce 19
+
+
+state 34
+	stmt : if .  (20)
+
+	.  reduce 20
+
+
+state 35
+	function : FUNCTION ID PARENL fplist PARENR body .  (10)
+
+	.  reduce 10
+
+
+state 36
+	assign : ID ASSIGNOP . expr  (22)
+
+	ADDOP  shift 45
+	ID  shift 46
+	NUMBER  shift 47
+	PARENL  shift 48
+	.  error
+
+	fcall  goto 49
+	expr  goto 50
+	factor  goto 51
+	term  goto 52
+
+
+state 37
+	fcall : ID PARENL . PARENR  (40)
+	fcall : ID PARENL . aplist PARENR  (41)
+
+	ADDOP  shift 45
+	ID  shift 46
+	NUMBER  shift 47
+	PARENL  shift 48
+	PARENR  shift 53
+	STRING  shift 54
+	.  error
+
+	fcall  goto 49
+	expr  goto 55
+	factor  goto 51
+	term  goto 52
+	aplist  goto 56
+
+
+state 38
+	if : IF PARENL . bexpr PARENR stmt  (46)
+	if : IF PARENL . bexpr PARENR stmt ELSE stmt  (47)
+
+	ADDOP  shift 45
+	ID  shift 46
+	NOT  shift 57
+	NUMBER  shift 47
+	PARENL  shift 58
+	.  error
+
+	fcall  goto 49
+	expr  goto 59
+	factor  goto 51
+	term  goto 52
+	bexpr  goto 60
+	bfactor  goto 61
+	bneg  goto 62
+	bterm  goto 63
+
+
+state 39
+	while : WHILE PARENL . bexpr PARENR stmt  (45)
+
+	ADDOP  shift 45
+	ID  shift 46
+	NOT  shift 57
+	NUMBER  shift 47
+	PARENL  shift 58
+	.  error
+
+	fcall  goto 49
+	expr  goto 59
+	factor  goto 51
+	term  goto 52
+	bexpr  goto 64
+	bfactor  goto 61
+	bneg  goto 62
+	bterm  goto 63
+
+
+state 40
+	bodylist : vardecl bodylist .  (14)
+
+	.  reduce 14
+
+
+state 41
+	body : CURLL bodylist CURLR .  (11)
+
+	.  reduce 11
+
+
+state 42
+	bodylist : stmt bodylist .  (15)
+
+	.  reduce 15
+
+
+state 43
+	stmt : assign SEMICOLON .  (17)
+
+	.  reduce 17
+
+
+state 44
+	stmt : fcall SEMICOLON .  (18)
+
+	.  reduce 18
+
+
+state 45
+	term : ADDOP . term  (30)
+
+	ADDOP  shift 45
+	ID  shift 46
+	NUMBER  shift 47
+	PARENL  shift 48
+	.  error
+
+	fcall  goto 49
+	term  goto 65
+
+
+state 46
+	term : ID .  (27)
+	fcall : ID . PARENL PARENR  (40)
+	fcall : ID . PARENL aplist PARENR  (41)
+
+	PARENL  shift 37
+	ADDOP  reduce 27
+	AND  reduce 27
+	COMMA  reduce 27
+	MULOP  reduce 27
+	OR  reduce 27
+	PARENR  reduce 27
+	RELOP  reduce 27
+	SEMICOLON  reduce 27
+
+
+state 47
+	term : NUMBER .  (28)
+
+	.  reduce 28
+
+
+state 48
+	term : PARENL . expr PARENR  (29)
+
+	ADDOP  shift 45
+	ID  shift 46
+	NUMBER  shift 47
+	PARENL  shift 48
+	.  error
+
+	fcall  goto 49
+	expr  goto 66
+	factor  goto 51
+	term  goto 52
+
+
+state 49
+	term : fcall .  (31)
+
+	.  reduce 31
+
+
+state 50
+	assign : ID ASSIGNOP expr .  (22)
+	expr : expr . ADDOP factor  (24)
+
+	ADDOP  shift 67
+	SEMICOLON  reduce 22
+
+
+state 51
+	expr : factor .  (23)
+	factor : factor . MULOP term  (26)
+
+	MULOP  shift 68
+	ADDOP  reduce 23
+	AND  reduce 23
+	COMMA  reduce 23
+	OR  reduce 23
+	PARENR  reduce 23
+	RELOP  reduce 23
+	SEMICOLON  reduce 23
+
+
+state 52
+	factor : term .  (25)
+
+	.  reduce 25
+
+
+state 53
+	fcall : ID PARENL PARENR .  (40)
+
+	.  reduce 40
+
+
+state 54
+	aplist : STRING .  (44)
+
+	.  reduce 44
+
+
+state 55
+	expr : expr . ADDOP factor  (24)
+	aplist : expr . COMMA aplist  (42)
+	aplist : expr .  (43)
+
+	ADDOP  shift 67
+	COMMA  shift 69
+	PARENR  reduce 43
+
+
+state 56
+	fcall : ID PARENL aplist . PARENR  (41)
+
+	PARENR  shift 70
+	.  error
+
+
+state 57
+	bneg : NOT . bterm  (37)
+
+	ADDOP  shift 45
+	ID  shift 46
+	NUMBER  shift 47
+	PARENL  shift 58
+	.  error
+
+	fcall  goto 49
+	expr  goto 59
+	factor  goto 51
+	term  goto 52
+	bterm  goto 71
+
+
+state 58
+	term : PARENL . expr PARENR  (29)
+	bterm : PARENL . bterm PARENR  (39)
+
+	ADDOP  shift 45
+	ID  shift 46
+	NUMBER  shift 47
+	PARENL  shift 58
+	.  error
+
+	fcall  goto 49
+	expr  goto 72
+	factor  goto 51
+	term  goto 52
+	bterm  goto 73
+
+
+state 59
+	expr : expr . ADDOP factor  (24)
+	bterm : expr . RELOP expr  (38)
+
+	ADDOP  shift 67
+	RELOP  shift 74
+	.  error
+
+
+state 60
+	bexpr : bexpr . OR bfactor  (33)
+	if : IF PARENL bexpr . PARENR stmt  (46)
+	if : IF PARENL bexpr . PARENR stmt ELSE stmt  (47)
+
+	OR  shift 75
+	PARENR  shift 76
+	.  error
+
+
+state 61
+	bexpr : bfactor .  (32)
+	bfactor : bfactor . AND bneg  (35)
+
+	AND  shift 77
+	OR  reduce 32
+	PARENR  reduce 32
+
+
+state 62
+	bfactor : bneg .  (34)
+
+	.  reduce 34
+
+
+state 63
+	bneg : bterm .  (36)
+
+	.  reduce 36
+
+
+state 64
+	bexpr : bexpr . OR bfactor  (33)
+	while : WHILE PARENL bexpr . PARENR stmt  (45)
+
+	OR  shift 75
+	PARENR  shift 78
+	.  error
+
+
+state 65
+	term : ADDOP term .  (30)
+
+	.  reduce 30
+
+
+state 66
+	expr : expr . ADDOP factor  (24)
+	term : PARENL expr . PARENR  (29)
+
+	ADDOP  shift 67
+	PARENR  shift 79
+	.  error
+
+
+state 67
+	expr : expr ADDOP . factor  (24)
+
+	ADDOP  shift 45
+	ID  shift 46
+	NUMBER  shift 47
+	PARENL  shift 48
+	.  error
+
+	fcall  goto 49
+	factor  goto 80
+	term  goto 52
+
+
+state 68
+	factor : factor MULOP . term  (26)
+
+	ADDOP  shift 45
+	ID  shift 46
+	NUMBER  shift 47
+	PARENL  shift 48
+	.  error
+
+	fcall  goto 49
+	term  goto 81
+
+
+state 69
+	aplist : expr COMMA . aplist  (42)
+
+	ADDOP  shift 45
+	ID  shift 46
+	NUMBER  shift 47
+	PARENL  shift 48
+	STRING  shift 54
+	.  error
+
+	fcall  goto 49
+	expr  goto 55
+	factor  goto 51
+	term  goto 52
+	aplist  goto 82
+
+
+state 70
+	fcall : ID PARENL aplist PARENR .  (41)
+
+	.  reduce 41
+
+
+state 71
+	bneg : NOT bterm .  (37)
+
+	.  reduce 37
+
+
+state 72
+	expr : expr . ADDOP factor  (24)
+	term : PARENL expr . PARENR  (29)
+	bterm : expr . RELOP expr  (38)
+
+	ADDOP  shift 67
+	PARENR  shift 79
+	RELOP  shift 74
+	.  error
+
+
+state 73
+	bterm : PARENL bterm . PARENR  (39)
+
+	PARENR  shift 83
+	.  error
+
+
+state 74
+	bterm : expr RELOP . expr  (38)
+
+	ADDOP  shift 45
+	ID  shift 46
+	NUMBER  shift 47
+	PARENL  shift 48
+	.  error
+
+	fcall  goto 49
+	expr  goto 84
+	factor  goto 51
+	term  goto 52
+
+
+state 75
+	bexpr : bexpr OR . bfactor  (33)
+
+	ADDOP  shift 45
+	ID  shift 46
+	NOT  shift 57
+	NUMBER  shift 47
+	PARENL  shift 58
+	.  error
+
+	fcall  goto 49
+	expr  goto 59
+	factor  goto 51
+	term  goto 52
+	bfactor  goto 85
+	bneg  goto 62
+	bterm  goto 63
+
+
+state 76
+	if : IF PARENL bexpr PARENR . stmt  (46)
+	if : IF PARENL bexpr PARENR . stmt ELSE stmt  (47)
+
+	CURLL  shift 20
+	ID  shift 24
+	IF  shift 25
+	WHILE  shift 26
+	.  error
+
+	body  goto 28
+	stmt  goto 86
+	assign  goto 31
+	fcall  goto 32
+	while  goto 33
+	if  goto 34
+
+
+state 77
+	bfactor : bfactor AND . bneg  (35)
+
+	ADDOP  shift 45
+	ID  shift 46
+	NOT  shift 57
+	NUMBER  shift 47
+	PARENL  shift 58
+	.  error
+
+	fcall  goto 49
+	expr  goto 59
+	factor  goto 51
+	term  goto 52
+	bneg  goto 87
+	bterm  goto 63
+
+
+state 78
+	while : WHILE PARENL bexpr PARENR . stmt  (45)
+
+	CURLL  shift 20
+	ID  shift 24
+	IF  shift 25
+	WHILE  shift 26
+	.  error
+
+	body  goto 28
+	stmt  goto 88
+	assign  goto 31
+	fcall  goto 32
+	while  goto 33
+	if  goto 34
+
+
+state 79
+	term : PARENL expr PARENR .  (29)
+
+	.  reduce 29
+
+
+state 80
+	expr : expr ADDOP factor .  (24)
+	factor : factor . MULOP term  (26)
+
+	MULOP  shift 68
+	ADDOP  reduce 24
+	AND  reduce 24
+	COMMA  reduce 24
+	OR  reduce 24
+	PARENR  reduce 24
+	RELOP  reduce 24
+	SEMICOLON  reduce 24
+
+
+state 81
+	factor : factor MULOP term .  (26)
+
+	.  reduce 26
+
+
+state 82
+	aplist : expr COMMA aplist .  (42)
+
+	.  reduce 42
+
+
+state 83
+	bterm : PARENL bterm PARENR .  (39)
+
+	.  reduce 39
+
+
+state 84
+	expr : expr . ADDOP factor  (24)
+	bterm : expr RELOP expr .  (38)
+
+	ADDOP  shift 67
+	AND  reduce 38
+	OR  reduce 38
+	PARENR  reduce 38
+
+
+state 85
+	bexpr : bexpr OR bfactor .  (33)
+	bfactor : bfactor . AND bneg  (35)
+
+	AND  shift 77
+	OR  reduce 33
+	PARENR  reduce 33
+
+
+86: shift/reduce conflict (shift 89, reduce 46) on ELSE
+state 86
+	if : IF PARENL bexpr PARENR stmt .  (46)
+	if : IF PARENL bexpr PARENR stmt . ELSE stmt  (47)
+
+	ELSE  shift 89
+	CURLL  reduce 46
+	CURLR  reduce 46
+	ID  reduce 46
+	IF  reduce 46
+	VAR  reduce 46
+	WHILE  reduce 46
+
+
+state 87
+	bfactor : bfactor AND bneg .  (35)
+
+	.  reduce 35
+
+
+state 88
+	while : WHILE PARENL bexpr PARENR stmt .  (45)
+
+	.  reduce 45
+
+
+state 89
+	if : IF PARENL bexpr PARENR stmt ELSE . stmt  (47)
+
+	CURLL  shift 20
+	ID  shift 24
+	IF  shift 25
+	WHILE  shift 26
+	.  error
+
+	body  goto 28
+	stmt  goto 90
+	assign  goto 31
+	fcall  goto 32
+	while  goto 33
+	if  goto 34
+
+
+state 90
+	if : IF PARENL bexpr PARENR stmt ELSE stmt .  (47)
+
+	.  reduce 47
+
+
+State 86 contains 1 shift/reduce conflict.
+
+
+23 terminals, 23 nonterminals
+48 grammar rules, 91 states
