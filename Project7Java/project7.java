@@ -63,16 +63,14 @@ varlist: ID COMMA varlist
 
 function: FUNCTION ID PARENL PARENR body
             {
-              String tempID = $2.sval;
-              tempID.replaceAll("\\s+","");
-              System.out.print(tempID);
               ICode stmt = new ICode("NOP");
+              stmt.addLabel($2.sval);
               stmt.emit();
             }
     | FUNCTION ID PARENL fplist PARENR
       {
-        System.out.print($2.sval);
         ICode stmt = new ICode("NOP");
+        stmt.addLabel($2.sval);
         stmt.emit();
         currTable = new SymbolTable($2.sval);
       }

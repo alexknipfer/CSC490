@@ -16,7 +16,7 @@
 
 
 
-//#line 2 "project3.java"
+//#line 2 "project7.java"
 import java.lang.Math;
 import java.io.*;
 import java.util.StringTokenizer;
@@ -359,7 +359,7 @@ final static String yyrule[] = {
 "elsepart :",
 };
 
-//#line 167 "project3.java"
+//#line 165 "project7.java"
 
 //##############################################################################
 
@@ -628,7 +628,7 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 1:
-//#line 37 "project3.java"
+//#line 37 "project7.java"
 {
     System.out.println("The program is correct, and contains:");
     System.out.printf("%5d statements\n",stmtCount);
@@ -636,11 +636,11 @@ case 1:
 }
 break;
 case 5:
-//#line 49 "project3.java"
+//#line 49 "project7.java"
 {funcCount++;}
 break;
 case 7:
-//#line 56 "project3.java"
+//#line 56 "project7.java"
 {
         /*LinkedList<String> vList = (LinkedList<String>) $3.obj;*/
         /*vList.add($1.sval);*/
@@ -648,52 +648,50 @@ case 7:
       }
 break;
 case 9:
-//#line 65 "project3.java"
+//#line 65 "project7.java"
 {
-              String tempID = val_peek(3).sval;
-              tempID.replaceAll("\\s+","");
-              System.out.print(tempID);
               ICode stmt = new ICode("NOP");
+              stmt.addLabel(val_peek(3).sval);
               stmt.emit();
             }
 break;
 case 10:
-//#line 73 "project3.java"
+//#line 71 "project7.java"
 {
-        System.out.print(val_peek(3).sval);
         ICode stmt = new ICode("NOP");
+        stmt.addLabel(val_peek(3).sval);
         stmt.emit();
         currTable = new SymbolTable(val_peek(3).sval);
       }
 break;
 case 11:
-//#line 80 "project3.java"
+//#line 78 "project7.java"
 {
         System.out.println(currTable);
       }
 break;
 case 18:
-//#line 97 "project3.java"
+//#line 95 "project7.java"
 {stmtCount++;}
 break;
 case 19:
-//#line 98 "project3.java"
+//#line 96 "project7.java"
 {stmtCount++;}
 break;
 case 20:
-//#line 99 "project3.java"
+//#line 97 "project7.java"
 {stmtCount++;}
 break;
 case 21:
-//#line 100 "project3.java"
+//#line 98 "project7.java"
 {stmtCount++;}
 break;
 case 28:
-//#line 115 "project3.java"
+//#line 113 "project7.java"
 {yyval.sval = val_peek(0).sval;}
 break;
 case 29:
-//#line 117 "project3.java"
+//#line 115 "project7.java"
 {
         String newTemp = ICode.genTemp();
         String numberString = String.format("%d", val_peek(0).ival);
@@ -703,13 +701,13 @@ case 29:
       }
 break;
 case 41:
-//#line 146 "project3.java"
+//#line 144 "project7.java"
 {
         /*ICode s = new ICode("Call" + $1.sval);*/
         /*s.emit();*/
       }
 break;
-//#line 636 "Parser.java"
+//#line 634 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

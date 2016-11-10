@@ -83,8 +83,8 @@ public class ICode
      */
     public ICode(String op, String op1, String op2, String op3)
     {
-	nops = 0;
-	genCode(op, op1, op2, op3);
+    	nops = 0;
+    	genCode(op, op1, op2, op3);
     }
 
     // utility method for filling in an operand.
