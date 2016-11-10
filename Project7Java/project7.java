@@ -63,12 +63,14 @@ varlist: ID COMMA varlist
 
 function: FUNCTION ID PARENL PARENR body
             {
+                //add label for new funtion
               ICode stmt = new ICode("NOP");
               stmt.addLabel($2.sval);
               stmt.emit();
             }
     | FUNCTION ID PARENL fplist PARENR
       {
+          //add label for new function
         ICode stmt = new ICode("NOP");
         stmt.addLabel($2.sval);
         stmt.emit();
