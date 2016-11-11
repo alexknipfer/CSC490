@@ -10,7 +10,7 @@ public class SymbolTable
 {
     private int _offset;   // current offset of end of table;
     private String _name;  // nsme of tsble
-    private LinkedList<Symbol> _symbols; // list of Smbols in table 
+    private LinkedList<Symbol> _symbols; // list of Smbols in table
 
     /**
      * constructor to build a new (empty) symbol table with given name
@@ -22,7 +22,7 @@ public class SymbolTable
 	_symbols = new LinkedList<Symbol>(); // symbol table should start empty
 	_offset=0;   // since empty, end offset is 0
     }
-    
+
     /**
      * add - put a new Symbol in this table
      *  @param s = the new Symbol
@@ -37,7 +37,7 @@ public class SymbolTable
 		_offset+=4;           // tble's offset is now 1 word bigger
 	    }
     }
-    
+
     /**
      * add - create and add a new SYmbool
      *  @param n the name of the new Symbol
@@ -63,10 +63,10 @@ public class SymbolTable
 		    return s;
 	    }
 
-	// if we get here, Symbol was not found, so return null 
+	// if we get here, Symbol was not found, so return null
 	return null;
     }
-    
+
     /**
      * toString - give String equivalent of entire table
      *   @return STring contaning the table

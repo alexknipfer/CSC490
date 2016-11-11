@@ -2,7 +2,7 @@
 static char yysccsid[] = "@(#)yaccpar	1.8 (Berkeley) 01/20/90";
 #endif
 #define YYBYACC 1
-#line 2 "project3.java"
+#line 2 "project7.java"
 import java.lang.Math;
 import java.io.*;
 import java.util.StringTokenizer;
@@ -222,14 +222,14 @@ YYSTYPE yylval;
 short yyss[YYSTACKSIZE];
 YYSTYPE yyvs[YYSTACKSIZE];
 #define yystacksize YYSTACKSIZE
-#line 165 "project3.java"
+#line 167 "project7.java"
 
 //##############################################################################
 
     public int stmtCount;
     public int funcCount;
 
-    public SymbolTable currTable;
+    //public SymbolTable currTable;
     public SymbolTable globalTable;
 
     private MyLexer yylexer;
@@ -322,9 +322,10 @@ public int yylex()
 public void setup(String fname)
 {
     yylexer = new MyLexer(fname);
-    stmtCount=0;
-    funcCount=0;
+    stmtCount = 0;
+    funcCount = 0;
 
+      //intialize gobal table
     globalTable = new SymbolTable("__GLOBAL__");
 }
 
@@ -336,7 +337,7 @@ public static void main(String args[])
  par.setup(args[0]);
  par.yyparse();
 }
-#line 340 "y.tab.c"
+#line 341 "y.tab.c"
 #define YYABORT goto yyabort
 #define YYACCEPT goto yyaccept
 #define YYERROR goto yyerrlab
@@ -477,7 +478,7 @@ yyreduce:
     switch (yyn)
     {
 case 1:
-#line 37 "project3.java"
+#line 37 "project7.java"
 {
     System.out.println("The program is correct, and contains:");
     System.out.printf("%5d statements\n",stmtCount);
@@ -485,11 +486,11 @@ case 1:
 }
 break;
 case 5:
-#line 49 "project3.java"
+#line 49 "project7.java"
 {funcCount++;}
 break;
 case 7:
-#line 56 "project3.java"
+#line 56 "project7.java"
 {
         /*LinkedList<String> vList = (LinkedList<String>) $3.obj;*/
         /*vList.add($1.sval);*/
@@ -497,66 +498,68 @@ case 7:
       }
 break;
 case 9:
-#line 65 "project3.java"
+#line 65 "project7.java"
 {
-              /*ICode stmt = new ICode();*/
-              /*stmt.addLabel($2.sval);*/
-              /*stmt.emit();*/
+                /*add label for new funtion*/
+              ICode stmt = new ICode("NOP");
+              stmt.addLabel(yyvsp[-3].sval);
+              stmt.emit();
             }
 break;
 case 10:
-#line 71 "project3.java"
+#line 72 "project7.java"
 {
-        /*ICode stmt = new ICode();*/
-        /*stmt.addLabel($2.sval);*/
-        /*stmt.emit();*/
-        currTable = new SymbolTable(yyvsp[-3].sval);
+          /*add label for new function*/
+        ICode stmt = new ICode("NOP");
+        stmt.addLabel(yyvsp[-3].sval);
+        stmt.emit();
+        /*currTable = new SymbolTable($2.sval);*/
       }
 break;
 case 11:
-#line 78 "project3.java"
+#line 80 "project7.java"
 {
-        System.out.println(currTable);
+        /*System.out.println(currTable);*/
       }
 break;
 case 18:
-#line 95 "project3.java"
+#line 97 "project7.java"
 {stmtCount++;}
 break;
 case 19:
-#line 96 "project3.java"
+#line 98 "project7.java"
 {stmtCount++;}
 break;
 case 20:
-#line 97 "project3.java"
+#line 99 "project7.java"
 {stmtCount++;}
 break;
 case 21:
-#line 98 "project3.java"
+#line 100 "project7.java"
 {stmtCount++;}
 break;
 case 28:
-#line 113 "project3.java"
+#line 115 "project7.java"
 {yyval.sval = yyvsp[0].sval;}
 break;
 case 29:
-#line 115 "project3.java"
+#line 117 "project7.java"
 {
-        String newTemp = ICode.genTemp();
-        String numberString = String.format("%d", yyvsp[0].ival);
-        ICode stmt = new ICode("MOV", numberString, newTemp);
-        stmt.emit();
-        currTable.add(newTemp, "int");
+        /*String newTemp = ICode.genTemp();*/
+        /*String numberString = String.format("%d", $1.ival);*/
+        /*ICode stmt = new ICode("MOV", numberString, newTemp);*/
+        /*stmt.emit();*/
+        /*currTable.add(newTemp, "int");*/
       }
 break;
 case 41:
-#line 144 "project3.java"
+#line 146 "project7.java"
 {
         /*ICode s = new ICode("Call" + $1.sval);*/
         /*s.emit();*/
       }
 break;
-#line 560 "y.tab.c"
+#line 563 "y.tab.c"
     }
     yyssp -= yym;
     yystate = *yyssp;

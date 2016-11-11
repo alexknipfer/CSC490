@@ -67,6 +67,7 @@ function: FUNCTION ID PARENL PARENR body
               ICode stmt = new ICode("NOP");
               stmt.addLabel($2.sval);
               stmt.emit();
+              currTable = new SymbolTable($2.sval);
             }
     | FUNCTION ID PARENL fplist PARENR
       {
@@ -75,6 +76,7 @@ function: FUNCTION ID PARENL PARENR body
         stmt.addLabel($2.sval);
         stmt.emit();
         currTable = new SymbolTable($2.sval);
+        currTable.add($4.sval, "int");
       }
       body
       {
@@ -263,9 +265,10 @@ public int yylex()
 public void setup(String fname)
 {
     yylexer = new MyLexer(fname);
-    stmtCount=0;
-    funcCount=0;
+    stmtCount = 0;
+    funcCount = 0;
 
+      //intialize gobal table
     globalTable = new SymbolTable("__GLOBAL__");
 }
 

@@ -359,7 +359,7 @@ final static String yyrule[] = {
 "elsepart :",
 };
 
-//#line 165 "project7.java"
+//#line 169 "project7.java"
 
 //##############################################################################
 
@@ -459,9 +459,10 @@ public int yylex()
 public void setup(String fname)
 {
     yylexer = new MyLexer(fname);
-    stmtCount=0;
-    funcCount=0;
+    stmtCount = 0;
+    funcCount = 0;
 
+      //intialize gobal table
     globalTable = new SymbolTable("__GLOBAL__");
 }
 
@@ -473,7 +474,7 @@ public static void main(String args[])
  par.setup(args[0]);
  par.yyparse();
 }
-//#line 405 "Parser.java"
+//#line 406 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -650,48 +651,52 @@ break;
 case 9:
 //#line 65 "project7.java"
 {
+                /*add label for new funtion*/
               ICode stmt = new ICode("NOP");
               stmt.addLabel(val_peek(3).sval);
               stmt.emit();
+              currTable = new SymbolTable(val_peek(3).sval);
             }
 break;
 case 10:
-//#line 71 "project7.java"
+//#line 73 "project7.java"
 {
+          /*add label for new function*/
         ICode stmt = new ICode("NOP");
         stmt.addLabel(val_peek(3).sval);
         stmt.emit();
         currTable = new SymbolTable(val_peek(3).sval);
+        currTable.add(val_peek(1).sval, "int");
       }
 break;
 case 11:
-//#line 78 "project7.java"
+//#line 82 "project7.java"
 {
         System.out.println(currTable);
       }
 break;
 case 18:
-//#line 95 "project7.java"
+//#line 99 "project7.java"
 {stmtCount++;}
 break;
 case 19:
-//#line 96 "project7.java"
+//#line 100 "project7.java"
 {stmtCount++;}
 break;
 case 20:
-//#line 97 "project7.java"
+//#line 101 "project7.java"
 {stmtCount++;}
 break;
 case 21:
-//#line 98 "project7.java"
+//#line 102 "project7.java"
 {stmtCount++;}
 break;
 case 28:
-//#line 113 "project7.java"
+//#line 117 "project7.java"
 {yyval.sval = val_peek(0).sval;}
 break;
 case 29:
-//#line 115 "project7.java"
+//#line 119 "project7.java"
 {
         String newTemp = ICode.genTemp();
         String numberString = String.format("%d", val_peek(0).ival);
@@ -701,13 +706,13 @@ case 29:
       }
 break;
 case 41:
-//#line 144 "project7.java"
+//#line 148 "project7.java"
 {
         /*ICode s = new ICode("Call" + $1.sval);*/
         /*s.emit();*/
       }
 break;
-//#line 634 "Parser.java"
+//#line 639 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
