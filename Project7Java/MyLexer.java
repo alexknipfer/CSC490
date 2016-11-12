@@ -1,8 +1,8 @@
 import java.io.*;
 
 /**
- *MyLexer - provides a nextToken method that returns a token 
- *          based on an underlying DFA 
+ *MyLexer - provides a nextToken method that returns a token
+ *          based on an underlying DFA
  * @author S. Blythe
  * @version 8/2016
  */
@@ -37,60 +37,60 @@ public class MyLexer
 		//id's
 		lexer.setTransition(0,2,(char) c);
 		lexer.setTransition(2,2,(char) c);
-	    }  
+	    }
 
 	for(int c= (int) 'A'; c<= (int) 'Z'; c++)
 	    {
 		//id's
 		lexer.setTransition(0,2,(char) c);
 		lexer.setTransition(2,2,(char) c);
-	    }  
+	    }
 
 
 	for(int c=0; c<300; c++) // 300 is well beyond typable character limit
 	    {
-		//strings
-		lexer.setTransition(20,20, (char)c);
+    		//strings
+    		lexer.setTransition(20,20, (char)c);
 	    }
 
-	lexer.setTransition(0,3, '&'); // AND
+    	lexer.setTransition(0,3, '&'); // AND
 
-	lexer.setTransition(0,4, '<'); // RELOP (LT)
-	lexer.setTransition(4,5, '-'); // ASSIGNOP
+    	lexer.setTransition(0,4, '<'); // RELOP (LT)
+    	lexer.setTransition(4,5, '-'); // ASSIGNOP
 
-	lexer.setTransition(0,6, ','); // COMMA
+    	lexer.setTransition(0,6, ','); // COMMA
 
-	lexer.setTransition(0,7, '{'); // CURLL
+    	lexer.setTransition(0,7, '{'); // CURLL
 
-	lexer.setTransition(0,8, '}'); // CURLR
+    	lexer.setTransition(0,8, '}'); // CURLR
 
-	lexer.setTransition(0,9, '*'); // MULOP
-	lexer.setTransition(0,9, '/'); // MULOP
+    	lexer.setTransition(0,9, '*'); // MULOP
+    	lexer.setTransition(0,9, '/'); // MULOP
 
-	lexer.setTransition(0,10, '=');
-	lexer.setTransition(10,11,'=');// RELOP (EQ)
-	lexer.setTransition(4,11, '=');// RELOP (LTE)
-	lexer.setTransition(0,12, '>');// RELOP (GT) 
-	lexer.setTransition(12,11,'=');// RELOP (GTE)
-	lexer.setTransition(0,13, '!');// NOT
-	lexer.setTransition(13,11,'=');// RELOP (NEQ)
-      
-	lexer.setTransition(0,14, '-');// ADDOP
-	lexer.setTransition(0,14, '+');// ADDOP
+    	lexer.setTransition(0,10, '=');
+    	lexer.setTransition(10,11,'=');// RELOP (EQ)
+    	lexer.setTransition(4,11, '=');// RELOP (LTE)
+    	lexer.setTransition(0,12, '>');// RELOP (GT)
+    	lexer.setTransition(12,11,'=');// RELOP (GTE)
+    	lexer.setTransition(0,13, '!');// NOT
+    	lexer.setTransition(13,11,'=');// RELOP (NEQ)
 
-	lexer.setTransition(0,15, '|');// OR
+    	lexer.setTransition(0,14, '-');// ADDOP
+    	lexer.setTransition(0,14, '+');// ADDOP
 
-	lexer.setTransition(0,16, '(');// PARENL
-	lexer.setTransition(0,17, ')');// PARENR
+    	lexer.setTransition(0,15, '|');// OR
 
-	lexer.setTransition(0,18, ';');// SEMICOLON
+    	lexer.setTransition(0,16, '(');// PARENL
+    	lexer.setTransition(0,17, ')');// PARENR
 
-	lexer.setTransition(0,20, '"');
-	lexer.setTransition(20,19,'"'); // STRING
+    	lexer.setTransition(0,18, ';');// SEMICOLON
 
-	// mark final states
-	lexer.markFinal(1); // integer
-	lexer.markFinal(2); // id (might be  keyword)
+    	lexer.setTransition(0,20, '"');
+    	lexer.setTransition(20,19,'"'); // STRING
+
+    	// mark final states
+    	lexer.markFinal(1); // integer
+    	lexer.markFinal(2); // id (might be  keyword)
     }
 
 
@@ -110,12 +110,12 @@ public class MyLexer
 	while(Character.isWhitespace(ch))
 	    {
 		// update line number as appropriate ...
-		if (ch=='\n') 
+		if (ch=='\n')
 		    lineNo++;
 
-		found=true; // we've found some whitespace if we got here. 
+		found=true; // we've found some whitespace if we got here.
 
-		// out of input? go back to whomever called us! 
+		// out of input? go back to whomever called us!
 		if (!br.hasNext())
 		    return true;
 
@@ -134,25 +134,25 @@ public class MyLexer
     {
 	// no input left? then there's nothing to skip.
 	if (!br.hasNext())
-	    return false;
+	  return false;
 
-	boolean found=false;    // we have not (yet) found a comment ...
+  	boolean found=false;    // we have not (yet) found a comment ...
 
-	char ch=br.readChar(); // prime the search with the next character
-	
-	// if the char indicates a comment
-	if(ch=='#')
-	    {
-		while(ch!='\n') ch=br.readChar(); //read through to end of line
-		lineNo++; // one more line seen ...
-		return true; //yep, we read another comment
-	    }
-	else
-	    {
-		br.ungetChar(ch); // restore character for other consumption
-		return false;     // dod not see a comment
-	    }
+  	char ch=br.readChar(); // prime the search with the next character
+
+  	// if the char indicates a comment
+  	if(ch=='#')
+    {
+  		while(ch!='\n') ch=br.readChar(); //read through to end of line
+  		lineNo++; // one more line seen ...
+  		return true; //yep, we read another comment
     }
+    else
+    {
+  	   br.ungetChar(ch); // restore character for other consumption
+  	    return false;     // dod not see a comment
+    }
+  }
 
 
     /**
@@ -161,7 +161,7 @@ public class MyLexer
      */
     public MyLexer(String fname)
     {
-	lineNo=0; // we're on the first line 
+	lineNo=0; // we're on the first line
 
 
 	try
@@ -222,10 +222,10 @@ public class MyLexer
 	// we did get one extra character, so put it back ...
 	br.ungetChar(ch);
 
-	// build Token out of state number and token string (and line number). 
+	// build Token out of state number and token string (and line number).
 	Token t =new Token(prevState, token, lineNo);
 
-	return t;  // return the token we built. 
+	return t;  // return the token we built.
     }
 
 }

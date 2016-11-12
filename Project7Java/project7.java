@@ -1,6 +1,7 @@
 %{
 import java.lang.Math;
 import java.io.*;
+import java.util.*;
 import java.util.StringTokenizer;
 %}
 
@@ -117,11 +118,7 @@ factor: term
 term: ID {$$.sval = $1.sval;}
     | NUMBER
       {
-        String newTemp = ICode.genTemp();
-        String numberString = String.format("%d", $1.ival);
-        ICode stmt = new ICode("MOV", numberString, newTemp);
-        stmt.emit();
-        currTable.add(newTemp, "int");
+        //isNumber = true;
       }
     | PARENL expr PARENR
     | ADDOP term
@@ -141,6 +138,32 @@ bneg: bterm
     ;
 
 bterm: expr RELOP expr
+      {
+        String temp, temp2;
+          //check if value is an integer
+        if($1.sval == null){
+          temp = String.format("%d", $1.ival);
+        }
+        else{
+          temp = $1.sval;
+        }
+
+          //check if value is an integer
+        if($3.sval == null){
+          temp2 = String.format("%d", $3.ival);
+        }
+        else{
+          temp2 = $3.sval;
+        }
+
+        if($2.sval.equals("<")){
+          String newTemp = ICode.genTemp();
+          ICode lessThan = new ICode("LT", temp, temp2, newTemp);
+          lessThan.emit();
+          ICode compare = new ICode("CMP", newTemp, "0");
+          compare.emit();
+        }
+      }
     | PARENL bterm PARENR
 
 
@@ -191,11 +214,11 @@ public void yyerror(String s)
 
 public int yylex()
 {
-    try
+  try
 	{
 	    t = yylexer.nextToken();
 	}
-    catch (Exception e)
+  catch (Exception e)
 	{
 	    System.err.println("yylex unable to aquire token");
 	    return -1;
@@ -204,59 +227,60 @@ public int yylex()
     if (t==null)
 	return -1;
 
-    String tVal = t.getValue();
-    switch(t.getType())
+  String tVal = t.getValue();
+
+  switch(t.getType())
 	{
-	case Token.NUMBER:
-	    yylval = new ParserVal(Integer.parseInt(tVal));
-	    return NUMBER;
-	case Token.ADDOP:
-	    yylval = new ParserVal(tVal);
-	    return ADDOP;
-	case Token.MULOP:
-	    yylval = new ParserVal(tVal);
-	    return MULOP;
-	case Token.RELOP:
-	    yylval = new ParserVal(tVal);
-	    return RELOP;
-	case Token.ID:
-	    yylval = new ParserVal(tVal);
-	    return ID;
-	case Token.PARENL:
-	    return PARENL;
-	case Token.PARENR:
-	    return PARENR;
-	case Token.COMMA:
-	    return COMMA;
-	case Token.ASSIGNOP:
-	    return ASSIGNOP;
-	case Token.SEMICOLON:
-	    return SEMICOLON;
-	case Token.IF:
-	    return IF;
-	case Token.WHILE:
-	    return WHILE;
-	case Token.ELSE:
-	    return ELSE;
-	case Token.CURLL:
-	    return CURLL;
-	case Token.CURLR:
-	    return CURLR;
-	case Token.VAR:
-	    return VAR;
-	case Token.FUNCTION:
-	    return FUNCTION;
-	case Token.OR:
-	    return OR;
-	case Token.AND:
-	    return AND;
-	case Token.NOT:
-	    return NOT;
-	case Token.STRING:
-	    yylval = new ParserVal(tVal);
-	    return STRING;
-	default:
-	    return -1;
+  	case Token.NUMBER:
+  	    yylval = new ParserVal(Integer.parseInt(tVal));
+  	    return NUMBER;
+  	case Token.ADDOP:
+  	    yylval = new ParserVal(tVal);
+  	    return ADDOP;
+  	case Token.MULOP:
+  	    yylval = new ParserVal(tVal);
+  	    return MULOP;
+  	case Token.RELOP:
+  	    yylval = new ParserVal(tVal);
+  	    return RELOP;
+  	case Token.ID:
+  	    yylval = new ParserVal(tVal);
+  	    return ID;
+  	case Token.PARENL:
+  	    return PARENL;
+  	case Token.PARENR:
+  	    return PARENR;
+  	case Token.COMMA:
+  	    return COMMA;
+  	case Token.ASSIGNOP:
+  	    return ASSIGNOP;
+  	case Token.SEMICOLON:
+  	    return SEMICOLON;
+  	case Token.IF:
+  	    return IF;
+  	case Token.WHILE:
+  	    return WHILE;
+  	case Token.ELSE:
+  	    return ELSE;
+  	case Token.CURLL:
+  	    return CURLL;
+  	case Token.CURLR:
+  	    return CURLR;
+  	case Token.VAR:
+  	    return VAR;
+  	case Token.FUNCTION:
+  	    return FUNCTION;
+  	case Token.OR:
+  	    return OR;
+  	case Token.AND:
+  	    return AND;
+  	case Token.NOT:
+  	    return NOT;
+  	case Token.STRING:
+  	    yylval = new ParserVal(tVal);
+  	    return STRING;
+  	default:
+  	    return -1;
 	}
 }
 

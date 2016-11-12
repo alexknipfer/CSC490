@@ -57,14 +57,14 @@ public class SymbolTable
     {
 	// go through ech Symbol in the table
 	for (Symbol s: _symbols)
-	    {
+  {
 		// if it matches the search parameter (name), return it
 		if (s.getName().equals(vname))
-		    return s;
-	    }
+      return s;
+  }
 
-	// if we get here, Symbol was not found, so return null
-	return null;
+    	// if we get here, Symbol was not found, so return null
+    	return null;
     }
 
     /**
@@ -73,14 +73,14 @@ public class SymbolTable
      */
     public String toString()
     {
-	// add a header, including table name
-	String ans = "#============ " + _name + " =============\n";
-	// add each symbol to string
-	for(Symbol s:_symbols)
-	    {
-		ans+="#"+s+"\n";
-	    }
-	ans +="#===================================================\n";
-	return ans;
+    	// add a header, including table name
+    	String ans = "#============ " + _name + " =============\n";
+    	// add each symbol to string
+    	for(Symbol s:_symbols)
+    	{
+    		ans+="#"+s+"\n";
+    	}
+	    ans +="#===================================================\n";
+	    return ans;
     }
 }

@@ -19,8 +19,9 @@
 //#line 2 "project7.java"
 import java.lang.Math;
 import java.io.*;
+import java.util.*;
 import java.util.StringTokenizer;
-//#line 21 "Parser.java"
+//#line 22 "Parser.java"
 
 
 
@@ -363,7 +364,7 @@ final static String yyrule[] = {
 "elsepart :",
 };
 
-//#line 169 "project7.java"
+//#line 192 "project7.java"
 
 //##############################################################################
 
@@ -389,11 +390,11 @@ public void yyerror(String s)
 
 public int yylex()
 {
-    try
+  try
 	{
 	    t = yylexer.nextToken();
 	}
-    catch (Exception e)
+  catch (Exception e)
 	{
 	    System.err.println("yylex unable to aquire token");
 	    return -1;
@@ -402,59 +403,60 @@ public int yylex()
     if (t==null)
 	return -1;
 
-    String tVal = t.getValue();
-    switch(t.getType())
+  String tVal = t.getValue();
+
+  switch(t.getType())
 	{
-	case Token.NUMBER:
-	    yylval = new ParserVal(Integer.parseInt(tVal));
-	    return NUMBER;
-	case Token.ADDOP:
-	    yylval = new ParserVal(tVal);
-	    return ADDOP;
-	case Token.MULOP:
-	    yylval = new ParserVal(tVal);
-	    return MULOP;
-	case Token.RELOP:
-	    yylval = new ParserVal(tVal);
-	    return RELOP;
-	case Token.ID:
-	    yylval = new ParserVal(tVal);
-	    return ID;
-	case Token.PARENL:
-	    return PARENL;
-	case Token.PARENR:
-	    return PARENR;
-	case Token.COMMA:
-	    return COMMA;
-	case Token.ASSIGNOP:
-	    return ASSIGNOP;
-	case Token.SEMICOLON:
-	    return SEMICOLON;
-	case Token.IF:
-	    return IF;
-	case Token.WHILE:
-	    return WHILE;
-	case Token.ELSE:
-	    return ELSE;
-	case Token.CURLL:
-	    return CURLL;
-	case Token.CURLR:
-	    return CURLR;
-	case Token.VAR:
-	    return VAR;
-	case Token.FUNCTION:
-	    return FUNCTION;
-	case Token.OR:
-	    return OR;
-	case Token.AND:
-	    return AND;
-	case Token.NOT:
-	    return NOT;
-	case Token.STRING:
-	    yylval = new ParserVal(tVal);
-	    return STRING;
-	default:
-	    return -1;
+  	case Token.NUMBER:
+  	    yylval = new ParserVal(Integer.parseInt(tVal));
+  	    return NUMBER;
+  	case Token.ADDOP:
+  	    yylval = new ParserVal(tVal);
+  	    return ADDOP;
+  	case Token.MULOP:
+  	    yylval = new ParserVal(tVal);
+  	    return MULOP;
+  	case Token.RELOP:
+  	    yylval = new ParserVal(tVal);
+  	    return RELOP;
+  	case Token.ID:
+  	    yylval = new ParserVal(tVal);
+  	    return ID;
+  	case Token.PARENL:
+  	    return PARENL;
+  	case Token.PARENR:
+  	    return PARENR;
+  	case Token.COMMA:
+  	    return COMMA;
+  	case Token.ASSIGNOP:
+  	    return ASSIGNOP;
+  	case Token.SEMICOLON:
+  	    return SEMICOLON;
+  	case Token.IF:
+  	    return IF;
+  	case Token.WHILE:
+  	    return WHILE;
+  	case Token.ELSE:
+  	    return ELSE;
+  	case Token.CURLL:
+  	    return CURLL;
+  	case Token.CURLR:
+  	    return CURLR;
+  	case Token.VAR:
+  	    return VAR;
+  	case Token.FUNCTION:
+  	    return FUNCTION;
+  	case Token.OR:
+  	    return OR;
+  	case Token.AND:
+  	    return AND;
+  	case Token.NOT:
+  	    return NOT;
+  	case Token.STRING:
+  	    yylval = new ParserVal(tVal);
+  	    return STRING;
+  	default:
+  	    return -1;
 	}
 }
 
@@ -478,7 +480,7 @@ public static void main(String args[])
  par.setup(args[0]);
  par.yyparse();
 }
-//#line 410 "Parser.java"
+//#line 412 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -633,7 +635,7 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 1:
-//#line 37 "project7.java"
+//#line 38 "project7.java"
 {
     System.out.println("The program is correct, and contains:");
     System.out.printf("%5d statements\n",stmtCount);
@@ -641,11 +643,11 @@ case 1:
 }
 break;
 case 5:
-//#line 49 "project7.java"
+//#line 50 "project7.java"
 {funcCount++;}
 break;
 case 7:
-//#line 56 "project7.java"
+//#line 57 "project7.java"
 {
         /*LinkedList<String> vList = (LinkedList<String>) $3.obj;*/
         /*vList.add($1.sval);*/
@@ -653,7 +655,7 @@ case 7:
       }
 break;
 case 9:
-//#line 65 "project7.java"
+//#line 66 "project7.java"
 {
                 /*add label for new funtion*/
               ICode stmt = new ICode("NOP");
@@ -663,11 +665,11 @@ case 9:
             }
 break;
 case 10:
-//#line 72 "project7.java"
+//#line 73 "project7.java"
 {currTable = new SymbolTable(val_peek(1).sval);}
 break;
 case 11:
-//#line 73 "project7.java"
+//#line 74 "project7.java"
 {
           /*add label for new function*/
         ICode stmt = new ICode("NOP");
@@ -678,57 +680,82 @@ case 11:
       }
 break;
 case 12:
-//#line 82 "project7.java"
+//#line 83 "project7.java"
 {
         System.out.println(currTable);
       }
 break;
 case 14:
-//#line 90 "project7.java"
+//#line 91 "project7.java"
 {currTable.add(val_peek(1).sval, "int");}
 break;
 case 16:
-//#line 91 "project7.java"
+//#line 92 "project7.java"
 {currTable.add(val_peek(0).sval, "int");}
 break;
 case 20:
-//#line 99 "project7.java"
-{stmtCount++;}
-break;
-case 21:
 //#line 100 "project7.java"
 {stmtCount++;}
 break;
-case 22:
+case 21:
 //#line 101 "project7.java"
 {stmtCount++;}
 break;
-case 23:
+case 22:
 //#line 102 "project7.java"
 {stmtCount++;}
 break;
+case 23:
+//#line 103 "project7.java"
+{stmtCount++;}
+break;
 case 30:
-//#line 117 "project7.java"
+//#line 118 "project7.java"
 {yyval.sval = val_peek(0).sval;}
 break;
 case 31:
-//#line 119 "project7.java"
+//#line 120 "project7.java"
 {
-        String newTemp = ICode.genTemp();
-        String numberString = String.format("%d", val_peek(0).ival);
-        ICode stmt = new ICode("MOV", numberString, newTemp);
-        stmt.emit();
-        currTable.add(newTemp, "int");
+        /*isNumber = true;*/
+      }
+break;
+case 41:
+//#line 141 "project7.java"
+{
+        String temp, temp2;
+          /*check if value is an integer*/
+        if(val_peek(2).sval == null){
+          temp = String.format("%d", val_peek(2).ival);
+        }
+        else{
+          temp = val_peek(2).sval;
+        }
+
+          /*check if value is an integer*/
+        if(val_peek(0).sval == null){
+          temp2 = String.format("%d", val_peek(0).ival);
+        }
+        else{
+          temp2 = val_peek(0).sval;
+        }
+
+        if(val_peek(1).sval.equals("<")){
+          String newTemp = ICode.genTemp();
+          ICode lessThan = new ICode("LT", temp, temp2, newTemp);
+          lessThan.emit();
+          ICode compare = new ICode("CMP", newTemp, "0");
+          compare.emit();
+        }
       }
 break;
 case 43:
-//#line 148 "project7.java"
+//#line 171 "project7.java"
 {
         /*ICode s = new ICode("Call" + $1.sval);*/
         /*s.emit();*/
       }
 break;
-//#line 655 "Parser.java"
+//#line 682 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
