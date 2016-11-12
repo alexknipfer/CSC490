@@ -69,14 +69,14 @@ function: FUNCTION ID PARENL PARENR body
               stmt.emit();
               currTable = new SymbolTable($2.sval);
             }
-    | FUNCTION ID PARENL fplist PARENR
+    | FUNCTION ID PARENL {currTable = new SymbolTable($2.sval);} fplist PARENR
       {
           //add label for new function
         ICode stmt = new ICode("NOP");
         stmt.addLabel($2.sval);
         stmt.emit();
-        currTable = new SymbolTable($2.sval);
-        currTable.add($4.sval, "int");
+        //currTable = new SymbolTable($2.sval);
+        //currTable.add($4.sval, "int");
       }
       body
       {
@@ -88,7 +88,7 @@ body: CURLL bodylist CURLR
     ;
 
 fplist: ID COMMA fplist
-    | ID
+    | ID {currTable.add($1.sval, "int");}
     ;
 
 bodylist: vardecl bodylist
