@@ -87,7 +87,7 @@ function: FUNCTION ID PARENL PARENR body
 body: CURLL bodylist CURLR
     ;
 
-fplist: ID COMMA fplist
+fplist: ID COMMA {currTable.add($1.sval, "int");} fplist
     | ID {currTable.add($1.sval, "int");}
     ;
 
