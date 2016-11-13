@@ -163,6 +163,30 @@ bterm: expr RELOP expr
           ICode compare = new ICode("CMP", newTemp, "0");
           compare.emit();
         }
+
+        if($2.sval.equals(">")){
+          String newTemp = ICode.genTemp();
+          ICode greaterThan = new ICode("GT", temp, temp2, newTemp);
+          greaterThan.emit();
+          ICode compare = new ICode("CMP", newTemp, "0");
+          compare.emit();
+        }
+
+        if($2.sval.equals("<=")){
+          String newTemp = ICode.genTemp();
+          ICode lessThanEqual = new ICode("LE", temp, temp2, newTemp);
+          lessThanEqual.emit();
+          ICode compare = new ICode("CMP", newTemp, "0");
+          compare.emit();
+        }
+
+        if($2.sval.equals(">=")){
+          String newTemp = ICode.genTemp();
+          ICode greaterThanEqual = new ICode("GE", temp, temp2, newTemp);
+          greaterThanEqual.emit();
+          ICode compare = new ICode("CMP", newTemp, "0");
+          compare.emit();
+        }
       }
     | PARENL bterm PARENR
 

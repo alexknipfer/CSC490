@@ -364,7 +364,7 @@ final static String yyrule[] = {
 "elsepart :",
 };
 
-//#line 192 "project7.java"
+//#line 200 "project7.java"
 
 //##############################################################################
 
@@ -746,16 +746,24 @@ case 41:
           ICode compare = new ICode("CMP", newTemp, "0");
           compare.emit();
         }
+
+        if(val_peek(1).sval.equals(">")){
+          String newTemp = ICode.genTemp();
+          ICode greaterThan = new ICode("GT", temp, temp2, newTemp);
+          greaterThan.emit();
+          ICode compare = new ICode("CMP", newTemp, "0");
+          compare.emit();
+        }
       }
 break;
 case 43:
-//#line 171 "project7.java"
+//#line 179 "project7.java"
 {
         /*ICode s = new ICode("Call" + $1.sval);*/
         /*s.emit();*/
       }
 break;
-//#line 682 "Parser.java"
+//#line 690 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
