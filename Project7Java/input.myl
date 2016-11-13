@@ -4,5 +4,6 @@ function fibo (n)
   var ans1,ans2;
 
   if (n<2)                  # stmt 1
+    if(n<0)
     fibo<-1;                # stmt 2
 }

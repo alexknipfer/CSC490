@@ -364,7 +364,7 @@ final static String yyrule[] = {
 "elsepart :",
 };
 
-//#line 200 "project7.java"
+//#line 210 "project7.java"
 
 //##############################################################################
 
@@ -675,54 +675,54 @@ case 11:
         ICode stmt = new ICode("NOP");
         stmt.addLabel(val_peek(4).sval);
         stmt.emit();
-        /*currTable = new SymbolTable($2.sval);*/
-        /*currTable.add($4.sval, "int");*/
       }
 break;
 case 12:
-//#line 83 "project7.java"
+//#line 81 "project7.java"
 {
         System.out.println(currTable);
       }
 break;
 case 14:
-//#line 91 "project7.java"
+//#line 89 "project7.java"
 {currTable.add(val_peek(1).sval, "int");}
 break;
 case 16:
-//#line 92 "project7.java"
+//#line 90 "project7.java"
 {currTable.add(val_peek(0).sval, "int");}
 break;
 case 20:
-//#line 100 "project7.java"
+//#line 98 "project7.java"
 {stmtCount++;}
 break;
 case 21:
-//#line 101 "project7.java"
+//#line 99 "project7.java"
 {stmtCount++;}
 break;
 case 22:
-//#line 102 "project7.java"
+//#line 100 "project7.java"
 {stmtCount++;}
 break;
 case 23:
-//#line 103 "project7.java"
+//#line 101 "project7.java"
 {stmtCount++;}
 break;
 case 30:
-//#line 118 "project7.java"
+//#line 116 "project7.java"
 {yyval.sval = val_peek(0).sval;}
 break;
 case 31:
-//#line 120 "project7.java"
+//#line 118 "project7.java"
 {
         /*isNumber = true;*/
       }
 break;
 case 41:
-//#line 141 "project7.java"
+//#line 139 "project7.java"
 {
         String temp, temp2;
+        String newTemp = ICode.genTemp();
+        currTable.add(newTemp, "int");
           /*check if value is an integer*/
         if(val_peek(2).sval == null){
           temp = String.format("%d", val_peek(2).ival);
@@ -740,30 +740,40 @@ case 41:
         }
 
         if(val_peek(1).sval.equals("<")){
-          String newTemp = ICode.genTemp();
           ICode lessThan = new ICode("LT", temp, temp2, newTemp);
           lessThan.emit();
-          ICode compare = new ICode("CMP", newTemp, "0");
-          compare.emit();
         }
 
-        if(val_peek(1).sval.equals(">")){
-          String newTemp = ICode.genTemp();
+        else if(val_peek(1).sval.equals(">")){
           ICode greaterThan = new ICode("GT", temp, temp2, newTemp);
           greaterThan.emit();
-          ICode compare = new ICode("CMP", newTemp, "0");
-          compare.emit();
         }
+
+        else if(val_peek(1).sval.equals("<=")){
+          ICode lessThanEqual = new ICode("LE", temp, temp2, newTemp);
+          lessThanEqual.emit();
+        }
+
+        else if(val_peek(1).sval.equals(">=")){
+          ICode greaterThanEqual = new ICode("GE", temp, temp2, newTemp);
+          greaterThanEqual.emit();
+        }
+
+        ICode compare = new ICode("CMP", newTemp, "0");
+        compare.emit();
+        String newLabel = ICode.genLabel();
+        ICode branchOnEqual = new ICode("BE", newLabel);
+        branchOnEqual.emit();
       }
 break;
 case 43:
-//#line 179 "project7.java"
+//#line 189 "project7.java"
 {
         /*ICode s = new ICode("Call" + $1.sval);*/
         /*s.emit();*/
       }
 break;
-//#line 690 "Parser.java"
+//#line 700 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

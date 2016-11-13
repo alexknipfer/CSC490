@@ -76,8 +76,6 @@ function: FUNCTION ID PARENL PARENR body
         ICode stmt = new ICode("NOP");
         stmt.addLabel($2.sval);
         stmt.emit();
-        //currTable = new SymbolTable($2.sval);
-        //currTable.add($4.sval, "int");
       }
       body
       {
@@ -140,6 +138,8 @@ bneg: bterm
 bterm: expr RELOP expr
       {
         String temp, temp2;
+        String newTemp = ICode.genTemp();
+        currTable.add(newTemp, "int");
           //check if value is an integer
         if($1.sval == null){
           temp = String.format("%d", $1.ival);
@@ -157,36 +157,30 @@ bterm: expr RELOP expr
         }
 
         if($2.sval.equals("<")){
-          String newTemp = ICode.genTemp();
           ICode lessThan = new ICode("LT", temp, temp2, newTemp);
           lessThan.emit();
-          ICode compare = new ICode("CMP", newTemp, "0");
-          compare.emit();
         }
 
-        if($2.sval.equals(">")){
-          String newTemp = ICode.genTemp();
+        else if($2.sval.equals(">")){
           ICode greaterThan = new ICode("GT", temp, temp2, newTemp);
           greaterThan.emit();
-          ICode compare = new ICode("CMP", newTemp, "0");
-          compare.emit();
         }
 
-        if($2.sval.equals("<=")){
-          String newTemp = ICode.genTemp();
+        else if($2.sval.equals("<=")){
           ICode lessThanEqual = new ICode("LE", temp, temp2, newTemp);
           lessThanEqual.emit();
-          ICode compare = new ICode("CMP", newTemp, "0");
-          compare.emit();
         }
 
-        if($2.sval.equals(">=")){
-          String newTemp = ICode.genTemp();
+        else if($2.sval.equals(">=")){
           ICode greaterThanEqual = new ICode("GE", temp, temp2, newTemp);
           greaterThanEqual.emit();
-          ICode compare = new ICode("CMP", newTemp, "0");
-          compare.emit();
         }
+
+        ICode compare = new ICode("CMP", newTemp, "0");
+        compare.emit();
+        String newLabel = ICode.genLabel();
+        ICode branchOnEqual = new ICode("BE", newLabel);
+        branchOnEqual.emit();
       }
     | PARENL bterm PARENR
 
