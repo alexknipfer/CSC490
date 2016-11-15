@@ -116,9 +116,10 @@ factor: term
 term: ID {$$.sval = $1.sval;}
     | NUMBER
       {
-        //isNumber = true;
+        String numberString = String.format("%d", $1.ival);
+        $$.sval = numberString;
       }
-    | PARENL expr PARENR
+    | PARENL expr PARENR {$$.sval = $2.sval;}
     | ADDOP term
     | fcall
     ;
@@ -141,39 +142,29 @@ bterm: expr RELOP expr
         String newTemp = ICode.genTemp();
         currTable.add(newTemp, "int");
           //check if value is an integer
-        if($1.sval == null){
-          temp = String.format("%d", $1.ival);
-        }
-        else{
-          temp = $1.sval;
-        }
-
-          //check if value is an integer
-        if($3.sval == null){
-          temp2 = String.format("%d", $3.ival);
-        }
-        else{
-          temp2 = $3.sval;
-        }
-
         if($2.sval.equals("<")){
-          ICode lessThan = new ICode("LT", temp, temp2, newTemp);
+          ICode lessThan = new ICode("LT", $1.sval, $3.sval, newTemp);
           lessThan.emit();
         }
 
         else if($2.sval.equals(">")){
-          ICode greaterThan = new ICode("GT", temp, temp2, newTemp);
+          ICode greaterThan = new ICode("GT", $1.sval, $3.sval, newTemp);
           greaterThan.emit();
         }
 
         else if($2.sval.equals("<=")){
-          ICode lessThanEqual = new ICode("LE", temp, temp2, newTemp);
+          ICode lessThanEqual = new ICode("LE", $1.sval, $3.sval, newTemp);
           lessThanEqual.emit();
         }
 
         else if($2.sval.equals(">=")){
-          ICode greaterThanEqual = new ICode("GE", temp, temp2, newTemp);
+          ICode greaterThanEqual = new ICode("GE", $1.sval, $3.sval, newTemp);
           greaterThanEqual.emit();
+        }
+
+        else if($2.sval.equals("==")){
+          ICode equalTo = new ICode("EQ", $1.sval, $3.sval, newTemp);
+          equalTo.emit();
         }
 
         ICode compare = new ICode("CMP", newTemp, "0");
@@ -199,7 +190,34 @@ aplist:expr COMMA aplist
     ;
 
 
-while: WHILE PARENL bexpr PARENR stmt
+while: WHILE
+      {
+        String topLabel = ICode.genLabel();
+        ICode topStatement = new ICode("NOP");
+        topStatement.addLabel(topLabel);
+        topStatement.emit();
+        whileLabelStack.push(topLabel);
+      }
+      PARENL bexpr PARENR
+      {
+        //ICode cmpPart = new ICode("CMP", $4.sval, "0");
+        ICode cmpPart = new ICode("CMP", "TEMP_FOR_BEXPR", "0");
+        cmpPart.emit();
+        String outLabel = ICode.genLabel();
+        ICode beqPart = new ICode("BEQ", outLabel);
+        beqPart.emit();
+        whileLabelStack.push(outLabel);
+      }
+      stmt
+      {
+        String outLabel = whileLabelStack.pop();
+        String topLabel = whileLabelStack.pop();
+        ICode backToTop = new ICode("BA", topLabel);
+        backToTop.emit();
+        ICode whileOut = new ICode("NOP");
+        whileOut.addLabel(outLabel);
+        whileOut.emit();
+      }
     ;
 
 if: IF PARENL bexpr PARENR stmt elsepart
@@ -215,6 +233,8 @@ elsepart: ELSE stmt | /*Epsilon*/
 
     public SymbolTable currTable;
     public SymbolTable globalTable;
+
+    public LinkedList<String> whileLabelStack;
 
     private MyLexer yylexer;
     private Token t;
@@ -312,6 +332,7 @@ public void setup(String fname)
 
       //intialize gobal table
     globalTable = new SymbolTable("__GLOBAL__");
+    whileLabelStack = new LinkedList<String>();
 }
 
 //##############################################################################
