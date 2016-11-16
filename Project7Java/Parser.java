@@ -366,7 +366,7 @@ final static String yyrule[] = {
 "elsepart :",
 };
 
-//#line 228 "project7.java"
+//#line 234 "project7.java"
 
 //##############################################################################
 
@@ -769,12 +769,21 @@ break;
 case 43:
 //#line 180 "project7.java"
 {
-        /*ICode s = new ICode("Call" + $1.sval);*/
-        /*s.emit();*/
+        ICode callSimpleFunction = new ICode("CALL", val_peek(2).sval);
+        callSimpleFunction.emit();
+      }
+break;
+case 44:
+//#line 185 "project7.java"
+{
+        ICode fCallParameters = new ICode("PARAM", val_peek(1).sval);
+        fCallParameters.emit();
+        ICode callSimpleFunction = new ICode("CALL", val_peek(3).sval);
+        callSimpleFunction.emit();
       }
 break;
 case 48:
-//#line 194 "project7.java"
+//#line 200 "project7.java"
 {
         String topLabel = ICode.genLabel();
         ICode topStatement = new ICode("NOP");
@@ -784,7 +793,7 @@ case 48:
       }
 break;
 case 49:
-//#line 202 "project7.java"
+//#line 208 "project7.java"
 {
         /*ICode cmpPart = new ICode("CMP", $4.sval, "0");*/
         ICode cmpPart = new ICode("CMP", "TEMP_FOR_BEXPR", "0");
@@ -796,7 +805,7 @@ case 49:
       }
 break;
 case 50:
-//#line 212 "project7.java"
+//#line 218 "project7.java"
 {
         String outLabel = whileLabelStack.pop();
         String topLabel = whileLabelStack.pop();
@@ -807,7 +816,7 @@ case 50:
         whileOut.emit();
       }
 break;
-//#line 734 "Parser.java"
+//#line 743 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

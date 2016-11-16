@@ -178,10 +178,16 @@ bterm: expr RELOP expr
 
 fcall: ID PARENL PARENR
       {
-        //ICode s = new ICode("Call" + $1.sval);
-        //s.emit();
+        ICode callSimpleFunction = new ICode("CALL", $1.sval);
+        callSimpleFunction.emit();
       }
     | ID PARENL aplist PARENR
+      {
+        ICode fCallParameters = new ICode("PARAM", $3.sval);
+        fCallParameters.emit();
+        ICode callSimpleFunction = new ICode("CALL", $1.sval);
+        callSimpleFunction.emit();
+      }
     ;
 
 aplist:expr COMMA aplist

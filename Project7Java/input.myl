@@ -5,5 +5,5 @@ function fibo (n)
 
   if (n<2)                  # stmt 1
     if(n<0)
-    fibo<-1;                # stmt 2
+      print("error");
 }
