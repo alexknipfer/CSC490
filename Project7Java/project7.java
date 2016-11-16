@@ -231,8 +231,8 @@ while: WHILE
       {
         String outLabel = whileLabelStack.pop();
         String topLabel = whileLabelStack.pop();
-        ICode backToTop = new ICode("BA", topLabel);
-        backToTop.emit();
+        //ICode backToTop = new ICode("BA", topLabel);
+        ///backToTop.emit();
         ICode whileOut = new ICode("NOP");
         whileOut.addLabel(outLabel);
         whileOut.emit();
@@ -252,13 +252,32 @@ if: IF PARENL bexpr PARENR
 
 elsepart: ELSE
           {
+            String branchAlwaysIfLbl = ICode.genLabel();
+            branchAlwaysStack.push(branchAlwaysIfLbl);
+            ICode branchAlwaysIf = new ICode("BA", branchAlwaysIfLbl);
+            branchAlwaysIf.emit();
             String elseLabel = elseLabelStack.pop();
             ICode elseBranch = new ICode("NOP");
             elseBranch.addLabel(elseLabel);
             elseBranch.emit();
           }
           stmt
+          {
+            ICode afterElse = new ICode("NOP");
+            afterElse.addLabel(branchAlwaysStack.pop());
+            afterElse.emit();
+            //String branchAlwaysIfLbl = ICode.genLabel();
+            //ICode branchAlwaysIf = new ICode("BA", branchAlwaysIfLbl);
+            //branchAlwaysStack.push(branchAlwaysIfLbl);
+            //branchAlwaysIf.emit();
+          }
         | /*Epsilon*/
+        {
+          //String elseNothingLabel = elseLabelStack.pop();
+          //ICode elseNothingBranch = new ICode("NOP");
+          //elseNothingBranch.addLabel(elseNothingLabel);
+          //elseNothingBranch.emit();
+        }
 %%
 
 //##############################################################################
@@ -271,6 +290,7 @@ elsepart: ELSE
 
     public LinkedList<String> whileLabelStack;
     public LinkedList<String> elseLabelStack;
+    public LinkedList<String> branchAlwaysStack;
 
     private MyLexer yylexer;
     private Token t;
@@ -287,6 +307,7 @@ public void setup(String fname)
     globalTable = new SymbolTable("__GLOBAL__");
     whileLabelStack = new LinkedList<String>();
     elseLabelStack = new LinkedList<String>();
+    branchAlwaysStack = new LinkedList<String>();
 }
 
 //##############################################################################

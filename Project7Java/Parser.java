@@ -368,7 +368,7 @@ final static String yyrule[] = {
 "elsepart :",
 };
 
-//#line 263 "project7.java"
+//#line 282 "project7.java"
 
 //##############################################################################
 
@@ -380,6 +380,7 @@ final static String yyrule[] = {
 
     public LinkedList<String> whileLabelStack;
     public LinkedList<String> elseLabelStack;
+    public LinkedList<String> branchAlwaysStack;
 
     private MyLexer yylexer;
     private Token t;
@@ -396,6 +397,7 @@ public void setup(String fname)
     globalTable = new SymbolTable("__GLOBAL__");
     whileLabelStack = new LinkedList<String>();
     elseLabelStack = new LinkedList<String>();
+    branchAlwaysStack = new LinkedList<String>();
 }
 
 //##############################################################################
@@ -489,7 +491,7 @@ public static void main(String args[])
  par.setup(args[0]);
  par.yyparse();
 }
-//#line 421 "Parser.java"
+//#line 423 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -829,8 +831,8 @@ case 50:
 {
         String outLabel = whileLabelStack.pop();
         String topLabel = whileLabelStack.pop();
-        ICode backToTop = new ICode("BA", topLabel);
-        backToTop.emit();
+        /*ICode backToTop = new ICode("BA", topLabel);*/
+        /*/backToTop.emit();*/
         ICode whileOut = new ICode("NOP");
         whileOut.addLabel(outLabel);
         whileOut.emit();
@@ -848,13 +850,38 @@ break;
 case 53:
 //#line 254 "project7.java"
 {
+            String branchAlwaysIfLbl = ICode.genLabel();
+            branchAlwaysStack.push(branchAlwaysIfLbl);
+            ICode branchAlwaysIf = new ICode("BA", branchAlwaysIfLbl);
+            branchAlwaysIf.emit();
             String elseLabel = elseLabelStack.pop();
             ICode elseBranch = new ICode("NOP");
             elseBranch.addLabel(elseLabel);
             elseBranch.emit();
           }
 break;
-//#line 781 "Parser.java"
+case 54:
+//#line 265 "project7.java"
+{
+            ICode afterElse = new ICode("NOP");
+            afterElse.addLabel(branchAlwaysStack.pop());
+            afterElse.emit();
+            /*String branchAlwaysIfLbl = ICode.genLabel();*/
+            /*ICode branchAlwaysIf = new ICode("BA", branchAlwaysIfLbl);*/
+            /*branchAlwaysStack.push(branchAlwaysIfLbl);*/
+            /*branchAlwaysIf.emit();*/
+          }
+break;
+case 55:
+//#line 275 "project7.java"
+{
+          /*String elseNothingLabel = elseLabelStack.pop();*/
+          /*ICode elseNothingBranch = new ICode("NOP");*/
+          /*elseNothingBranch.addLabel(elseNothingLabel);*/
+          /*elseNothingBranch.emit();*/
+        }
+break;
+//#line 808 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
