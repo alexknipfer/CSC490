@@ -174,6 +174,7 @@ bterm: expr RELOP expr
         ICode compare = new ICode("CMP", newTemp, "0");
         compare.emit();
         String newLabel = ICode.genLabel();
+        elseLabelStack.push(newLabel);
         ICode branchOnEqual = new ICode("BE", newLabel);
         branchOnEqual.emit();
       }
@@ -251,7 +252,7 @@ if: IF PARENL bexpr PARENR
 
 elsepart: ELSE
           {
-            String elseLabel = ICode.genLabel();
+            String elseLabel = elseLabelStack.pop();
             ICode elseBranch = new ICode("NOP");
             elseBranch.addLabel(elseLabel);
             elseBranch.emit();
@@ -269,6 +270,7 @@ elsepart: ELSE
     public SymbolTable globalTable;
 
     public LinkedList<String> whileLabelStack;
+    public LinkedList<String> elseLabelStack;
 
     private MyLexer yylexer;
     private Token t;
@@ -284,6 +286,7 @@ public void setup(String fname)
       //intialize gobal table
     globalTable = new SymbolTable("__GLOBAL__");
     whileLabelStack = new LinkedList<String>();
+    elseLabelStack = new LinkedList<String>();
 }
 
 //##############################################################################
