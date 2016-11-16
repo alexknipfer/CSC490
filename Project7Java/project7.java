@@ -103,6 +103,10 @@ stmt: assign SEMICOLON  {stmtCount++;}
     ;
 
 assign: ID ASSIGNOP expr
+        {
+          ICode assignStmt = new ICode("MOV", $3.sval, $1.sval);
+          assignStmt.emit();
+        }
     ;
 
 expr: factor
@@ -180,6 +184,9 @@ fcall: ID PARENL PARENR
       {
         ICode callSimpleFunction = new ICode("CALL", $1.sval);
         callSimpleFunction.emit();
+        String stretTemp = ICode.genTemp();
+        ICode stret = new ICode("STRET", stretTemp);
+        stret.emit();
       }
     | ID PARENL aplist PARENR
       {
@@ -187,6 +194,9 @@ fcall: ID PARENL PARENR
         fCallParameters.emit();
         ICode callSimpleFunction = new ICode("CALL", $1.sval);
         callSimpleFunction.emit();
+        String stretTemp = ICode.genTemp();
+        ICode stret = new ICode("STRET", stretTemp);
+        stret.emit();
       }
     ;
 
@@ -226,7 +236,14 @@ while: WHILE
       }
     ;
 
-if: IF PARENL bexpr PARENR stmt elsepart
+if: IF PARENL bexpr PARENR
+    stmt
+    {
+      String branchAlwaysIfLbl = ICode.genLabel();
+      ICode branchAlwaysIf = new ICode("BA", branchAlwaysIfLbl);
+      branchAlwaysIf.emit();
+    }
+  elsepart
     ;
 
 elsepart: ELSE stmt | /*Epsilon*/
