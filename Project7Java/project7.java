@@ -185,6 +185,7 @@ fcall: ID PARENL PARENR
         ICode callSimpleFunction = new ICode("CALL", $1.sval);
         callSimpleFunction.emit();
         String stretTemp = ICode.genTemp();
+        currTable.add(stretTemp, "int");
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
       }
@@ -195,6 +196,7 @@ fcall: ID PARENL PARENR
         ICode callSimpleFunction = new ICode("CALL", $1.sval);
         callSimpleFunction.emit();
         String stretTemp = ICode.genTemp();
+        currTable.add(stretTemp, "int");
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
       }
@@ -239,14 +241,23 @@ while: WHILE
 if: IF PARENL bexpr PARENR
     stmt
     {
-      String branchAlwaysIfLbl = ICode.genLabel();
-      ICode branchAlwaysIf = new ICode("BA", branchAlwaysIfLbl);
-      branchAlwaysIf.emit();
+      //System.out.println($5.sval);
+      //String branchAlwaysIfLbl = ICode.genLabel();
+      //ICode branchAlwaysIf = new ICode("BA", branchAlwaysIfLbl);
+      //branchAlwaysIf.emit();
     }
   elsepart
     ;
 
-elsepart: ELSE stmt | /*Epsilon*/
+elsepart: ELSE
+          {
+            String elseLabel = ICode.genLabel();
+            ICode elseBranch = new ICode("NOP");
+            elseBranch.addLabel(elseLabel);
+            elseBranch.emit();
+          }
+          stmt
+        | /*Epsilon*/
 %%
 
 //##############################################################################
@@ -261,6 +272,19 @@ elsepart: ELSE stmt | /*Epsilon*/
 
     private MyLexer yylexer;
     private Token t;
+
+//##############################################################################
+
+public void setup(String fname)
+{
+    yylexer = new MyLexer(fname);
+    stmtCount = 0;
+    funcCount = 0;
+
+      //intialize gobal table
+    globalTable = new SymbolTable("__GLOBAL__");
+    whileLabelStack = new LinkedList<String>();
+}
 
 //##############################################################################
 
@@ -343,19 +367,6 @@ public int yylex()
   	default:
   	    return -1;
 	}
-}
-
-//##############################################################################
-
-public void setup(String fname)
-{
-    yylexer = new MyLexer(fname);
-    stmtCount = 0;
-    funcCount = 0;
-
-      //intialize gobal table
-    globalTable = new SymbolTable("__GLOBAL__");
-    whileLabelStack = new LinkedList<String>();
 }
 
 //##############################################################################
