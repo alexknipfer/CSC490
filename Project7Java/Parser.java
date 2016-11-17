@@ -368,7 +368,7 @@ final static String yyrule[] = {
 "elsepart :",
 };
 
-//#line 282 "project7.java"
+//#line 297 "project7.java"
 
 //##############################################################################
 
@@ -381,6 +381,7 @@ final static String yyrule[] = {
     public LinkedList<String> whileLabelStack;
     public LinkedList<String> elseLabelStack;
     public LinkedList<String> branchAlwaysStack;
+    public LinkedList<String> tempStack;
 
     private MyLexer yylexer;
     private Token t;
@@ -398,6 +399,7 @@ public void setup(String fname)
     whileLabelStack = new LinkedList<String>();
     elseLabelStack = new LinkedList<String>();
     branchAlwaysStack = new LinkedList<String>();
+    tempStack = new LinkedList<String>();
 }
 
 //##############################################################################
@@ -491,7 +493,7 @@ public static void main(String args[])
  par.setup(args[0]);
  par.yyparse();
 }
-//#line 423 "Parser.java"
+//#line 425 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -721,27 +723,49 @@ break;
 case 25:
 //#line 106 "project7.java"
 {
-          ICode assignStmt = new ICode("MOV", val_peek(0).sval, val_peek(2).sval);
-          assignStmt.emit();
+          /*System.out.println("EXPR: " + $3.sval);*/
+          if(tempStack.size() == 0){
+            ICode assignStmt = new ICode("MOV", val_peek(0).sval, val_peek(2).sval);
+            assignStmt.emit();
+          }
+          else{
+            ICode assignStmt = new ICode("MOV", tempStack.pop(), val_peek(2).sval);
+            assignStmt.emit();
+          }
         }
 break;
+case 27:
+//#line 121 "project7.java"
+{
+        String tempAddOp = ICode.genTemp();
+        tempStack.push(tempAddOp);
+        if(val_peek(1).sval.equals("-")){
+          ICode subt = new ICode("SUB", val_peek(2).sval, val_peek(0).sval, tempAddOp);
+          subt.emit();
+        }
+      }
+break;
 case 30:
-//#line 120 "project7.java"
+//#line 135 "project7.java"
 {yyval.sval = val_peek(0).sval;}
 break;
 case 31:
-//#line 122 "project7.java"
+//#line 137 "project7.java"
 {
         String numberString = String.format("%d", val_peek(0).ival);
         yyval.sval = numberString;
       }
 break;
 case 32:
-//#line 126 "project7.java"
+//#line 141 "project7.java"
 {yyval.sval = val_peek(1).sval;}
 break;
+case 34:
+//#line 143 "project7.java"
+{System.out.print("FUNCTION CALL");}
+break;
 case 41:
-//#line 144 "project7.java"
+//#line 159 "project7.java"
 {
         String temp, temp2;
         String newTemp = ICode.genTemp();
@@ -781,7 +805,7 @@ case 41:
       }
 break;
 case 43:
-//#line 185 "project7.java"
+//#line 200 "project7.java"
 {
         ICode callSimpleFunction = new ICode("CALL", val_peek(2).sval);
         callSimpleFunction.emit();
@@ -792,7 +816,7 @@ case 43:
       }
 break;
 case 44:
-//#line 194 "project7.java"
+//#line 209 "project7.java"
 {
         ICode fCallParameters = new ICode("PARAM", val_peek(1).sval);
         fCallParameters.emit();
@@ -805,7 +829,7 @@ case 44:
       }
 break;
 case 48:
-//#line 213 "project7.java"
+//#line 228 "project7.java"
 {
         String topLabel = ICode.genLabel();
         ICode topStatement = new ICode("NOP");
@@ -815,7 +839,7 @@ case 48:
       }
 break;
 case 49:
-//#line 221 "project7.java"
+//#line 236 "project7.java"
 {
         /*ICode cmpPart = new ICode("CMP", $4.sval, "0");*/
         ICode cmpPart = new ICode("CMP", "TEMP_FOR_BEXPR", "0");
@@ -827,7 +851,7 @@ case 49:
       }
 break;
 case 50:
-//#line 231 "project7.java"
+//#line 246 "project7.java"
 {
         String outLabel = whileLabelStack.pop();
         String topLabel = whileLabelStack.pop();
@@ -839,7 +863,7 @@ case 50:
       }
 break;
 case 51:
-//#line 244 "project7.java"
+//#line 259 "project7.java"
 {
       /*System.out.println($5.sval);*/
       /*String branchAlwaysIfLbl = ICode.genLabel();*/
@@ -848,7 +872,7 @@ case 51:
     }
 break;
 case 53:
-//#line 254 "project7.java"
+//#line 269 "project7.java"
 {
             String branchAlwaysIfLbl = ICode.genLabel();
             branchAlwaysStack.push(branchAlwaysIfLbl);
@@ -861,7 +885,7 @@ case 53:
           }
 break;
 case 54:
-//#line 265 "project7.java"
+//#line 280 "project7.java"
 {
             ICode afterElse = new ICode("NOP");
             afterElse.addLabel(branchAlwaysStack.pop());
@@ -873,7 +897,7 @@ case 54:
           }
 break;
 case 55:
-//#line 275 "project7.java"
+//#line 290 "project7.java"
 {
           /*String elseNothingLabel = elseLabelStack.pop();*/
           /*ICode elseNothingBranch = new ICode("NOP");*/
@@ -881,7 +905,7 @@ case 55:
           /*elseNothingBranch.emit();*/
         }
 break;
-//#line 808 "Parser.java"
+//#line 832 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

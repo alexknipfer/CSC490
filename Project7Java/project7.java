@@ -104,13 +104,28 @@ stmt: assign SEMICOLON  {stmtCount++;}
 
 assign: ID ASSIGNOP expr
         {
-          ICode assignStmt = new ICode("MOV", $3.sval, $1.sval);
-          assignStmt.emit();
+          //System.out.println("EXPR: " + $3.sval);
+          if(tempStack.size() == 0){
+            ICode assignStmt = new ICode("MOV", $3.sval, $1.sval);
+            assignStmt.emit();
+          }
+          else{
+            ICode assignStmt = new ICode("MOV", tempStack.pop(), $1.sval);
+            assignStmt.emit();
+          }
         }
     ;
 
 expr: factor
     | expr ADDOP factor
+      {
+        String tempAddOp = ICode.genTemp();
+        tempStack.push(tempAddOp);
+        if($2.sval.equals("-")){
+          ICode subt = new ICode("SUB", $1.sval, $3.sval, tempAddOp);
+          subt.emit();
+        }
+      }
     ;
 
 factor: term
@@ -291,6 +306,7 @@ elsepart: ELSE
     public LinkedList<String> whileLabelStack;
     public LinkedList<String> elseLabelStack;
     public LinkedList<String> branchAlwaysStack;
+    public LinkedList<String> tempStack;
 
     private MyLexer yylexer;
     private Token t;
@@ -308,6 +324,7 @@ public void setup(String fname)
     whileLabelStack = new LinkedList<String>();
     elseLabelStack = new LinkedList<String>();
     branchAlwaysStack = new LinkedList<String>();
+    tempStack = new LinkedList<String>();
 }
 
 //##############################################################################
