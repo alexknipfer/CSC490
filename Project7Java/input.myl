@@ -11,5 +11,6 @@ function fibo (n)
   else
   {
     ans1 <- fibo(n-1);
+    ans2<-fibo(n-2);
   }
 }

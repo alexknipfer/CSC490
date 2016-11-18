@@ -207,11 +207,18 @@ fcall: ID PARENL PARENR
       }
     | ID PARENL aplist PARENR
       {
-        ICode fCallParameters = new ICode("PARAM", $3.sval);
-        fCallParameters.emit();
+        if(tempStack.size() == 0){
+          ICode fCallParameters = new ICode("PARAM", $3.sval);
+          fCallParameters.emit();
+        }
+        else{
+          ICode fCallParameters = new ICode("PARAM", tempStack.getFirst());
+          fCallParameters.emit();
+        }
         ICode callSimpleFunction = new ICode("CALL", $1.sval);
         callSimpleFunction.emit();
         String stretTemp = ICode.genTemp();
+        tempStack.push(stretTemp);
         currTable.add(stretTemp, "int");
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
