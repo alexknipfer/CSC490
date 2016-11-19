@@ -368,7 +368,7 @@ final static String yyrule[] = {
 "elsepart :",
 };
 
-//#line 304 "project7.java"
+//#line 309 "project7.java"
 
 //##############################################################################
 
@@ -693,37 +693,38 @@ break;
 case 12:
 //#line 81 "project7.java"
 {
+        ICode returnOp = new ICode("RET");
+        returnOp.emit();
         System.out.println(currTable);
       }
 break;
 case 14:
-//#line 89 "project7.java"
+//#line 91 "project7.java"
 {currTable.add(val_peek(1).sval, "int");}
 break;
 case 16:
-//#line 90 "project7.java"
+//#line 92 "project7.java"
 {currTable.add(val_peek(0).sval, "int");}
 break;
 case 20:
-//#line 98 "project7.java"
-{stmtCount++;}
-break;
-case 21:
-//#line 99 "project7.java"
-{stmtCount++;}
-break;
-case 22:
 //#line 100 "project7.java"
 {stmtCount++;}
 break;
-case 23:
+case 21:
 //#line 101 "project7.java"
 {stmtCount++;}
 break;
+case 22:
+//#line 102 "project7.java"
+{stmtCount++;}
+break;
+case 23:
+//#line 103 "project7.java"
+{stmtCount++;}
+break;
 case 25:
-//#line 106 "project7.java"
+//#line 108 "project7.java"
 {
-          /*System.out.println("EXPR: " + $3.sval);*/
           if(tempStack.size() == 0){
             ICode assignStmt = new ICode("MOV", val_peek(0).sval, val_peek(2).sval);
             assignStmt.emit();
@@ -735,7 +736,7 @@ case 25:
         }
 break;
 case 27:
-//#line 121 "project7.java"
+//#line 122 "project7.java"
 {
         String tempAddOp = ICode.genTemp();
         tempStack.push(tempAddOp);
@@ -743,30 +744,34 @@ case 27:
           ICode subt = new ICode("SUB", val_peek(2).sval, val_peek(0).sval, tempAddOp);
           subt.emit();
         }
+        else if(val_peek(1).sval.equals("+")){
+          ICode add = new ICode("ADD", val_peek(2).sval, val_peek(0).sval, tempAddOp);
+          add.emit();
+        }
       }
 break;
 case 30:
-//#line 135 "project7.java"
+//#line 140 "project7.java"
 {yyval.sval = val_peek(0).sval;}
 break;
 case 31:
-//#line 137 "project7.java"
+//#line 142 "project7.java"
 {
         String numberString = String.format("%d", val_peek(0).ival);
         yyval.sval = numberString;
       }
 break;
 case 32:
-//#line 141 "project7.java"
+//#line 146 "project7.java"
 {yyval.sval = val_peek(1).sval;}
 break;
 case 41:
-//#line 159 "project7.java"
+//#line 164 "project7.java"
 {
         String temp, temp2;
         String newTemp = ICode.genTemp();
         currTable.add(newTemp, "int");
-          /*check if value is an integer*/
+
         if(val_peek(1).sval.equals("<")){
           ICode lessThan = new ICode("LT", val_peek(2).sval, val_peek(0).sval, newTemp);
           lessThan.emit();
@@ -801,7 +806,7 @@ case 41:
       }
 break;
 case 43:
-//#line 200 "project7.java"
+//#line 205 "project7.java"
 {
         ICode callSimpleFunction = new ICode("CALL", val_peek(2).sval);
         callSimpleFunction.emit();
@@ -812,27 +817,27 @@ case 43:
       }
 break;
 case 44:
-//#line 209 "project7.java"
+//#line 214 "project7.java"
 {
+        String stretTemp = ICode.genTemp();
+        currTable.add(stretTemp, "int");
         if(tempStack.size() == 0){
           ICode fCallParameters = new ICode("PARAM", val_peek(1).sval);
           fCallParameters.emit();
         }
         else{
-          ICode fCallParameters = new ICode("PARAM", tempStack.getFirst());
+          ICode fCallParameters = new ICode("PARAM", tempStack.pop());
+          tempStack.push(stretTemp);
           fCallParameters.emit();
         }
         ICode callSimpleFunction = new ICode("CALL", val_peek(3).sval);
         callSimpleFunction.emit();
-        String stretTemp = ICode.genTemp();
-        tempStack.push(stretTemp);
-        currTable.add(stretTemp, "int");
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
       }
 break;
 case 48:
-//#line 235 "project7.java"
+//#line 240 "project7.java"
 {
         String topLabel = ICode.genLabel();
         ICode topStatement = new ICode("NOP");
@@ -842,7 +847,7 @@ case 48:
       }
 break;
 case 49:
-//#line 243 "project7.java"
+//#line 248 "project7.java"
 {
         /*ICode cmpPart = new ICode("CMP", $4.sval, "0");*/
         ICode cmpPart = new ICode("CMP", "TEMP_FOR_BEXPR", "0");
@@ -854,7 +859,7 @@ case 49:
       }
 break;
 case 50:
-//#line 253 "project7.java"
+//#line 258 "project7.java"
 {
         String outLabel = whileLabelStack.pop();
         String topLabel = whileLabelStack.pop();
@@ -866,7 +871,7 @@ case 50:
       }
 break;
 case 51:
-//#line 266 "project7.java"
+//#line 271 "project7.java"
 {
       /*System.out.println($5.sval);*/
       /*String branchAlwaysIfLbl = ICode.genLabel();*/
@@ -875,7 +880,7 @@ case 51:
     }
 break;
 case 53:
-//#line 276 "project7.java"
+//#line 281 "project7.java"
 {
             String branchAlwaysIfLbl = ICode.genLabel();
             branchAlwaysStack.push(branchAlwaysIfLbl);
@@ -888,7 +893,7 @@ case 53:
           }
 break;
 case 54:
-//#line 287 "project7.java"
+//#line 292 "project7.java"
 {
             ICode afterElse = new ICode("NOP");
             afterElse.addLabel(branchAlwaysStack.pop());
@@ -900,7 +905,7 @@ case 54:
           }
 break;
 case 55:
-//#line 297 "project7.java"
+//#line 302 "project7.java"
 {
           /*String elseNothingLabel = elseLabelStack.pop();*/
           /*ICode elseNothingBranch = new ICode("NOP");*/
@@ -908,7 +913,7 @@ case 55:
           /*elseNothingBranch.emit();*/
         }
 break;
-//#line 835 "Parser.java"
+//#line 840 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

@@ -79,6 +79,8 @@ function: FUNCTION ID PARENL PARENR body
       }
       body
       {
+        ICode returnOp = new ICode("RET");
+        returnOp.emit();
         System.out.println(currTable);
       }
     ;
@@ -104,7 +106,6 @@ stmt: assign SEMICOLON  {stmtCount++;}
 
 assign: ID ASSIGNOP expr
         {
-          //System.out.println("EXPR: " + $3.sval);
           if(tempStack.size() == 0){
             ICode assignStmt = new ICode("MOV", $3.sval, $1.sval);
             assignStmt.emit();
@@ -124,6 +125,10 @@ expr: factor
         if($2.sval.equals("-")){
           ICode subt = new ICode("SUB", $1.sval, $3.sval, tempAddOp);
           subt.emit();
+        }
+        else if($2.sval.equals("+")){
+          ICode add = new ICode("ADD", $1.sval, $3.sval, tempAddOp);
+          add.emit();
         }
       }
     ;
@@ -160,7 +165,7 @@ bterm: expr RELOP expr
         String temp, temp2;
         String newTemp = ICode.genTemp();
         currTable.add(newTemp, "int");
-          //check if value is an integer
+
         if($2.sval.equals("<")){
           ICode lessThan = new ICode("LT", $1.sval, $3.sval, newTemp);
           lessThan.emit();
@@ -207,19 +212,19 @@ fcall: ID PARENL PARENR
       }
     | ID PARENL aplist PARENR
       {
+        String stretTemp = ICode.genTemp();
+        currTable.add(stretTemp, "int");
         if(tempStack.size() == 0){
           ICode fCallParameters = new ICode("PARAM", $3.sval);
           fCallParameters.emit();
         }
         else{
-          ICode fCallParameters = new ICode("PARAM", tempStack.getFirst());
+          ICode fCallParameters = new ICode("PARAM", tempStack.pop());
+          tempStack.push(stretTemp);
           fCallParameters.emit();
         }
         ICode callSimpleFunction = new ICode("CALL", $1.sval);
         callSimpleFunction.emit();
-        String stretTemp = ICode.genTemp();
-        tempStack.push(stretTemp);
-        currTable.add(stretTemp, "int");
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
       }
