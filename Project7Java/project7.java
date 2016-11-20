@@ -55,11 +55,14 @@ vardecl: VAR varlist SEMICOLON
 
 varlist: ID COMMA varlist
       {
-        //LinkedList<String> vList = (LinkedList<String>) $3.obj;
-        //vList.add($1.sval);
-        //$$.obj = vList;
+          //add variable to variable "stack"
+          varStack.addLast($1.sval);
       }
     | ID
+      {
+          //add variable to variable stack
+        varStack.addLast($1.sval);
+      }
     ;
 
 function: FUNCTION ID PARENL PARENR body
@@ -81,6 +84,10 @@ function: FUNCTION ID PARENL PARENR body
       {
         ICode returnOp = new ICode("RET");
         returnOp.emit();
+        for(int x = 0; x < varStack.size(); x++){
+          currTable.add(varStack.get(x), "int");
+        }
+        varStack.clear();
         System.out.println(currTable);
       }
     ;
@@ -121,6 +128,7 @@ expr: factor
     | expr ADDOP factor
       {
         String tempAddOp = ICode.genTemp();
+        currTable.add(tempAddOp, "int");
         tempStack.push(tempAddOp);
         if($2.sval.equals("-")){
           ICode subt = new ICode("SUB", $1.sval, $3.sval, tempAddOp);
@@ -266,15 +274,7 @@ while: WHILE
       }
     ;
 
-if: IF PARENL bexpr PARENR
-    stmt
-    {
-      //System.out.println($5.sval);
-      //String branchAlwaysIfLbl = ICode.genLabel();
-      //ICode branchAlwaysIf = new ICode("BA", branchAlwaysIfLbl);
-      //branchAlwaysIf.emit();
-    }
-  elsepart
+if: IF PARENL bexpr PARENR stmt elsepart
     ;
 
 elsepart: ELSE
@@ -293,18 +293,8 @@ elsepart: ELSE
             ICode afterElse = new ICode("NOP");
             afterElse.addLabel(branchAlwaysStack.pop());
             afterElse.emit();
-            //String branchAlwaysIfLbl = ICode.genLabel();
-            //ICode branchAlwaysIf = new ICode("BA", branchAlwaysIfLbl);
-            //branchAlwaysStack.push(branchAlwaysIfLbl);
-            //branchAlwaysIf.emit();
           }
         | /*Epsilon*/
-        {
-          //String elseNothingLabel = elseLabelStack.pop();
-          //ICode elseNothingBranch = new ICode("NOP");
-          //elseNothingBranch.addLabel(elseNothingLabel);
-          //elseNothingBranch.emit();
-        }
 %%
 
 //##############################################################################
@@ -319,6 +309,7 @@ elsepart: ELSE
     public LinkedList<String> elseLabelStack;
     public LinkedList<String> branchAlwaysStack;
     public LinkedList<String> tempStack;
+    public LinkedList<String> varStack;
 
     private MyLexer yylexer;
     private Token t;
@@ -337,6 +328,7 @@ public void setup(String fname)
     elseLabelStack = new LinkedList<String>();
     branchAlwaysStack = new LinkedList<String>();
     tempStack = new LinkedList<String>();
+    varStack = new LinkedList<String>();
 }
 
 //##############################################################################
