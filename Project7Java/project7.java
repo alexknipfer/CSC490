@@ -78,6 +78,12 @@ function: FUNCTION ID PARENL PARENR
             }
             body
             {
+              ICode returnOp = new ICode("RET");
+              returnOp.emit();
+              for(int x = 0; x < varStack.size(); x++){
+                currTable.add(varStack.get(x), "int");
+              }
+              varStack.clear();
               System.out.println(currTable);
             }
     | FUNCTION ID PARENL {currTable = new SymbolTable($2.sval);} fplist PARENR
@@ -220,7 +226,7 @@ bterm: expr RELOP expr
         ICode compare = new ICode("CMP", newTemp, "0");
         compare.emit();
         String newLabel = ICode.genLabel();
-        elseLabelStack.push(newLabel);
+        genLabelStack.push(newLabel);
         ICode branchOnEqual = new ICode("BE", newLabel);
         branchOnEqual.emit();
       }
@@ -232,6 +238,7 @@ fcall: ID PARENL PARENR
         ICode callSimpleFunction = new ICode("CALL", $1.sval);
         callSimpleFunction.emit();
         String stretTemp = ICode.genTemp();
+        tempStack.push(stretTemp);
         currTable.add(stretTemp, "int");
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
@@ -271,24 +278,13 @@ while: WHILE
         whileLabelStack.push(topLabel);
       }
       PARENL bexpr PARENR
-      {
-        //ICode cmpPart = new ICode("CMP", $4.sval, "0");
-        ICode cmpPart = new ICode("CMP", "TEMP_FOR_BEXPR", "0");
-        cmpPart.emit();
-        String outLabel = ICode.genLabel();
-        ICode beqPart = new ICode("BEQ", outLabel);
-        beqPart.emit();
-        whileLabelStack.push(outLabel);
-      }
       stmt
       {
-        String outLabel = whileLabelStack.pop();
-        String topLabel = whileLabelStack.pop();
-        //ICode backToTop = new ICode("BA", topLabel);
-        ///backToTop.emit();
-        ICode whileOut = new ICode("NOP");
-        whileOut.addLabel(outLabel);
-        whileOut.emit();
+        ICode jump = new ICode("JMP", whileLabelStack.pop());
+        jump.emit();
+        ICode pastWhileLoop = new ICode("NOP");
+        pastWhileLoop.addLabel(genLabelStack.pop());
+        pastWhileLoop.emit();
       }
     ;
 
@@ -301,7 +297,7 @@ elsepart: ELSE
             branchAlwaysStack.push(branchAlwaysIfLbl);
             ICode branchAlwaysIf = new ICode("BA", branchAlwaysIfLbl);
             branchAlwaysIf.emit();
-            String elseLabel = elseLabelStack.pop();
+            String elseLabel = genLabelStack.pop();
             ICode elseBranch = new ICode("NOP");
             elseBranch.addLabel(elseLabel);
             elseBranch.emit();
@@ -324,7 +320,7 @@ elsepart: ELSE
     public SymbolTable globalTable;
 
     public LinkedList<String> whileLabelStack;
-    public LinkedList<String> elseLabelStack;
+    public LinkedList<String> genLabelStack;
     public LinkedList<String> branchAlwaysStack;
     public LinkedList<String> tempStack;
     public LinkedList<String> varStack;
@@ -343,7 +339,7 @@ public void setup(String fname)
       //intialize gobal table
     globalTable = new SymbolTable("__GLOBAL__");
     whileLabelStack = new LinkedList<String>();
-    elseLabelStack = new LinkedList<String>();
+    genLabelStack = new LinkedList<String>();
     branchAlwaysStack = new LinkedList<String>();
     tempStack = new LinkedList<String>();
     varStack = new LinkedList<String>();
