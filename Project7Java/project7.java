@@ -37,9 +37,9 @@ import java.util.StringTokenizer;
     start:  pgm
 {
     System.out.println(globalTable);
-    System.out.println("The program is correct, and contains:");
-    System.out.printf("%5d statements\n",stmtCount);
-    System.out.printf("%5d function definitions\n",funcCount);
+    //System.out.println("The program is correct, and contains:");
+    //System.out.printf("%5d statements\n",stmtCount);
+    //System.out.printf("%5d function definitions\n",funcCount);
 }
 ;
 

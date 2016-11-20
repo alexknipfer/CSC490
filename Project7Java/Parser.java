@@ -367,7 +367,7 @@ final static String yyrule[] = {
 "elsepart :",
 };
 
-//#line 339 "project7.java"
+//#line 343 "project7.java"
 
 //##############################################################################
 
@@ -382,6 +382,8 @@ final static String yyrule[] = {
     public LinkedList<String> branchAlwaysStack;
     public LinkedList<String> tempStack;
     public LinkedList<String> varStack;
+
+    boolean isString;
 
     private MyLexer yylexer;
     private Token t;
@@ -401,6 +403,7 @@ public void setup(String fname)
     branchAlwaysStack = new LinkedList<String>();
     tempStack = new LinkedList<String>();
     varStack = new LinkedList<String>();
+    isString = false;
 }
 
 //##############################################################################
@@ -494,7 +497,7 @@ public static void main(String args[])
  par.setup(args[0]);
  par.yyparse();
 }
-//#line 426 "Parser.java"
+//#line 429 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -652,9 +655,9 @@ case 1:
 //#line 38 "project7.java"
 {
     System.out.println(globalTable);
-    System.out.println("The program is correct, and contains:");
-    System.out.printf("%5d statements\n",stmtCount);
-    System.out.printf("%5d function definitions\n",funcCount);
+    /*System.out.println("The program is correct, and contains:");*/
+    /*System.out.printf("%5d statements\n",stmtCount);*/
+    /*System.out.printf("%5d function definitions\n",funcCount);*/
 }
 break;
 case 5:
@@ -901,14 +904,22 @@ case 45:
           tempStack.push(stretTemp);
           fCallParameters.emit();
         }
+        if(isString == true){
+          tempStack.push(stretTemp);
+          isString = false;
+        }
         ICode callSimpleFunction = new ICode("CALL", val_peek(3).sval);
         callSimpleFunction.emit();
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
       }
 break;
+case 48:
+//#line 298 "project7.java"
+{isString = true;}
+break;
 case 49:
-//#line 299 "project7.java"
+//#line 303 "project7.java"
 {
         String topLabel = ICode.genLabel();
         ICode topStatement = new ICode("NOP");
@@ -918,7 +929,7 @@ case 49:
       }
 break;
 case 50:
-//#line 308 "project7.java"
+//#line 312 "project7.java"
 {
         ICode jump = new ICode("JMP", whileLabelStack.pop());
         jump.emit();
@@ -928,7 +939,7 @@ case 50:
       }
 break;
 case 52:
-//#line 321 "project7.java"
+//#line 325 "project7.java"
 {
             String branchAlwaysIfLbl = ICode.genLabel();
             branchAlwaysStack.push(branchAlwaysIfLbl);
@@ -941,14 +952,14 @@ case 52:
           }
 break;
 case 53:
-//#line 332 "project7.java"
+//#line 336 "project7.java"
 {
             ICode afterElse = new ICode("NOP");
             afterElse.addLabel(branchAlwaysStack.pop());
             afterElse.emit();
           }
 break;
-//#line 875 "Parser.java"
+//#line 886 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
