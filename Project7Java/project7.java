@@ -78,11 +78,15 @@ function: FUNCTION ID PARENL PARENR
             }
             body
             {
+                //done with function body, "RETURN"
               ICode returnOp = new ICode("RET");
               returnOp.emit();
+
+                //go through variable stack and add to table
               for(int x = 0; x < varStack.size(); x++){
                 currTable.add(varStack.get(x), "int");
               }
+                //clear for next function
               varStack.clear();
               System.out.println(currTable);
             }
@@ -97,11 +101,15 @@ function: FUNCTION ID PARENL PARENR
       }
       body
       {
+          //done with function body, "RETURN"
         ICode returnOp = new ICode("RET");
         returnOp.emit();
+
+          //go through variable staack and add to table
         for(int x = 0; x < varStack.size(); x++){
           currTable.add(varStack.get(x), "int");
         }
+          //clear for next function
         varStack.clear();
         System.out.println(currTable);
       }
@@ -158,6 +166,24 @@ expr: factor
 
 factor: term
     | factor MULOP term
+      {
+          //generate temp for result of MULOP
+        String tempMulOp = ICode.genTemp();
+        currTable.add(tempMulOp, "int");
+        tempStack.add(tempMulOp);
+
+          //check to see if token is multiplication
+        if($2.sval.equals("*")){
+          ICode multiply = new ICode("MUL", $1.sval, $3.sval, tempMulOp);
+          multiply.emit();
+        }
+
+          //check to see if token is division
+        else if($2.sval.equals("/")){
+          ICode divide = new ICode("DIV", $1.sval, $3.sval, tempMulOp);
+          divide.emit();
+        }
+      }
     ;
 
 term: ID {$$.sval = $1.sval;}

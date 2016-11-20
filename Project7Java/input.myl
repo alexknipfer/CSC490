@@ -19,7 +19,7 @@ function fibo (n)
 function main()
 {
   var input;
-  input <- -1;
+  input<- -1;
   while(input<1)
     input<-read();
   print(fibo(input));
