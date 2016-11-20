@@ -182,108 +182,108 @@ public final static short VAR=276;
 public final static short WHILE=277;
 public final static short YYERRCODE=256;
 final static short yylhs[] = {                           -1,
-    0,    1,    1,    2,    2,    3,    5,    5,    4,    8,
-    9,    4,    6,   11,    7,    7,   10,   10,   10,   12,
-   12,   12,   12,   12,   13,   17,   17,   18,   18,   19,
-   19,   19,   19,   19,   20,   20,   21,   21,   22,   22,
-   23,   23,   14,   14,   24,   24,   24,   25,   26,   15,
-   16,   28,   27,   27,
+    0,    1,    1,    2,    2,    3,    5,    5,    7,    4,
+    9,   10,    4,    6,   12,    8,    8,   11,   11,   11,
+   13,   13,   13,   13,   13,   14,   18,   18,   19,   19,
+   20,   20,   20,   20,   20,   21,   21,   22,   22,   23,
+   23,   24,   24,   15,   15,   25,   25,   25,   26,   27,
+   16,   17,   29,   28,   28,
 };
 final static short yylen[] = {                            2,
-    1,    2,    1,    1,    1,    3,    3,    1,    5,    0,
-    0,    8,    3,    0,    4,    1,    2,    2,    0,    2,
-    2,    1,    1,    1,    3,    1,    3,    1,    3,    1,
-    1,    3,    2,    1,    1,    3,    1,    3,    1,    2,
-    3,    3,    3,    4,    3,    1,    1,    0,    0,    7,
-    6,    0,    3,    0,
+    1,    2,    1,    1,    1,    3,    3,    1,    0,    6,
+    0,    0,    8,    3,    0,    4,    1,    2,    2,    0,
+    2,    2,    1,    1,    1,    3,    1,    3,    1,    3,
+    1,    1,    3,    2,    1,    1,    3,    1,    3,    1,
+    2,    3,    3,    3,    4,    3,    1,    1,    0,    0,
+    7,    6,    0,    3,    0,
 };
 final static short yydefred[] = {                         0,
     0,    0,    0,    1,    0,    4,    5,    0,    0,    0,
-    2,    0,    0,    6,    0,    0,    7,    0,    9,    0,
-    0,    0,    0,   48,    0,   24,    0,    0,    0,    0,
-   22,   23,   14,   11,    0,    0,    0,    0,   17,   13,
-   18,   20,   21,    0,    0,    0,    0,   31,    0,   34,
-    0,    0,   28,   43,   47,    0,    0,    0,    0,    0,
-    0,    0,   37,   39,    0,   15,   12,   33,    0,    0,
-    0,    0,   44,   40,    0,    0,    0,    0,    0,    0,
-    0,   32,    0,   29,   45,   42,    0,    0,    0,   38,
-   49,   52,   51,    0,    0,   50,   53,
+    2,    0,    0,    6,    9,    0,    7,    0,    0,    0,
+    0,   10,   15,   12,    0,    0,   49,    0,   25,    0,
+    0,    0,    0,   23,   24,    0,    0,    0,    0,    0,
+    0,   18,   14,   19,   21,   22,   16,   13,    0,    0,
+   32,    0,   35,    0,    0,   29,   44,   48,    0,    0,
+    0,    0,    0,    0,    0,   38,   40,    0,   34,    0,
+    0,    0,    0,   45,   41,    0,    0,    0,    0,    0,
+    0,    0,   33,    0,   30,   46,   43,    0,    0,    0,
+   39,   50,   53,   52,    0,    0,   51,   54,
 };
 final static short yydgoto[] = {                          3,
-    4,    5,   25,    7,   10,   26,   21,   16,   45,   27,
-   44,   28,   29,   50,   31,   32,   60,   52,   53,   61,
-   62,   63,   64,   57,   38,   94,   93,   95,
+    4,    5,   28,    7,   10,   29,   18,   20,   16,   37,
+   30,   36,   31,   32,   53,   34,   35,   63,   55,   56,
+   64,   65,   66,   67,   60,   41,   95,   94,   96,
 };
-final static short yysindex[] = {                      -228,
- -247, -238,    0,    0, -228,    0,    0, -240, -219, -208,
-    0, -201, -238,    0, -173, -172,    0, -181,    0, -151,
- -180, -206, -150,    0, -181,    0, -143, -181, -149, -148,
-    0,    0,    0,    0, -163, -252, -168, -147,    0,    0,
-    0,    0,    0, -172, -173, -163, -144,    0, -163,    0,
- -135, -139,    0,    0,    0, -248, -142, -158, -158, -249,
- -160, -129,    0,    0, -168,    0,    0,    0, -251, -163,
- -163, -243,    0,    0, -227, -141, -163, -168, -179, -168,
- -156,    0, -139,    0,    0,    0, -135, -129, -140,    0,
-    0,    0,    0, -179, -179,    0,    0,
+final static short yysindex[] = {                      -185,
+ -260, -230,    0,    0, -185,    0,    0, -191, -203, -213,
+    0, -187, -230,    0,    0, -173,    0, -155, -149, -154,
+ -195,    0,    0,    0, -169, -151,    0, -195,    0, -141,
+ -195, -150, -148,    0,    0, -173, -155, -161, -251, -168,
+ -146,    0,    0,    0,    0,    0,    0,    0, -161, -144,
+    0, -161,    0, -135, -139,    0,    0,    0, -217, -143,
+ -152, -152, -235, -261, -128,    0,    0, -168,    0, -223,
+ -161, -161, -238,    0,    0, -179, -140, -161, -168, -249,
+ -168, -214,    0, -139,    0,    0,    0, -135, -128, -132,
+    0,    0,    0,    0, -249, -249,    0,    0,
 };
 final static short yyrindex[] = {                         0,
-    0,    0,    0,    0,  132,    0,    0,    0, -138,    0,
-    0, -132,    0,    0,    0,    0,    0, -128,    0, -137,
-    0,    0,    0,    0, -128,    0,    0, -128,    0,    0,
+    0,    0,    0,    0,  123,    0,    0,    0, -138,    0,
+    0, -131,    0,    0,    0,    0,    0,    0, -137,    0,
+ -129,    0,    0,    0,    0,    0,    0, -129,    0,    0,
+ -129,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0,    0,    0,    0,    0,    0,    0, -228,
+    0,    0,    0, -136, -210,    0,    0,    0, -133,    0,
+    0,    0,    0,    0, -186,    0,    0,    0,    0,    0,
     0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0, -223,    0,    0,    0,
- -136, -218,    0,    0,    0, -133,    0,    0,    0,    0,
-    0, -155,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
-    0,    0, -200,    0,    0,    0, -189, -152, -198,    0,
-    0,    0,    0,    0,    0,    0,    0,
+    0,    0,    0, -205,    0,    0,    0, -163, -158, -189,
+    0,    0,    0,    0,    0,    0,    0,    0,
 };
 final static short yygindex[] = {                         0,
-  135,    0,   11,    0,  124,  -12,   97,    0,    0,   34,
-    0,   -4,    0,  -18,    0,    0,  -34,   72,  -42,   78,
-   66,   65,   46,   74,    0,    0,    0,    0,
+  132,    0,    8,    0,  127,  -14,    0,  105,    0,    0,
+   23,    0,    3,    0,  -21,    0,    0,  -37,   71,  -46,
+   75,   65,   64,   54,   73,    0,    0,    0,    0,
 };
 final static int YYTABLESIZE=146;
 static short yytable[];
 static { yytable();}
 static void yytable(){
-yytable = new short[]{                         30,
-   51,   56,   19,   68,   46,   70,   30,   70,   70,   30,
-    6,   72,   47,   46,   69,    6,   48,    8,   49,   54,
-   82,   47,   55,   77,   75,   48,    9,   49,   84,   70,
-   12,   55,   67,   30,   30,    1,   30,   56,   26,   26,
-   13,   26,   87,   30,   82,   77,   30,    2,   30,   30,
-   30,   26,   35,   26,   26,   26,   27,   27,   39,   27,
-   30,   41,   54,   54,   36,   14,   54,   54,   41,   27,
-   15,   27,   27,   27,   89,   30,   30,   54,   54,   18,
-   41,   18,   41,   22,   23,   22,   23,   18,   46,   96,
-   97,   34,   20,   46,    2,   24,   47,   24,   46,   58,
-   48,   47,   59,   74,   76,   48,   47,   49,   33,   78,
-   48,   79,   59,   78,   35,   91,   35,   36,   40,   36,
-   37,   70,   92,   65,   42,   43,   36,   71,   80,   73,
-   86,    3,   10,   19,   16,    8,   17,   25,   46,   11,
-   66,   83,   81,   88,   90,   85,
+yytable = new short[]{                         33,
+   54,   59,   69,   22,    8,   49,   33,    6,   79,   33,
+   80,   21,    6,   50,   70,   25,   26,   51,   49,   52,
+   57,   71,   48,   58,   76,   85,   50,   27,   31,   31,
+   51,   31,   52,   71,    9,   59,   58,   78,   31,   71,
+   88,   31,   73,   31,   31,   31,   27,   27,   83,   27,
+   42,   28,   28,   44,   28,   79,   13,   92,   33,   27,
+   14,   27,   27,   27,   28,   21,   28,   28,   28,   25,
+   26,   55,   55,   33,   33,   55,   55,   71,    1,   12,
+    2,   27,   90,   36,   15,   36,   55,   55,   49,   38,
+    2,   19,   83,   78,   42,   49,   50,   97,   98,   61,
+   51,   39,   62,   50,   49,   21,   42,   51,   42,   52,
+   23,   37,   50,   37,   75,   77,   51,   24,   62,   40,
+   43,   71,    3,   45,   68,   46,   39,   72,   74,   81,
+   93,   87,   20,   11,   17,    8,   11,   26,   47,   17,
+   47,   84,   82,   89,   91,   86,
 };
 }
 static short yycheck[];
 static { yycheck(); }
 static void yycheck() {
-yycheck = new short[] {                         18,
-   35,   36,   15,   46,  257,  257,   25,  257,  257,   28,
-    0,  260,  265,  257,   49,    5,  269,  265,  271,  272,
-  272,  265,  275,  273,   59,  269,  265,  271,   71,  257,
-  271,  275,   45,  257,  258,  264,  260,   72,  257,  258,
-  260,  260,   77,  267,  272,  273,  270,  276,  272,  273,
-  274,  270,  259,  272,  273,  274,  257,  258,   25,  260,
-   79,   28,  261,  262,  271,  274,  265,  266,  258,  270,
-  272,  272,  273,  274,   79,   94,   95,  276,  277,  261,
-  270,  261,  272,  265,  266,  265,  266,  261,  257,   94,
-   95,  272,  265,  257,  276,  277,  265,  277,  257,  268,
-  269,  265,  271,   58,   59,  269,  265,  271,  260,  270,
-  269,  272,  271,  270,  270,  272,  272,  270,  262,  272,
-  271,  257,  263,  271,  274,  274,  271,  267,  258,  272,
-  272,    0,  265,  262,  272,  274,   13,  274,  272,    5,
-   44,   70,   65,   78,   80,   72,
+yycheck = new short[] {                         21,
+   38,   39,   49,   18,  265,  257,   28,    0,  270,   31,
+  272,  261,    5,  265,   52,  265,  266,  269,  257,  271,
+  272,  257,   37,  275,   62,   72,  265,  277,  257,  258,
+  269,  260,  271,  257,  265,   73,  275,  273,  267,  257,
+   78,  270,  260,  272,  273,  274,  257,  258,  272,  260,
+   28,  257,  258,   31,  260,  270,  260,  272,   80,  270,
+  274,  272,  273,  274,  270,  261,  272,  273,  274,  265,
+  266,  261,  262,   95,   96,  265,  266,  257,  264,  271,
+  276,  277,   80,  270,  272,  272,  276,  277,  257,  259,
+  276,  265,  272,  273,  258,  257,  265,   95,   96,  268,
+  269,  271,  271,  265,  257,  261,  270,  269,  272,  271,
+  260,  270,  265,  272,   61,   62,  269,  272,  271,  271,
+  262,  257,    0,  274,  271,  274,  271,  267,  272,  258,
+  263,  272,  262,  265,  272,  274,    5,  274,  272,   13,
+   36,   71,   68,   79,   81,   73,
 };
 }
 final static short YYFINAL=3;
@@ -319,13 +319,14 @@ final static String yyrule[] = {
 "vardecl : VAR varlist SEMICOLON",
 "varlist : ID COMMA varlist",
 "varlist : ID",
-"function : FUNCTION ID PARENL PARENR body",
 "$$1 :",
+"function : FUNCTION ID PARENL PARENR $$1 body",
 "$$2 :",
-"function : FUNCTION ID PARENL $$1 fplist PARENR $$2 body",
-"body : CURLL bodylist CURLR",
 "$$3 :",
-"fplist : ID COMMA $$3 fplist",
+"function : FUNCTION ID PARENL $$2 fplist PARENR $$3 body",
+"body : CURLL bodylist CURLR",
+"$$4 :",
+"fplist : ID COMMA $$4 fplist",
 "fplist : ID",
 "bodylist : vardecl bodylist",
 "bodylist : stmt bodylist",
@@ -358,16 +359,16 @@ final static String yyrule[] = {
 "aplist : expr COMMA aplist",
 "aplist : expr",
 "aplist : STRING",
-"$$4 :",
 "$$5 :",
-"while : WHILE $$4 PARENL bexpr PARENR $$5 stmt",
-"if : IF PARENL bexpr PARENR stmt elsepart",
 "$$6 :",
-"elsepart : ELSE $$6 stmt",
+"while : WHILE $$5 PARENL bexpr PARENR $$6 stmt",
+"if : IF PARENL bexpr PARENR stmt elsepart",
+"$$7 :",
+"elsepart : ELSE $$7 stmt",
 "elsepart :",
 };
 
-//#line 309 "project7.java"
+//#line 315 "project7.java"
 
 //##############################################################################
 
@@ -494,7 +495,7 @@ public static void main(String args[])
  par.setup(args[0]);
  par.yyparse();
 }
-//#line 426 "Parser.java"
+//#line 427 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -651,54 +652,63 @@ boolean doaction;
 case 1:
 //#line 38 "project7.java"
 {
+    System.out.println(globalTable);
     System.out.println("The program is correct, and contains:");
     System.out.printf("%5d statements\n",stmtCount);
     System.out.printf("%5d function definitions\n",funcCount);
 }
 break;
 case 5:
-//#line 50 "project7.java"
+//#line 51 "project7.java"
 {funcCount++;}
 break;
 case 7:
-//#line 57 "project7.java"
+//#line 58 "project7.java"
 {
           /*add variable to variable "stack"*/
           varStack.addLast(val_peek(2).sval);
       }
 break;
 case 8:
-//#line 62 "project7.java"
+//#line 63 "project7.java"
 {
           /*add variable to variable stack*/
         varStack.addLast(val_peek(0).sval);
       }
 break;
 case 9:
-//#line 69 "project7.java"
+//#line 70 "project7.java"
 {
+              globalTable.add(val_peek(2).sval, "function");
                 /*add label for new funtion*/
               ICode stmt = new ICode("NOP");
-              stmt.addLabel(val_peek(3).sval);
+              stmt.addLabel(val_peek(2).sval);
               stmt.emit();
-              currTable = new SymbolTable(val_peek(3).sval);
+              currTable = new SymbolTable(val_peek(2).sval);
             }
 break;
 case 10:
-//#line 76 "project7.java"
-{currTable = new SymbolTable(val_peek(1).sval);}
+//#line 79 "project7.java"
+{
+              System.out.println(currTable);
+            }
 break;
 case 11:
-//#line 77 "project7.java"
+//#line 82 "project7.java"
+{currTable = new SymbolTable(val_peek(1).sval);}
+break;
+case 12:
+//#line 83 "project7.java"
 {
+        globalTable.add(val_peek(4).sval, "function");
           /*add label for new function*/
         ICode stmt = new ICode("NOP");
         stmt.addLabel(val_peek(4).sval);
         stmt.emit();
       }
 break;
-case 12:
-//#line 84 "project7.java"
+case 13:
+//#line 91 "project7.java"
 {
         ICode returnOp = new ICode("RET");
         returnOp.emit();
@@ -709,32 +719,32 @@ case 12:
         System.out.println(currTable);
       }
 break;
-case 14:
-//#line 98 "project7.java"
+case 15:
+//#line 105 "project7.java"
 {currTable.add(val_peek(1).sval, "int");}
 break;
-case 16:
-//#line 99 "project7.java"
+case 17:
+//#line 106 "project7.java"
 {currTable.add(val_peek(0).sval, "int");}
 break;
-case 20:
-//#line 107 "project7.java"
-{stmtCount++;}
-break;
 case 21:
-//#line 108 "project7.java"
+//#line 114 "project7.java"
 {stmtCount++;}
 break;
 case 22:
-//#line 109 "project7.java"
+//#line 115 "project7.java"
 {stmtCount++;}
 break;
 case 23:
-//#line 110 "project7.java"
+//#line 116 "project7.java"
 {stmtCount++;}
 break;
-case 25:
-//#line 115 "project7.java"
+case 24:
+//#line 117 "project7.java"
+{stmtCount++;}
+break;
+case 26:
+//#line 122 "project7.java"
 {
           if(tempStack.size() == 0){
             ICode assignStmt = new ICode("MOV", val_peek(0).sval, val_peek(2).sval);
@@ -746,8 +756,8 @@ case 25:
           }
         }
 break;
-case 27:
-//#line 129 "project7.java"
+case 28:
+//#line 136 "project7.java"
 {
         String tempAddOp = ICode.genTemp();
         currTable.add(tempAddOp, "int");
@@ -762,23 +772,35 @@ case 27:
         }
       }
 break;
-case 30:
-//#line 148 "project7.java"
+case 31:
+//#line 155 "project7.java"
 {yyval.sval = val_peek(0).sval;}
 break;
-case 31:
-//#line 150 "project7.java"
+case 32:
+//#line 157 "project7.java"
 {
         String numberString = String.format("%d", val_peek(0).ival);
         yyval.sval = numberString;
       }
 break;
-case 32:
-//#line 154 "project7.java"
+case 33:
+//#line 161 "project7.java"
 {yyval.sval = val_peek(1).sval;}
 break;
-case 41:
-//#line 172 "project7.java"
+case 34:
+//#line 163 "project7.java"
+{
+          /*handle negative numbers*/
+        String negTemp = ICode.genTemp();
+        tempStack.add(negTemp);
+        currTable.add(negTemp, "int");
+        String tempNumber = String.format("%d", val_peek(0).ival);
+        ICode negValue = new ICode("NEG", tempNumber, negTemp);
+        negValue.emit();
+      }
+break;
+case 42:
+//#line 188 "project7.java"
 {
         String temp, temp2;
         String newTemp = ICode.genTemp();
@@ -817,8 +839,8 @@ case 41:
         branchOnEqual.emit();
       }
 break;
-case 43:
-//#line 213 "project7.java"
+case 44:
+//#line 229 "project7.java"
 {
         ICode callSimpleFunction = new ICode("CALL", val_peek(2).sval);
         callSimpleFunction.emit();
@@ -828,8 +850,8 @@ case 43:
         stret.emit();
       }
 break;
-case 44:
-//#line 222 "project7.java"
+case 45:
+//#line 238 "project7.java"
 {
         String stretTemp = ICode.genTemp();
         currTable.add(stretTemp, "int");
@@ -848,8 +870,8 @@ case 44:
         stret.emit();
       }
 break;
-case 48:
-//#line 248 "project7.java"
+case 49:
+//#line 264 "project7.java"
 {
         String topLabel = ICode.genLabel();
         ICode topStatement = new ICode("NOP");
@@ -858,8 +880,8 @@ case 48:
         whileLabelStack.push(topLabel);
       }
 break;
-case 49:
-//#line 256 "project7.java"
+case 50:
+//#line 272 "project7.java"
 {
         /*ICode cmpPart = new ICode("CMP", $4.sval, "0");*/
         ICode cmpPart = new ICode("CMP", "TEMP_FOR_BEXPR", "0");
@@ -870,8 +892,8 @@ case 49:
         whileLabelStack.push(outLabel);
       }
 break;
-case 50:
-//#line 266 "project7.java"
+case 51:
+//#line 282 "project7.java"
 {
         String outLabel = whileLabelStack.pop();
         String topLabel = whileLabelStack.pop();
@@ -882,8 +904,8 @@ case 50:
         whileOut.emit();
       }
 break;
-case 52:
-//#line 281 "project7.java"
+case 53:
+//#line 297 "project7.java"
 {
             String branchAlwaysIfLbl = ICode.genLabel();
             branchAlwaysStack.push(branchAlwaysIfLbl);
@@ -895,28 +917,15 @@ case 52:
             elseBranch.emit();
           }
 break;
-case 53:
-//#line 292 "project7.java"
+case 54:
+//#line 308 "project7.java"
 {
             ICode afterElse = new ICode("NOP");
             afterElse.addLabel(branchAlwaysStack.pop());
             afterElse.emit();
-            /*String branchAlwaysIfLbl = ICode.genLabel();*/
-            /*ICode branchAlwaysIf = new ICode("BA", branchAlwaysIfLbl);*/
-            /*branchAlwaysStack.push(branchAlwaysIfLbl);*/
-            /*branchAlwaysIf.emit();*/
           }
 break;
-case 54:
-//#line 302 "project7.java"
-{
-          /*String elseNothingLabel = elseLabelStack.pop();*/
-          /*ICode elseNothingBranch = new ICode("NOP");*/
-          /*elseNothingBranch.addLabel(elseNothingLabel);*/
-          /*elseNothingBranch.emit();*/
-        }
-break;
-//#line 843 "Parser.java"
+//#line 852 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

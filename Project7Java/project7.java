@@ -36,6 +36,7 @@ import java.util.StringTokenizer;
 %%
     start:  pgm
 {
+    System.out.println(globalTable);
     System.out.println("The program is correct, and contains:");
     System.out.printf("%5d statements\n",stmtCount);
     System.out.printf("%5d function definitions\n",funcCount);
@@ -65,16 +66,24 @@ varlist: ID COMMA varlist
       }
     ;
 
-function: FUNCTION ID PARENL PARENR body
+function: FUNCTION ID PARENL PARENR
             {
+                //add function definition to global table
+              globalTable.add($2.sval, "function");
                 //add label for new funtion
               ICode stmt = new ICode("NOP");
               stmt.addLabel($2.sval);
               stmt.emit();
               currTable = new SymbolTable($2.sval);
             }
+            body
+            {
+              System.out.println(currTable);
+            }
     | FUNCTION ID PARENL {currTable = new SymbolTable($2.sval);} fplist PARENR
       {
+          //add function definition to global table
+        globalTable.add($2.sval, "function");
           //add label for new function
         ICode stmt = new ICode("NOP");
         stmt.addLabel($2.sval);
@@ -153,6 +162,15 @@ term: ID {$$.sval = $1.sval;}
       }
     | PARENL expr PARENR {$$.sval = $2.sval;}
     | ADDOP term
+      {
+          //handle negative numbers
+        String negTemp = ICode.genTemp();
+        tempStack.add(negTemp);
+        currTable.add(negTemp, "int");
+        String tempNumber = String.format("%d", $2.ival);
+        ICode negValue = new ICode("NEG", tempNumber, negTemp);
+        negValue.emit();
+      }
     | fcall
     ;
 
