@@ -367,7 +367,7 @@ final static String yyrule[] = {
 "elsepart :",
 };
 
-//#line 399 "project7.java"
+//#line 409 "project7.java"
 
 //##############################################################################
 
@@ -808,15 +808,16 @@ case 30:
           ICode divide = new ICode("DIV", val_peek(2).sval, val_peek(0).sval, tempMulOp);
           divide.emit();
         }
+          /*return the result*/
         yyval.sval = tempMulOp;
       }
 break;
 case 31:
-//#line 192 "project7.java"
+//#line 193 "project7.java"
 {yyval.sval = val_peek(0).sval;}
 break;
 case 32:
-//#line 194 "project7.java"
+//#line 195 "project7.java"
 {
           /*convert numbers to string*/
         String numberString = String.format("%d", val_peek(0).ival);
@@ -824,13 +825,13 @@ case 32:
       }
 break;
 case 33:
-//#line 199 "project7.java"
+//#line 200 "project7.java"
 {yyval.sval = val_peek(1).sval;}
 break;
 case 34:
-//#line 201 "project7.java"
+//#line 202 "project7.java"
 {
-          /*handle negative numbers*/
+          /*generate temp for negative value*/
         String negTemp = ICode.genTemp();
         currTable.add(negTemp, "int");
 
@@ -838,11 +839,13 @@ case 34:
         String tempNumber = String.format("%d", val_peek(0).ival);
         ICode negValue = new ICode("NEG", tempNumber, negTemp);
         negValue.emit();
+
+          /*return the value*/
         yyval.sval = negTemp;
       }
 break;
 case 37:
-//#line 217 "project7.java"
+//#line 220 "project7.java"
 {
           /*compare the two temps from for the comparison to branch*/
         ICode andCmp = new ICode("CMP", cmpStack.pop(), cmpStack.pop());
@@ -855,7 +858,7 @@ case 37:
       }
 break;
 case 39:
-//#line 231 "project7.java"
+//#line 234 "project7.java"
 {
           /*compare the two temps from for the comparison to branch*/
         ICode andCmp = new ICode("CMP", cmpStack.pop(), cmpStack.pop());
@@ -867,7 +870,7 @@ case 39:
       }
 break;
 case 41:
-//#line 244 "project7.java"
+//#line 247 "project7.java"
 {
           /*peform a logical NOT*/
         String notTemp = ICode.genTemp();
@@ -876,11 +879,15 @@ case 41:
       }
 break;
 case 42:
-//#line 253 "project7.java"
+//#line 256 "project7.java"
 {
         String temp, temp2;
+
+          /*generate comparison intermediate code*/
         String newTemp = ICode.genTemp();
         cmpStack.push(newTemp);
+
+          /*add temp to table*/
         currTable.add(newTemp, "int");
 
           /*generate code for less than comparison*/
@@ -931,7 +938,7 @@ case 42:
       }
 break;
 case 44:
-//#line 309 "project7.java"
+//#line 316 "project7.java"
 {
           /*generate intermediate code for function*/
           /*with no parameters*/
@@ -941,11 +948,13 @@ case 44:
         currTable.add(stretTemp, "int");
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
+
+          /*return the result*/
         yyval.sval = stretTemp;
       }
 break;
 case 45:
-//#line 321 "project7.java"
+//#line 330 "project7.java"
 {
           /*generate intermediate code for function with parameters*/
         String stretTemp = ICode.genTemp();
@@ -966,7 +975,7 @@ case 45:
       }
 break;
 case 49:
-//#line 348 "project7.java"
+//#line 357 "project7.java"
 {
           /*generate label for while loop*/
         String topLabel = ICode.genLabel();
@@ -979,7 +988,7 @@ case 49:
       }
 break;
 case 50:
-//#line 360 "project7.java"
+//#line 369 "project7.java"
 {
           /*jump back to the top*/
         ICode jump = new ICode("JMP", whileLabelStack.pop());
@@ -992,8 +1001,9 @@ case 50:
       }
 break;
 case 52:
-//#line 376 "project7.java"
+//#line 385 "project7.java"
 {
+              /*generate label for branching to else*/
             String branchAlwaysIfLbl = ICode.genLabel();
             branchAlwaysStack.push(branchAlwaysIfLbl);
 
@@ -1009,7 +1019,7 @@ case 52:
           }
 break;
 case 53:
-//#line 391 "project7.java"
+//#line 401 "project7.java"
 {
               /*create a branch to get past the IF statement*/
             ICode afterElse = new ICode("NOP");
@@ -1017,7 +1027,7 @@ case 53:
             afterElse.emit();
           }
 break;
-//#line 944 "Parser.java"
+//#line 954 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

@@ -94,6 +94,7 @@ function: FUNCTION ID PARENL PARENR
       {
           //add function definition to global table
         globalTable.add($2.sval, "function");
+        
           //add label for new function
         ICode stmt = new ICode("NOP");
         stmt.addLabel($2.sval);
