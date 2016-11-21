@@ -367,7 +367,7 @@ final static String yyrule[] = {
 "elsepart :",
 };
 
-//#line 394 "project7.java"
+//#line 393 "project7.java"
 
 //##############################################################################
 
@@ -772,7 +772,6 @@ case 28:
 {
         String tempAddOp = ICode.genTemp();
         currTable.add(tempAddOp, "int");
-        tempStack.push(tempAddOp);
 
           /*if the ADDOP is a subtraction, emit the code*/
         if(val_peek(1).sval.equals("-")){
@@ -789,12 +788,11 @@ case 28:
       }
 break;
 case 30:
-//#line 168 "project7.java"
+//#line 167 "project7.java"
 {
           /*generate temp for result of MULOP*/
         String tempMulOp = ICode.genTemp();
         currTable.add(tempMulOp, "int");
-        tempStack.add(tempMulOp);
 
           /*check to see if token is multiplication*/
         if(val_peek(1).sval.equals("*")){
@@ -810,11 +808,11 @@ case 30:
       }
 break;
 case 31:
-//#line 188 "project7.java"
+//#line 186 "project7.java"
 {yyval.sval = val_peek(0).sval;}
 break;
 case 32:
-//#line 190 "project7.java"
+//#line 188 "project7.java"
 {
           /*convert numbers to string*/
         String numberString = String.format("%d", val_peek(0).ival);
@@ -822,15 +820,14 @@ case 32:
       }
 break;
 case 33:
-//#line 195 "project7.java"
+//#line 193 "project7.java"
 {yyval.sval = val_peek(1).sval;}
 break;
 case 34:
-//#line 197 "project7.java"
+//#line 195 "project7.java"
 {
           /*handle negative numbers*/
         String negTemp = ICode.genTemp();
-        tempStack.push(negTemp);
         currTable.add(negTemp, "int");
 
           /*convert number to string*/
@@ -841,7 +838,7 @@ case 34:
       }
 break;
 case 37:
-//#line 214 "project7.java"
+//#line 211 "project7.java"
 {
           /*compare the two temps from for the comparison to branch*/
         ICode andCmp = new ICode("CMP", cmpStack.pop(), cmpStack.pop());
@@ -854,7 +851,7 @@ case 37:
       }
 break;
 case 39:
-//#line 228 "project7.java"
+//#line 225 "project7.java"
 {
           /*compare the two temps from for the comparison to branch*/
         ICode andCmp = new ICode("CMP", cmpStack.pop(), cmpStack.pop());
@@ -866,7 +863,7 @@ case 39:
       }
 break;
 case 41:
-//#line 241 "project7.java"
+//#line 238 "project7.java"
 {
           /*peform a logical NOT*/
         String notTemp = ICode.genTemp();
@@ -875,7 +872,7 @@ case 41:
       }
 break;
 case 42:
-//#line 250 "project7.java"
+//#line 247 "project7.java"
 {
         String temp, temp2;
         String newTemp = ICode.genTemp();
@@ -930,14 +927,13 @@ case 42:
       }
 break;
 case 44:
-//#line 306 "project7.java"
+//#line 303 "project7.java"
 {
           /*generate intermediate code for function*/
           /*with no parameters*/
         ICode callSimpleFunction = new ICode("CALL", val_peek(2).sval);
         callSimpleFunction.emit();
         String stretTemp = ICode.genTemp();
-        tempStack.push(stretTemp);
         currTable.add(stretTemp, "int");
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
@@ -945,25 +941,28 @@ case 44:
       }
 break;
 case 45:
-//#line 319 "project7.java"
+//#line 315 "project7.java"
 {
           /*generate intermediate code for function with parameters*/
         String stretTemp = ICode.genTemp();
         currTable.add(stretTemp, "int");
 
-        /*if there is no values currently stored, generate the intermediate code*/
+          /*if there is no values currently stored, generate the intermediate code*/
         ICode fCallParameters = new ICode("PARAM", val_peek(1).sval);
         fCallParameters.emit();
 
+          /*generate CALL intermediate code and print*/
         ICode callSimpleFunction = new ICode("CALL", val_peek(3).sval);
         callSimpleFunction.emit();
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
+
+          /*return temp variable*/
         yyval.sval = stretTemp;
       }
 break;
 case 49:
-//#line 343 "project7.java"
+//#line 342 "project7.java"
 {
           /*generate label for while loop*/
         String topLabel = ICode.genLabel();
@@ -976,7 +975,7 @@ case 49:
       }
 break;
 case 50:
-//#line 355 "project7.java"
+//#line 354 "project7.java"
 {
           /*jump back to the top*/
         ICode jump = new ICode("JMP", whileLabelStack.pop());
@@ -989,7 +988,7 @@ case 50:
       }
 break;
 case 52:
-//#line 371 "project7.java"
+//#line 370 "project7.java"
 {
             String branchAlwaysIfLbl = ICode.genLabel();
             branchAlwaysStack.push(branchAlwaysIfLbl);
@@ -1006,7 +1005,7 @@ case 52:
           }
 break;
 case 53:
-//#line 386 "project7.java"
+//#line 385 "project7.java"
 {
               /*create a branch to get past the IF statement*/
             ICode afterElse = new ICode("NOP");
@@ -1014,7 +1013,7 @@ case 53:
             afterElse.emit();
           }
 break;
-//#line 941 "Parser.java"
+//#line 940 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

@@ -146,7 +146,6 @@ expr: factor
       {
         String tempAddOp = ICode.genTemp();
         currTable.add(tempAddOp, "int");
-        tempStack.push(tempAddOp);
 
           //if the ADDOP is a subtraction, emit the code
         if($2.sval.equals("-")){
@@ -169,7 +168,6 @@ factor: term
           //generate temp for result of MULOP
         String tempMulOp = ICode.genTemp();
         currTable.add(tempMulOp, "int");
-        tempStack.add(tempMulOp);
 
           //check to see if token is multiplication
         if($2.sval.equals("*")){
@@ -197,7 +195,6 @@ term: ID {$$.sval = $1.sval;}
       {
           //handle negative numbers
         String negTemp = ICode.genTemp();
-        tempStack.push(negTemp);
         currTable.add(negTemp, "int");
 
           //convert number to string
@@ -309,7 +306,6 @@ fcall: ID PARENL PARENR
         ICode callSimpleFunction = new ICode("CALL", $1.sval);
         callSimpleFunction.emit();
         String stretTemp = ICode.genTemp();
-        tempStack.push(stretTemp);
         currTable.add(stretTemp, "int");
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
@@ -406,7 +402,6 @@ elsepart: ELSE
     public LinkedList<String> whileLabelStack;
     public LinkedList<String> genLabelStack;
     public LinkedList<String> branchAlwaysStack;
-    public LinkedList<String> tempStack;
     public LinkedList<String> varStack;
     public LinkedList<String> cmpStack;
 
@@ -426,7 +421,6 @@ public void setup(String fname)
     whileLabelStack = new LinkedList<String>();
     genLabelStack = new LinkedList<String>();
     branchAlwaysStack = new LinkedList<String>();
-    tempStack = new LinkedList<String>();
     varStack = new LinkedList<String>();
     cmpStack = new LinkedList<String>();
 }
