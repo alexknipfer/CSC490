@@ -200,7 +200,7 @@ term: ID {$$.sval = $1.sval;}
     | PARENL expr PARENR {$$.sval = $2.sval;}
     | ADDOP term
       {
-          //handle negative numbers
+          //generate temp for negative value
         String negTemp = ICode.genTemp();
         currTable.add(negTemp, "int");
 
@@ -208,6 +208,8 @@ term: ID {$$.sval = $1.sval;}
         String tempNumber = String.format("%d", $2.ival);
         ICode negValue = new ICode("NEG", tempNumber, negTemp);
         negValue.emit();
+
+          //return the value
         $$.sval = negTemp;
       }
     | fcall
@@ -253,8 +255,12 @@ bneg: bterm
 bterm: expr RELOP expr
       {
         String temp, temp2;
+
+          //generate comparison intermediate code
         String newTemp = ICode.genTemp();
         cmpStack.push(newTemp);
+
+          //add temp to table
         currTable.add(newTemp, "int");
 
           //generate code for less than comparison
@@ -316,6 +322,8 @@ fcall: ID PARENL PARENR
         currTable.add(stretTemp, "int");
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
+
+          //return the result
         $$.sval = stretTemp;
       }
     | ID PARENL aplist PARENR
@@ -375,6 +383,7 @@ if: IF PARENL bexpr PARENR stmt elsepart
 
 elsepart: ELSE
           {
+              //generate label for branching to else
             String branchAlwaysIfLbl = ICode.genLabel();
             branchAlwaysStack.push(branchAlwaysIfLbl);
 
