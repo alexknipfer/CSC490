@@ -56,7 +56,7 @@ vardecl: VAR varlist SEMICOLON
 
 varlist: ID COMMA varlist
       {
-          //add variable to variable "stack"
+            //add variable to variable "stack"
           varStack.addLast($1.sval);
       }
     | ID
@@ -136,6 +136,8 @@ stmt: assign SEMICOLON  {stmtCount++;}
 
 assign: ID ASSIGNOP expr
         {
+            //generate intermediate code for assignment operator
+            //and emit the code
           ICode assignStmt = new ICode("MOV", $3.sval, $1.sval);
           assignStmt.emit();
         }
@@ -144,6 +146,7 @@ assign: ID ASSIGNOP expr
 expr: factor
     | expr ADDOP factor
       {
+          //create temp for result
         String tempAddOp = ICode.genTemp();
         currTable.add(tempAddOp, "int");
 
@@ -158,6 +161,8 @@ expr: factor
           ICode add = new ICode("ADD", $1.sval, $3.sval, tempAddOp);
           add.emit();
         }
+
+          //return the result (stored in the temp)
         $$.sval = tempAddOp;
       }
     ;
@@ -180,6 +185,8 @@ factor: term
           ICode divide = new ICode("DIV", $1.sval, $3.sval, tempMulOp);
           divide.emit();
         }
+          //return the result
+        $$.sval = tempMulOp;
       }
     ;
 
