@@ -12,6 +12,23 @@ function main()
   <- 7;
 }
 
+function afunction(a, b)
+{
+  if (a>b)
+  {
+    while (b  <=a)
+      a <- a-1;
+    afunction <- sin(a*b);
+  }
+  else
+  {
+    var c;
+    c <- 78*b;
+    afunction <- cos (b/a);
+
+  }
+}
+
 function hggtg()
 {
   print("The answer to life, the universe, and everything is ");
