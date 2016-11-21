@@ -1,0 +1,10 @@
+function main()
+{
+  var n;
+#  n <- 9;
+
+  while(n > 0)
+  {
+  #
+  }
+}

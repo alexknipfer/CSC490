@@ -136,17 +136,8 @@ stmt: assign SEMICOLON  {stmtCount++;}
 
 assign: ID ASSIGNOP expr
         {
-            //check to see if a temp exists for a possible past calculation
-          if(tempStack.size() == 0){
-            ICode assignStmt = new ICode("MOV", $3.sval, $1.sval);
-            assignStmt.emit();
-          }
-
-            //print the move with the given value
-          else{
-            ICode assignStmt = new ICode("MOV", tempStack.pop(), $1.sval);
-            assignStmt.emit();
-          }
+          ICode assignStmt = new ICode("MOV", $3.sval, $1.sval);
+          assignStmt.emit();
         }
     ;
 
@@ -168,6 +159,7 @@ expr: factor
           ICode add = new ICode("ADD", $1.sval, $3.sval, tempAddOp);
           add.emit();
         }
+        $$.sval = tempAddOp;
       }
     ;
 
@@ -212,6 +204,7 @@ term: ID {$$.sval = $1.sval;}
         String tempNumber = String.format("%d", $2.ival);
         ICode negValue = new ICode("NEG", tempNumber, negTemp);
         negValue.emit();
+        $$.sval = negTemp;
       }
     | fcall
     ;
@@ -320,6 +313,7 @@ fcall: ID PARENL PARENR
         currTable.add(stretTemp, "int");
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
+        $$.sval = stretTemp;
       }
     | ID PARENL aplist PARENR
       {
@@ -328,19 +322,17 @@ fcall: ID PARENL PARENR
         currTable.add(stretTemp, "int");
 
           //if there is no values currently stored, generate the intermediate code
-        if(tempStack.size() == 0){
-          ICode fCallParameters = new ICode("PARAM", $3.sval);
-          fCallParameters.emit();
-        }
-        else{
-          ICode fCallParameters = new ICode("PARAM", tempStack.pop());
-          tempStack.push(stretTemp);
-          fCallParameters.emit();
-        }
+        ICode fCallParameters = new ICode("PARAM", $3.sval);
+        fCallParameters.emit();
+
+          //generate CALL intermediate code and print
         ICode callSimpleFunction = new ICode("CALL", $1.sval);
         callSimpleFunction.emit();
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
+
+          //return temp variable
+        $$.sval = stretTemp;
       }
     ;
 
