@@ -493,8 +493,19 @@ public static void main(String args[])
  Parser par = new Parser(false);
  par.setup(args[0]);
  par.yyparse();
+ for(ICode c: ICode.stmtList){
+   System.out.print("#");
+   c.print();
+
+   List<String> operands = c.getOperands();
+   if(operands.size()>=1){
+     System.out.println(operands.get(0));
+   }
+
+   System.out.println();
+ }
 }
-//#line 426 "Parser.java"
+//#line 437 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1028,7 +1039,7 @@ case 53:
             afterElse.emit();
           }
 break;
-//#line 955 "Parser.java"
+//#line 966 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

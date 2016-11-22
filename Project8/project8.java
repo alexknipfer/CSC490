@@ -532,4 +532,15 @@ public static void main(String args[])
  Parser par = new Parser(false);
  par.setup(args[0]);
  par.yyparse();
+ for(ICode c: ICode.stmtList){
+   System.out.print("#");
+   c.print();
+
+   List<String> operands = c.getOperands();
+   if(operands.size()>=1){
+     System.out.println(operands.get(0));
+   }
+
+   System.out.println();
+ }
 }

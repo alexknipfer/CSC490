@@ -23,7 +23,7 @@ public class ICode
      */
     public static String genTemp()
     {
-	return "__T"+tempCount++;
+	    return "__T"+tempCount++;
     }
 
     /**
@@ -32,7 +32,7 @@ public class ICode
      */
     public static String genLabel()
     {
-	return "__L"+labelCount++;
+	    return "__L"+labelCount++;
     }
 
 
@@ -60,8 +60,8 @@ public class ICode
      */
     public ICode(String op, String op1)
     {
-	nops = 0;
-	genCode(op, op1, null, null);
+        nops = 0;
+        genCode(op, op1, null, null);
     }
 
     /**
@@ -72,8 +72,8 @@ public class ICode
      */
     public ICode(String op, String op1, String op2)
     {
-	nops = 0;
-	genCode(op, op1, op2, null);
+        nops = 0;
+        genCode(op, op1, op2, null);
     }
 
 
@@ -86,19 +86,19 @@ public class ICode
      */
     public ICode(String op, String op1, String op2, String op3)
     {
-	nops = 0;
-	genCode(op, op1, op2, op3);
+        nops = 0;
+        genCode(op, op1, op2, op3);
     }
 
     // utility method for filling in an operand.
     private void genCode(String op, String op1, String op2, String op3)
     {
-	// take parameters and place the into associated instance variables
-	opcode = op;
-	this.op1 = op1;
-	this.op2 = op2;
-	this.op3 = op3;
-	label = null;  // by default, no stateent has a label.
+        // take parameters and place the into associated instance variables
+        opcode = op;
+        this.op1 = op1;
+        this.op2 = op2;
+        this.op3 = op3;
+        label = null;  // by default, no stateent has a label.
     }
 
     /**
@@ -107,7 +107,7 @@ public class ICode
      */
     public void addLabel(String lbl)
     {
-	label = lbl;
+	    label = lbl;
     }
 
     /**
@@ -128,19 +128,19 @@ public class ICode
      */
     public List<String> getOperands()
     {
-	List<String> ans = new LinkedList<String>();
-	
-	// check each operand; if it exists (i.e. is not null), add to result
-	if (op1!=null)
-	    ans.add(op1);
+        List<String> ans = new LinkedList<String>();
+        
+        // check each operand; if it exists (i.e. is not null), add to result
+        if (op1!=null)
+            ans.add(op1);
 
-	if (op2!=null)
-	    ans.add(op2);
+        if (op2!=null)
+            ans.add(op2);
 
-	if (op3!=null)
-	    ans.add(op3);
+        if (op3!=null)
+            ans.add(op3);
 
-	return ans;
+        return ans;
     }
 
     /**
@@ -149,7 +149,7 @@ public class ICode
      */
     public void emit()
     {
-	stmtList.addLast(this);
+	    stmtList.addLast(this);
     }
 
     /**
@@ -157,11 +157,11 @@ public class ICode
      */
     public void print()
     {
-	// if there's a label, print it. in any case, print the opcode. 
-	if (label!=null)
-	    System.out.printf("%-20s%-5s", label+":", opcode);
-	else
-	    System.out.printf("%20s%-5s", "", opcode);
+        // if there's a label, print it. in any case, print the opcode. 
+        if (label!=null)
+            System.out.printf("%-20s%-5s", label+":", opcode);
+        else
+            System.out.printf("%20s%-5s", "", opcode);
 
 
 	// print out the operands. 
