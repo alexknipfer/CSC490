@@ -56,7 +56,7 @@ vardecl: VAR varlist SEMICOLON
 
 varlist: ID COMMA varlist
       {
-          //add variable to variable "stack"
+            //add variable to variable "stack"
           varStack.addLast($1.sval);
       }
     | ID
@@ -94,6 +94,7 @@ function: FUNCTION ID PARENL PARENR
       {
           //add function definition to global table
         globalTable.add($2.sval, "function");
+        
           //add label for new function
         ICode stmt = new ICode("NOP");
         stmt.addLabel($2.sval);
@@ -136,26 +137,19 @@ stmt: assign SEMICOLON  {stmtCount++;}
 
 assign: ID ASSIGNOP expr
         {
-            //check to see if a temp exists for a possible past calculation
-          if(tempStack.size() == 0){
-            ICode assignStmt = new ICode("MOV", $3.sval, $1.sval);
-            assignStmt.emit();
-          }
-
-            //print the move with the given value
-          else{
-            ICode assignStmt = new ICode("MOV", tempStack.pop(), $1.sval);
-            assignStmt.emit();
-          }
+            //generate intermediate code for assignment operator
+            //and emit the code
+          ICode assignStmt = new ICode("MOV", $3.sval, $1.sval);
+          assignStmt.emit();
         }
     ;
 
 expr: factor
     | expr ADDOP factor
       {
+          //create temp for result
         String tempAddOp = ICode.genTemp();
         currTable.add(tempAddOp, "int");
-        tempStack.push(tempAddOp);
 
           //if the ADDOP is a subtraction, emit the code
         if($2.sval.equals("-")){
@@ -168,6 +162,9 @@ expr: factor
           ICode add = new ICode("ADD", $1.sval, $3.sval, tempAddOp);
           add.emit();
         }
+
+          //return the result (stored in the temp)
+        $$.sval = tempAddOp;
       }
     ;
 
@@ -177,7 +174,6 @@ factor: term
           //generate temp for result of MULOP
         String tempMulOp = ICode.genTemp();
         currTable.add(tempMulOp, "int");
-        tempStack.add(tempMulOp);
 
           //check to see if token is multiplication
         if($2.sval.equals("*")){
@@ -190,6 +186,8 @@ factor: term
           ICode divide = new ICode("DIV", $1.sval, $3.sval, tempMulOp);
           divide.emit();
         }
+          //return the result
+        $$.sval = tempMulOp;
       }
     ;
 
@@ -203,15 +201,17 @@ term: ID {$$.sval = $1.sval;}
     | PARENL expr PARENR {$$.sval = $2.sval;}
     | ADDOP term
       {
-          //handle negative numbers
+          //generate temp for negative value
         String negTemp = ICode.genTemp();
-        tempStack.push(negTemp);
         currTable.add(negTemp, "int");
 
           //convert number to string
         String tempNumber = String.format("%d", $2.ival);
         ICode negValue = new ICode("NEG", tempNumber, negTemp);
         negValue.emit();
+
+          //return the value
+        $$.sval = negTemp;
       }
     | fcall
     ;
@@ -256,8 +256,12 @@ bneg: bterm
 bterm: expr RELOP expr
       {
         String temp, temp2;
+
+          //generate comparison intermediate code
         String newTemp = ICode.genTemp();
         cmpStack.push(newTemp);
+
+          //add temp to table
         currTable.add(newTemp, "int");
 
           //generate code for less than comparison
@@ -316,10 +320,12 @@ fcall: ID PARENL PARENR
         ICode callSimpleFunction = new ICode("CALL", $1.sval);
         callSimpleFunction.emit();
         String stretTemp = ICode.genTemp();
-        tempStack.push(stretTemp);
         currTable.add(stretTemp, "int");
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
+
+          //return the result
+        $$.sval = stretTemp;
       }
     | ID PARENL aplist PARENR
       {
@@ -328,19 +334,17 @@ fcall: ID PARENL PARENR
         currTable.add(stretTemp, "int");
 
           //if there is no values currently stored, generate the intermediate code
-        if(tempStack.size() == 0){
-          ICode fCallParameters = new ICode("PARAM", $3.sval);
-          fCallParameters.emit();
-        }
-        else{
-          ICode fCallParameters = new ICode("PARAM", tempStack.pop());
-          tempStack.push(stretTemp);
-          fCallParameters.emit();
-        }
+        ICode fCallParameters = new ICode("PARAM", $3.sval);
+        fCallParameters.emit();
+
+          //generate CALL intermediate code and print
         ICode callSimpleFunction = new ICode("CALL", $1.sval);
         callSimpleFunction.emit();
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
+
+          //return temp variable
+        $$.sval = stretTemp;
       }
     ;
 
@@ -380,6 +384,7 @@ if: IF PARENL bexpr PARENR stmt elsepart
 
 elsepart: ELSE
           {
+              //generate label for branching to else
             String branchAlwaysIfLbl = ICode.genLabel();
             branchAlwaysStack.push(branchAlwaysIfLbl);
 
@@ -414,7 +419,6 @@ elsepart: ELSE
     public LinkedList<String> whileLabelStack;
     public LinkedList<String> genLabelStack;
     public LinkedList<String> branchAlwaysStack;
-    public LinkedList<String> tempStack;
     public LinkedList<String> varStack;
     public LinkedList<String> cmpStack;
 
@@ -434,7 +438,6 @@ public void setup(String fname)
     whileLabelStack = new LinkedList<String>();
     genLabelStack = new LinkedList<String>();
     branchAlwaysStack = new LinkedList<String>();
-    tempStack = new LinkedList<String>();
     varStack = new LinkedList<String>();
     cmpStack = new LinkedList<String>();
 }

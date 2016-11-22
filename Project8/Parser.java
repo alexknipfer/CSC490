@@ -16,7 +16,7 @@
 
 
 
-//#line 2 "project7.java"
+//#line 2 "project8.java"
 import java.lang.Math;
 import java.io.*;
 import java.util.*;
@@ -367,7 +367,7 @@ final static String yyrule[] = {
 "elsepart :",
 };
 
-//#line 388 "project7.java"
+//#line 410 "project8.java"
 
 //##############################################################################
 
@@ -380,7 +380,6 @@ final static String yyrule[] = {
     public LinkedList<String> whileLabelStack;
     public LinkedList<String> genLabelStack;
     public LinkedList<String> branchAlwaysStack;
-    public LinkedList<String> tempStack;
     public LinkedList<String> varStack;
     public LinkedList<String> cmpStack;
 
@@ -400,7 +399,6 @@ public void setup(String fname)
     whileLabelStack = new LinkedList<String>();
     genLabelStack = new LinkedList<String>();
     branchAlwaysStack = new LinkedList<String>();
-    tempStack = new LinkedList<String>();
     varStack = new LinkedList<String>();
     cmpStack = new LinkedList<String>();
 }
@@ -496,7 +494,7 @@ public static void main(String args[])
  par.setup(args[0]);
  par.yyparse();
 }
-//#line 428 "Parser.java"
+//#line 426 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -651,7 +649,7 @@ boolean doaction;
       {
 //########## USER-SUPPLIED ACTIONS ##########
 case 1:
-//#line 38 "project7.java"
+//#line 38 "project8.java"
 {
     System.out.println(globalTable);
     /*System.out.println("The program is correct, and contains:");*/
@@ -660,25 +658,25 @@ case 1:
 }
 break;
 case 5:
-//#line 51 "project7.java"
+//#line 51 "project8.java"
 {funcCount++;}
 break;
 case 7:
-//#line 58 "project7.java"
+//#line 58 "project8.java"
 {
-          /*add variable to variable "stack"*/
+            /*add variable to variable "stack"*/
           varStack.addLast(val_peek(2).sval);
       }
 break;
 case 8:
-//#line 63 "project7.java"
+//#line 63 "project8.java"
 {
           /*add variable to variable stack*/
         varStack.addLast(val_peek(0).sval);
       }
 break;
 case 9:
-//#line 70 "project7.java"
+//#line 70 "project8.java"
 {
                 /*add function definition to global table*/
               globalTable.add(val_peek(2).sval, "function");
@@ -690,7 +688,7 @@ case 9:
             }
 break;
 case 10:
-//#line 80 "project7.java"
+//#line 80 "project8.java"
 {
                 /*done with function body, "RETURN"*/
               ICode returnOp = new ICode("RET");
@@ -706,14 +704,15 @@ case 10:
             }
 break;
 case 11:
-//#line 93 "project7.java"
+//#line 93 "project8.java"
 {currTable = new SymbolTable(val_peek(1).sval);}
 break;
 case 12:
-//#line 94 "project7.java"
+//#line 94 "project8.java"
 {
           /*add function definition to global table*/
         globalTable.add(val_peek(4).sval, "function");
+        
           /*add label for new function*/
         ICode stmt = new ICode("NOP");
         stmt.addLabel(val_peek(4).sval);
@@ -721,7 +720,7 @@ case 12:
       }
 break;
 case 13:
-//#line 103 "project7.java"
+//#line 104 "project8.java"
 {
           /*done with function body, "RETURN"*/
         ICode returnOp = new ICode("RET");
@@ -737,51 +736,44 @@ case 13:
       }
 break;
 case 15:
-//#line 121 "project7.java"
+//#line 122 "project8.java"
 {currTable.add(val_peek(1).sval, "int");}
 break;
 case 17:
-//#line 122 "project7.java"
+//#line 123 "project8.java"
 {currTable.add(val_peek(0).sval, "int");}
 break;
 case 21:
-//#line 130 "project7.java"
+//#line 131 "project8.java"
 {stmtCount++;}
 break;
 case 22:
-//#line 131 "project7.java"
+//#line 132 "project8.java"
 {stmtCount++;}
 break;
 case 23:
-//#line 132 "project7.java"
+//#line 133 "project8.java"
 {stmtCount++;}
 break;
 case 24:
-//#line 133 "project7.java"
+//#line 134 "project8.java"
 {stmtCount++;}
 break;
 case 26:
-//#line 138 "project7.java"
+//#line 139 "project8.java"
 {
-            /*check to see if a temp exists for a possible past calculation*/
-          if(tempStack.size() == 0){
-            ICode assignStmt = new ICode("MOV", val_peek(0).sval, val_peek(2).sval);
-            assignStmt.emit();
-          }
-
-            /*print the move with the given value*/
-          else{
-            ICode assignStmt = new ICode("MOV", tempStack.pop(), val_peek(2).sval);
-            assignStmt.emit();
-          }
+            /*generate intermediate code for assignment operator*/
+            /*and emit the code*/
+          ICode assignStmt = new ICode("MOV", val_peek(0).sval, val_peek(2).sval);
+          assignStmt.emit();
         }
 break;
 case 28:
-//#line 155 "project7.java"
+//#line 149 "project8.java"
 {
+          /*create temp for result*/
         String tempAddOp = ICode.genTemp();
         currTable.add(tempAddOp, "int");
-        tempStack.push(tempAddOp);
 
           /*if the ADDOP is a subtraction, emit the code*/
         if(val_peek(1).sval.equals("-")){
@@ -794,15 +786,17 @@ case 28:
           ICode add = new ICode("ADD", val_peek(2).sval, val_peek(0).sval, tempAddOp);
           add.emit();
         }
+
+          /*return the result (stored in the temp)*/
+        yyval.sval = tempAddOp;
       }
 break;
 case 30:
-//#line 176 "project7.java"
+//#line 173 "project8.java"
 {
           /*generate temp for result of MULOP*/
         String tempMulOp = ICode.genTemp();
         currTable.add(tempMulOp, "int");
-        tempStack.add(tempMulOp);
 
           /*check to see if token is multiplication*/
         if(val_peek(1).sval.equals("*")){
@@ -815,14 +809,16 @@ case 30:
           ICode divide = new ICode("DIV", val_peek(2).sval, val_peek(0).sval, tempMulOp);
           divide.emit();
         }
+          /*return the result*/
+        yyval.sval = tempMulOp;
       }
 break;
 case 31:
-//#line 196 "project7.java"
+//#line 194 "project8.java"
 {yyval.sval = val_peek(0).sval;}
 break;
 case 32:
-//#line 198 "project7.java"
+//#line 196 "project8.java"
 {
           /*convert numbers to string*/
         String numberString = String.format("%d", val_peek(0).ival);
@@ -830,44 +826,52 @@ case 32:
       }
 break;
 case 33:
-//#line 203 "project7.java"
+//#line 201 "project8.java"
 {yyval.sval = val_peek(1).sval;}
 break;
 case 34:
-//#line 205 "project7.java"
+//#line 203 "project8.java"
 {
-          /*handle negative numbers*/
+          /*generate temp for negative value*/
         String negTemp = ICode.genTemp();
-        tempStack.push(negTemp);
         currTable.add(negTemp, "int");
+
+          /*convert number to string*/
         String tempNumber = String.format("%d", val_peek(0).ival);
         ICode negValue = new ICode("NEG", tempNumber, negTemp);
         negValue.emit();
+
+          /*return the value*/
+        yyval.sval = negTemp;
       }
 break;
 case 37:
-//#line 219 "project7.java"
+//#line 221 "project8.java"
 {
           /*compare the two temps from for the comparison to branch*/
         ICode andCmp = new ICode("CMP", cmpStack.pop(), cmpStack.pop());
         andCmp.emit();
         String newLabel = ICode.genLabel();
+
+          /*if false, branch out*/
         ICode branchOnEqual = new ICode("BE", newLabel);
         branchOnEqual.emit();
       }
 break;
 case 39:
-//#line 231 "project7.java"
+//#line 235 "project8.java"
 {
           /*compare the two temps from for the comparison to branch*/
         ICode andCmp = new ICode("CMP", cmpStack.pop(), cmpStack.pop());
         andCmp.emit();
+
+          /*if false, branch out*/
         ICode branchOnEqual = new ICode("BE", genLabelStack.pop());
         branchOnEqual.emit();
       }
 break;
 case 41:
-//#line 242 "project7.java"
+//#line 248 "project8.java"
 {
           /*peform a logical NOT*/
         String notTemp = ICode.genTemp();
@@ -876,11 +880,15 @@ case 41:
       }
 break;
 case 42:
-//#line 251 "project7.java"
+//#line 257 "project8.java"
 {
         String temp, temp2;
+
+          /*generate comparison intermediate code*/
         String newTemp = ICode.genTemp();
         cmpStack.push(newTemp);
+
+          /*add temp to table*/
         currTable.add(newTemp, "int");
 
           /*generate code for less than comparison*/
@@ -931,69 +939,80 @@ case 42:
       }
 break;
 case 44:
-//#line 307 "project7.java"
+//#line 317 "project8.java"
 {
           /*generate intermediate code for function*/
           /*with no parameters*/
         ICode callSimpleFunction = new ICode("CALL", val_peek(2).sval);
         callSimpleFunction.emit();
         String stretTemp = ICode.genTemp();
-        tempStack.push(stretTemp);
         currTable.add(stretTemp, "int");
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
+
+          /*return the result*/
+        yyval.sval = stretTemp;
       }
 break;
 case 45:
-//#line 319 "project7.java"
+//#line 331 "project8.java"
 {
           /*generate intermediate code for function with parameters*/
         String stretTemp = ICode.genTemp();
         currTable.add(stretTemp, "int");
 
           /*if there is no values currently stored, generate the intermediate code*/
-        if(tempStack.size() == 0){
-          ICode fCallParameters = new ICode("PARAM", val_peek(1).sval);
-          fCallParameters.emit();
-        }
-        else{
-          ICode fCallParameters = new ICode("PARAM", tempStack.pop());
-          tempStack.push(stretTemp);
-          fCallParameters.emit();
-        }
+        ICode fCallParameters = new ICode("PARAM", val_peek(1).sval);
+        fCallParameters.emit();
+
+          /*generate CALL intermediate code and print*/
         ICode callSimpleFunction = new ICode("CALL", val_peek(3).sval);
         callSimpleFunction.emit();
         ICode stret = new ICode("STRET", stretTemp);
         stret.emit();
+
+          /*return temp variable*/
+        yyval.sval = stretTemp;
       }
 break;
 case 49:
-//#line 348 "project7.java"
+//#line 358 "project8.java"
 {
+          /*generate label for while loop*/
         String topLabel = ICode.genLabel();
         ICode topStatement = new ICode("NOP");
         topStatement.addLabel(topLabel);
         topStatement.emit();
+
+          /*add the label to the stack*/
         whileLabelStack.push(topLabel);
       }
 break;
 case 50:
-//#line 357 "project7.java"
+//#line 370 "project8.java"
 {
+          /*jump back to the top*/
         ICode jump = new ICode("JMP", whileLabelStack.pop());
         jump.emit();
+
+          /*get past the while loop*/
         ICode pastWhileLoop = new ICode("NOP");
         pastWhileLoop.addLabel(genLabelStack.pop());
         pastWhileLoop.emit();
       }
 break;
 case 52:
-//#line 370 "project7.java"
+//#line 386 "project8.java"
 {
+              /*generate label for branching to else*/
             String branchAlwaysIfLbl = ICode.genLabel();
             branchAlwaysStack.push(branchAlwaysIfLbl);
+
+              /*there is always a branch to get to else statement*/
             ICode branchAlwaysIf = new ICode("BA", branchAlwaysIfLbl);
             branchAlwaysIf.emit();
+
+              /*branch to get to ELSE*/
             String elseLabel = genLabelStack.pop();
             ICode elseBranch = new ICode("NOP");
             elseBranch.addLabel(elseLabel);
@@ -1001,14 +1020,15 @@ case 52:
           }
 break;
 case 53:
-//#line 381 "project7.java"
+//#line 402 "project8.java"
 {
+              /*create a branch to get past the IF statement*/
             ICode afterElse = new ICode("NOP");
             afterElse.addLabel(branchAlwaysStack.pop());
             afterElse.emit();
           }
 break;
-//#line 935 "Parser.java"
+//#line 955 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

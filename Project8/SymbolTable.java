@@ -10,7 +10,7 @@ public class SymbolTable
 {
     private int _offset;   // current offset of end of table;
     private String _name;  // nsme of tsble
-    private LinkedList<Symbol> _symbols; // list of Smbols in table
+    private LinkedList<Symbol> _symbols; // list of Smbols in table 
 
     /**
      * constructor to build a new (empty) symbol table with given name
@@ -23,6 +23,13 @@ public class SymbolTable
 	_offset=0;   // since empty, end offset is 0
     }
 
+
+    /**
+     * getName -accessor for SymbolTable's name
+     * @return the name of teh Symbol Table
+     */
+    public String getName() {return _name;}
+    
     /**
      * add - put a new Symbol in this table
      *  @param s = the new Symbol
@@ -32,12 +39,21 @@ public class SymbolTable
 	// provided symbol is not already in the table ...
 	if (find(s.getName())==null)
 	    {
+		_offset+=4;           // tble's offset is now 1 word bigger
 		s.setOffset(_offset); // set the symbol's offset
 		_symbols.add(s);      // add symbol to table
-		_offset+=4;           // tble's offset is now 1 word bigger
 	    }
     }
 
+    /**
+     * getSize - returns the size (on stack) needed to hold this table
+     *  @return the size of this table
+     **/
+    public int getSize()
+    {
+	return _offset;
+    }
+    
     /**
      * add - create and add a new SYmbool
      *  @param n the name of the new Symbol
@@ -57,30 +73,30 @@ public class SymbolTable
     {
 	// go through ech Symbol in the table
 	for (Symbol s: _symbols)
-  {
+	    {
 		// if it matches the search parameter (name), return it
 		if (s.getName().equals(vname))
-      return s;
-  }
+		    return s;
+	    }
 
-    	// if we get here, Symbol was not found, so return null
-    	return null;
+	// if we get here, Symbol was not found, so return null 
+	return null;
     }
-
+    
     /**
      * toString - give String equivalent of entire table
      *   @return STring contaning the table
      */
     public String toString()
     {
-    	// add a header, including table name
-    	String ans = "#============ " + _name + " =============\n";
-    	// add each symbol to string
-    	for(Symbol s:_symbols)
-    	{
-    		ans+="#"+s+"\n";
-    	}
-	    ans +="#===================================================\n";
-	    return ans;
+	// add a header, including table name
+	String ans = "#============ " + _name + " =============\n";
+	// add each symbol to string
+	for(Symbol s:_symbols)
+	    {
+		ans+="#"+s+"\n";
+	    }
+	ans +="#===================================================\n";
+	return ans;
     }
 }

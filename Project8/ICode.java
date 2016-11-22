@@ -7,12 +7,15 @@ import java.util.LinkedList;
  *          some utility methods to support intermediate code
  *
  *    @author Stephen Blythe
- *    @version 10/2016
+ *    @version 11/2016
  */
 public class ICode
 {
     private static int labelCount = 0;  // counter for generating unique labels
     private static int tempCount = 0;   // counter for generating unique ids
+
+    // UPDATE: a public "shared" list of icode statements
+    public static LinkedList<ICode> stmtList = new LinkedList<ICode>();
 
     /**
      *  genTemp -- generates a new temporary variable name
@@ -46,8 +49,8 @@ public class ICode
      */
     public ICode(String op)
     {
-       nops = 0;
-       genCode(op, null, null, null);
+	nops = 0;
+	genCode(op, null, null, null);
     }
 
     /**
@@ -57,8 +60,8 @@ public class ICode
      */
     public ICode(String op, String op1)
     {
-    	nops = 0;
-    	genCode(op, op1, null, null);
+	nops = 0;
+	genCode(op, op1, null, null);
     }
 
     /**
@@ -69,8 +72,8 @@ public class ICode
      */
     public ICode(String op, String op1, String op2)
     {
-    	nops = 0;
-    	genCode(op, op1, op2, null);
+	nops = 0;
+	genCode(op, op1, op2, null);
     }
 
 
@@ -83,19 +86,19 @@ public class ICode
      */
     public ICode(String op, String op1, String op2, String op3)
     {
-    	nops = 0;
-    	genCode(op, op1, op2, op3);
+	nops = 0;
+	genCode(op, op1, op2, op3);
     }
 
     // utility method for filling in an operand.
     private void genCode(String op, String op1, String op2, String op3)
     {
-    	// take parameters and place the into associated instance variables
-    	opcode = op;
-    	this.op1 = op1;
-    	this.op2 = op2;
-    	this.op3 = op3;
-    	label = null;  // by default, no stateent has a label.
+	// take parameters and place the into associated instance variables
+	opcode = op;
+	this.op1 = op1;
+	this.op2 = op2;
+	this.op3 = op3;
+	label = null;  // by default, no stateent has a label.
     }
 
     /**
@@ -104,7 +107,7 @@ public class ICode
      */
     public void addLabel(String lbl)
     {
-    	label = lbl;
+	label = lbl;
     }
 
     /**
@@ -117,16 +120,16 @@ public class ICode
      *  getOpCode - returns the opcode of the statement
      *     @return the opcode of the statement
      */
-    public String getOpCode() { return label;}
+    public String getOpCode() { return opcode;}  // fixed error here
 
     /**
      * getOperands - returns a list of the operands in the statement
-     *    @return the list of operands.
+     *    @return the list of operands. 
      */
     public List<String> getOperands()
     {
 	List<String> ans = new LinkedList<String>();
-
+	
 	// check each operand; if it exists (i.e. is not null), add to result
 	if (op1!=null)
 	    ans.add(op1);
@@ -141,30 +144,41 @@ public class ICode
     }
 
     /**
-     * emit - produce the statement. For now, just print it out.
+     * emit - produce the statement. 
+     *  UPDATE: adds to linked list of ICode
      */
     public void emit()
     {
-    	// if there's a label, print it. in any case, print the opcode.
-    	if (label!=null)
-    	    System.out.printf("%-20s%-5s", label+":", opcode);
-    	else
-    	    System.out.printf("%20s%-5s", "", opcode);
+	stmtList.addLast(this);
+    }
+
+    /**
+     * print  -- prints current Statement to stdout
+     */
+    public void print()
+    {
+	// if there's a label, print it. in any case, print the opcode. 
+	if (label!=null)
+	    System.out.printf("%-20s%-5s", label+":", opcode);
+	else
+	    System.out.printf("%20s%-5s", "", opcode);
 
 
-    	// print out the operands.
-    	if (op1!=null)
-    	    {
-    		System.out.print("\t" + op1);
-    		if (op2!=null)
-    		    {
-    			System.out.print(", " + op2);
-    			if (op3!=null)
-    			    {
-    				System.out.print(", " + op3);
-    			    }
-    		    }
-    	    }
-    	System.out.println();
+	// print out the operands. 
+	if (op1!=null)
+	    {
+		System.out.print("\t" + op1);
+		if (op2!=null)
+		    {
+			System.out.print(", " + op2);
+			if (op3!=null)
+			    {
+				System.out.print(", " + op3);
+			    }
+		    }
+	    }
+	System.out.println();
+	
+	
     }
 }

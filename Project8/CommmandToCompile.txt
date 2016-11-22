@@ -1,0 +1,3 @@
+byaccj -J project7.by OR project7.java
+javac Parser.java
+java Parser input.myl
