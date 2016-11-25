@@ -536,6 +536,13 @@ public static void main(String args[])
    System.out.print("#");
    c.print();
 
+   switch(c.getOpCode()){
+    case "NOP": System.out.println("_" + c.getLabel() + ":");
+                break;
+    case "RET": System.out.println("retq");
+                break;
+   }
+
    List<String> operands = c.getOperands();
    if(operands.size()>=1){
      System.out.println(operands.get(0));

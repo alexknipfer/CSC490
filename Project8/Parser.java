@@ -497,6 +497,13 @@ public static void main(String args[])
    System.out.print("#");
    c.print();
 
+   switch(c.getOpCode()){
+    case "NOP": System.out.println("_" + c.getLabel() + ":");
+                break;
+    case "RET": System.out.println("retq");
+                break;
+   }
+
    List<String> operands = c.getOperands();
    if(operands.size()>=1){
      System.out.println(operands.get(0));
@@ -505,7 +512,7 @@ public static void main(String args[])
    System.out.println();
  }
 }
-//#line 437 "Parser.java"
+//#line 444 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1039,7 +1046,7 @@ case 53:
             afterElse.emit();
           }
 break;
-//#line 966 "Parser.java"
+//#line 973 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

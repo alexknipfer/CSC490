@@ -1,25 +1,34 @@
 	.section	__TEXT,__text,regular,pure_instructions
-
+	.macosx_version_min 10, 12
+	.globl	_main
+	.align	4, 0x90
 _main:                                  ## @main
+	.cfi_startproc
+## BB#0:
 	pushq	%rbp
+Ltmp0:
+	.cfi_def_cfa_offset 16
+Ltmp1:
+	.cfi_offset %rbp, -16
 	movq	%rsp, %rbp
-
-	subq	$16, %rsp
-	movl	$12, -4(%rbp)
-	movl	$32, -8(%rbp)
-
-	movl	-4(%rbp), %eax
+Ltmp2:
+	.cfi_def_cfa_register %rbp
+	subq	$32, %rsp
+	leaq	L_.str(%rip), %rdi
+	movl	$0, -4(%rbp)
+	movl	$12, -8(%rbp)
+	movl	$32, -12(%rbp)
+	movl	-8(%rbp), %eax
 	cltd
-	idivl	-8(%rbp)
-	movl	%eax, -12(%rbp)
-
-	movl	-12(%rbp), %esi
+	idivl	-12(%rbp)
+	movl	%eax, -16(%rbp)
+	movl	-16(%rbp), %esi
 	movb	$0, %al
 	callq	_printf
 	xorl	%esi, %esi
-	movl	%eax, -16(%rbp)         ## 4-byte Spill
+	movl	%eax, -20(%rbp)         ## 4-byte Spill
 	movl	%esi, %eax
-	addq	$16, %rsp
+	addq	$32, %rsp
 	popq	%rbp
 	retq
 	.cfi_endproc
