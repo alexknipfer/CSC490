@@ -1,11 +1,10 @@
 #include <stdio.h>
 
+void foo(int n){
+  //do something
+}
+
 int main(void){
-  int x = 12;
-  int y = 32;
-
-  int z = x/y;
-
-  printf("%d\n", z);
+  foo(4);
   return 0;
 }
