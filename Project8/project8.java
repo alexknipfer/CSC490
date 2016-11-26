@@ -536,11 +536,14 @@ public static void main(String args[])
    System.out.print("#");
    c.print();
 
-   switch(c.getOpCode()){
-    case "NOP": System.out.println("_" + c.getLabel() + ":");
-                break;
-    case "RET": System.out.println("retq");
-                break;
+   if(c.getOpCode() == "NOP"){
+     System.out.println("_" + c.getLabel() + ":");
+     ICode newReg = new ICode("pushq", "%rbp");
+     newReg.print();
+   }
+
+   else if(c.getOpCode() == "RET"){
+     System.out.println("retq");
    }
 
    List<String> operands = c.getOperands();
