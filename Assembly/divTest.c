@@ -1,11 +1,12 @@
 #include <stdio.h>
 
+void foo(int n){
+  if(n<2){
+    
+  }
+}
+
 int main(void){
-  int x = 12;
-  int y = 32;
-
-  int z = x/y;
-
-  printf("%d\n", z);
+  foo(2);
   return 0;
 }

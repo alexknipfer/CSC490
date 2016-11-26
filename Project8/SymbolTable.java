@@ -51,7 +51,7 @@ public class SymbolTable
      **/
     public int getSize()
     {
-	return _offset;
+	    return _offset;
     }
     
     /**
