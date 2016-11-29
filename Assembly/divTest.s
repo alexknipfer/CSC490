@@ -1,41 +1,50 @@
-	.file	"divTest.c"
-	.text
-	.globl	foo
-	.type	foo, @function
-foo:
-.LFB0:
+	.section	__TEXT,__text,regular,pure_instructions
+	.macosx_version_min 10, 12
+	.globl	_foo
+	.align	4, 0x90
+_foo:                                   ## @foo
 	.cfi_startproc
+## BB#0:
 	pushq	%rbp
+Ltmp0:
 	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
+Ltmp1:
+	.cfi_offset %rbp, -16
 	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
+Ltmp2:
+	.cfi_def_cfa_register %rbp
 	movl	%edi, -4(%rbp)
-	nop
+	cmpl	$2, -4(%rbp)
+	jge	LBB0_2
+## BB#1:
+	jmp	LBB0_2
+LBB0_2:
 	popq	%rbp
-	.cfi_def_cfa 7, 8
-	ret
+	retq
 	.cfi_endproc
-.LFE0:
-	.size	foo, .-foo
-	.globl	main
-	.type	main, @function
-main:
-.LFB1:
+
+	.globl	_main
+	.align	4, 0x90
+_main:                                  ## @main
 	.cfi_startproc
+## BB#0:
 	pushq	%rbp
+Ltmp3:
 	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
+Ltmp4:
+	.cfi_offset %rbp, -16
 	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
+Ltmp5:
+	.cfi_def_cfa_register %rbp
+	subq	$16, %rsp
 	movl	$4, %edi
-	call	foo
-	movl	$0, %eax
+	movl	$0, -4(%rbp)
+	callq	_foo
+	xorl	%eax, %eax
+	addq	$16, %rsp
 	popq	%rbp
-	.cfi_def_cfa 7, 8
-	ret
+	retq
 	.cfi_endproc
-.LFE1:
-	.size	main, .-main
-	.ident	"GCC: (Solus) 6.2.0"
-	.section	.note.GNU-stack,"",@progbits
+
+
+.subsections_via_symbols
