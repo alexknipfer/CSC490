@@ -3,21 +3,13 @@
 	.globl	_foo
 	.align	4, 0x90
 _foo:                                   ## @foo
-	.cfi_startproc
-## BB#0:
 	pushq	%rbp
-Ltmp0:
-	.cfi_def_cfa_offset 16
-Ltmp1:
-	.cfi_offset %rbp, -16
 	movq	%rsp, %rbp
-Ltmp2:
-	.cfi_def_cfa_register %rbp
+
 	movl	%edi, -4(%rbp)
 	cmpl	$2, -4(%rbp)
-	jge	LBB0_2
-## BB#1:
-	jmp	LBB0_2
+
+
 LBB0_2:
 	popq	%rbp
 	retq
