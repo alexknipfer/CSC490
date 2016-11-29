@@ -75,6 +75,7 @@ function: FUNCTION ID PARENL PARENR
               stmt.addLabel($2.sval);
               stmt.emit();
               currTable = new SymbolTable($2.sval);
+              myTables.push(currTable);
             }
             body
             {
@@ -93,6 +94,7 @@ function: FUNCTION ID PARENL PARENR
     | FUNCTION ID PARENL 
         {
           currTable = new SymbolTable($2.sval);
+          myTables.push(currTable);
         } 
       fplist PARENR
       {
@@ -426,6 +428,8 @@ elsepart: ELSE
     public LinkedList<String> varStack;
     public LinkedList<String> cmpStack;
 
+    public static LinkedList<SymbolTable> myTables;
+
     private MyLexer yylexer;
     private Token t;
 
@@ -444,6 +448,8 @@ public void setup(String fname)
     branchAlwaysStack = new LinkedList<String>();
     varStack = new LinkedList<String>();
     cmpStack = new LinkedList<String>();
+
+    myTables = new LinkedList<SymbolTable>();
 }
 
 //##############################################################################
@@ -555,12 +561,21 @@ public static void main(String args[])
      System.out.println("retq");
    }
 
+
+   else if(c.getOpCode() == "LT"){
+    
+   }
+
    else if(c.getOpCode() == "CMP"){
     List<String> operands = c.getOperands();
     if(operands.size()>=1){
       String currentOp = operands.get(0);
-      //Symbol currSymbol = currTable.find(currentOp);
-      //System.out.println(currSymbol);
+      SymbolTable currentTable = myTables.getLast();
+      Symbol currSymbol = currentTable.find(currentOp);
+      String currOffset = String.format("%d", currSymbol.getOffset());
+      String doOffset = "-" + currOffset + "(%rbp)";
+      ICode move = new ICode("movl", "%edi", doOffset);
+      move.print();
     }
    }
 
