@@ -90,7 +90,11 @@ function: FUNCTION ID PARENL PARENR
               varStack.clear();
               System.out.println(currTable);
             }
-    | FUNCTION ID PARENL {currTable = new SymbolTable($2.sval);} fplist PARENR
+    | FUNCTION ID PARENL 
+        {
+          currTable = new SymbolTable($2.sval);
+        } 
+      fplist PARENR
       {
           //add function definition to global table
         globalTable.add($2.sval, "function");
@@ -532,24 +536,38 @@ public static void main(String args[])
  Parser par = new Parser(false);
  par.setup(args[0]);
  par.yyparse();
+
  for(ICode c: ICode.stmtList){
    System.out.print("#");
    c.print();
 
+    //hit a new function
    if(c.getOpCode() == "NOP"){
      System.out.println("_" + c.getLabel() + ":");
      ICode newReg = new ICode("pushq", "%rbp");
+     ICode newFunc = new ICode("movq", "%rsp", "%rbp");
      newReg.print();
+     newFunc.print();
    }
 
+    //end of function reached, return!
    else if(c.getOpCode() == "RET"){
      System.out.println("retq");
    }
 
-   List<String> operands = c.getOperands();
+   else if(c.getOpCode() == "CMP"){
+    List<String> operands = c.getOperands();
+    if(operands.size()>=1){
+      String currentOp = operands.get(0);
+      //Symbol currSymbol = currTable.find(currentOp);
+      //System.out.println(currSymbol);
+    }
+   }
+
+  /* List<String> operands = c.getOperands();
    if(operands.size()>=1){
      System.out.println(operands.get(0));
-   }
+   }*/
 
    System.out.println();
  }
