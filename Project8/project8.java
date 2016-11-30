@@ -105,6 +105,9 @@ function: FUNCTION ID PARENL PARENR
         ICode stmt = new ICode("NOP");
         stmt.addLabel($2.sval);
         stmt.emit();
+
+        ICode paramList = new ICode("PLIST", $5.sval);
+        paramList.emit();
       }
       body
       {
@@ -125,8 +128,17 @@ function: FUNCTION ID PARENL PARENR
 body: CURLL bodylist CURLR
     ;
 
-fplist: ID COMMA {currTable.add($1.sval, "int");} fplist
-    | ID {currTable.add($1.sval, "int");}
+fplist: ID COMMA 
+  {
+    currTable.add($1.sval, "int");
+    $$.sval = $1.sval;
+  } 
+  fplist
+    | ID 
+    {
+      currTable.add($1.sval, "int");
+      $$.sval = $1.sval;
+    }
     ;
 
 bodylist: vardecl bodylist
@@ -544,8 +556,14 @@ public static void main(String args[])
  par.yyparse();
 
  for(ICode c: ICode.stmtList){
+   String currentOp = "";
    System.out.print("#");
    c.print();
+
+   List<String> operands = c.getOperands();
+    if(operands.size()>=1){
+      currentOp = operands.get(0);
+    }
 
     //hit a new function
    if(c.getOpCode() == "NOP"){
@@ -562,11 +580,16 @@ public static void main(String args[])
    }
 
 
-   else if(c.getOpCode() == "LT"){
-    
+   else if(c.getOpCode() == "PLIST"){
+    SymbolTable currentTable = myTables.getLast();
+    Symbol currSymbol = currentTable.find(currentOp);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+    ICode move = new ICode("movl", "%edi", doOffset);
+    move.print();
    }
 
-   else if(c.getOpCode() == "CMP"){
+   /*else if(c.getOpCode() == "CMP"){
     List<String> operands = c.getOperands();
     if(operands.size()>=1){
       String currentOp = operands.get(0);
@@ -577,9 +600,9 @@ public static void main(String args[])
       ICode move = new ICode("movl", "%edi", doOffset);
       move.print();
     }
-   }
+   }*/
 
-  /* List<String> operands = c.getOperands();
+   /*List<String> operands = c.getOperands();
    if(operands.size()>=1){
      System.out.println(operands.get(0));
    }*/
