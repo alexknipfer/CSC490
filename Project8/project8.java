@@ -555,42 +555,70 @@ public static void main(String args[])
  par.setup(args[0]);
  par.yyparse();
 
+  //go through all intermediate code statements
  for(ICode c: ICode.stmtList){
    String currentOp = "";
    String currentOp2 = "";
    String currentOp3 = "";
+
+    //get the current table
+   SymbolTable currentTable = myTables.getLast();
+   String tableSize = String.format("%d", currentTable.getSize());
+
+    //print the intermediate code as a comment
    System.out.print("#");
    c.print();
 
    List<String> operands = c.getOperands();
+
+      //current intermediate code has 1 operand
     if(operands.size()>=1){
       currentOp = operands.get(0);
     }
 
+      //current intermediate code has 2 operands
     if(operands.size()>=2){
       currentOp = operands.get(0);
       currentOp2 = operands.get(1);
     }
 
+      //current intermediate code has 3 operands
     if(operands.size()>=3){
       currentOp = operands.get(0);
       currentOp2 = operands.get(1);
       currentOp3 = operands.get(2);
     }
 
-    //hit a new function
+    //hit a new function / label
    if(c.getOpCode() == "NOP"){
-     System.out.println("_" + c.getLabel() + ":");
+     System.out.println(c.getLabel() + ":");
      ICode newReg = new ICode("pushq", "%rbp");
      ICode newFunc = new ICode("movq", "%rsp", "%rbp");
+     ICode subq = new ICode("subq", "$" + tableSize, "%rsp");
      newReg.print();
      newFunc.print();
+     subq.print();
    }
 
+    //process parameters
+   else if(c.getOpCode() == "PARAM"){
+      //move parameter value into register
+     ICode param = new ICode("movl", "$" + currentOp, "%eax");
+     param.print();
+   }
+
+    //call the current function
+   else if(c.getOpCode() == "CALL"){
+     ICode callFunc = new ICode("call", currentOp);
+     callFunc.print();
+   }
 
     //end of function reached, return!
    else if(c.getOpCode() == "RET"){
-     System.out.println("retq");
+     ICode leave = new ICode("leave");
+     ICode ret = new ICode("retq");
+     leave.print();
+     ret.print();
    }
 
     //handle function parameters

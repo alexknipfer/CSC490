@@ -502,6 +502,8 @@ public static void main(String args[])
    String currentOp = "";
    String currentOp2 = "";
    String currentOp3 = "";
+   SymbolTable currentTable = myTables.getLast();
+   String tableSize = String.format("%d", currentTable.getSize());
    System.out.print("#");
    c.print();
 
@@ -523,16 +525,31 @@ public static void main(String args[])
 
     //hit a new function
    if(c.getOpCode() == "NOP"){
-     System.out.println("_" + c.getLabel() + ":");
+     System.out.println(c.getLabel() + ":");
      ICode newReg = new ICode("pushq", "%rbp");
      ICode newFunc = new ICode("movq", "%rsp", "%rbp");
+     ICode subq = new ICode("subq", "$" + tableSize, "%rsp");
      newReg.print();
      newFunc.print();
+     subq.print();
+   }
+
+   else if(c.getOpCode() == "PARAM"){
+     ICode param = new ICode("movl", "$" + currentOp, "%eax");
+     param.print();
+   }
+
+   else if(c.getOpCode() == "CALL"){
+     ICode callFunc = new ICode("call", currentOp);
+     callFunc.print();
    }
 
     //end of function reached, return!
    else if(c.getOpCode() == "RET"){
-     System.out.println("retq");
+     ICode leave = new ICode("leave");
+     ICode ret = new ICode("retq");
+     leave.print();
+     ret.print();
    }
 
     //handle function parameters
@@ -573,7 +590,7 @@ public static void main(String args[])
    System.out.println();
  }
 }
-//#line 505 "Parser.java"
+//#line 522 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1120,7 +1137,7 @@ case 53:
             afterElse.emit();
           }
 break;
-//#line 1047 "Parser.java"
+//#line 1064 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
