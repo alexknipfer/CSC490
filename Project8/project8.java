@@ -160,7 +160,9 @@ assign: ID ASSIGNOP expr
           String tempAssignOp = ICode.genTemp();
           currTable.add(tempAssignOp, "int");
           ICode assignStmt = new ICode("MOV", $3.sval, tempAssignOp);
+          ICode assignStmt2 = new ICode("MOV", tempAssignOp, $1.sval);
           assignStmt.emit();
+          assignStmt2.emit();
         }
     ;
 
@@ -604,9 +606,22 @@ public static void main(String args[])
 
     //process parameters
    else if(c.getOpCode() == "PARAM"){
-      //move parameter value into register
-     ICode param = new ICode("movl", "$" + currentOp, "%eax");
-     param.print();
+
+     try{
+      Integer.parseInt(currentOp);
+        //move parameter value into register
+      ICode param = new ICode("movl", "$" + currentOp, "%eax");
+      param.print();
+     }
+      //not a number...
+     catch (NumberFormatException ex){
+      Symbol currSymbol = currentTable.find(currentOp);
+      String currOffset = String.format("%d", currSymbol.getOffset());
+      String doOffset = "-" + currOffset + "(%rbp)";
+
+      ICode paramVar = new ICode("movl", doOffset, "%eax");
+      paramVar.print();
+     }
    }
 
    else if(c.getOpCode() == "MOV"){
@@ -625,7 +640,16 @@ public static void main(String args[])
      }
       //not a number...
      catch (NumberFormatException ex){
-      System.out.println("IS NOT a number");
+      Symbol currSymbol = currentTable.find(currentOp);
+      String currOffset = String.format("%d", currSymbol.getOffset());
+      String doOffset = "-" + currOffset + "(%rbp)";
+      Symbol currSymbol2 = currentTable.find(currentOp2);
+      String currOffset2 = String.format("%d", currSymbol2.getOffset());
+      String doOffset2 = "-" + currOffset2 + "(%rbp)";
+      ICode move = new ICode("movl", doOffset, "%eax");
+      ICode move2 = new ICode("movl", "%eax", doOffset2);
+      move.print();
+      move2.print();
      }
    }
 
@@ -642,36 +666,6 @@ public static void main(String args[])
      leave.print();
      ret.print();
    }
-
-    //handle function parameters
-   /*else if(c.getOpCode() == "PLIST"){
-    SymbolTable currentTable = myTables.getLast();
-    Symbol currSymbol = currentTable.find(currentOp);
-    String currOffset = String.format("%d", currSymbol.getOffset());
-    String doOffset = "-" + currOffset + "(%rbp)";
-    ICode move = new ICode("movl", "%edi", doOffset);
-    move.print();
-   }
-
-    //handle less than intermediate code
-   else if(c.getOpCode() == "LT"){
-    SymbolTable currentTable = myTables.getLast();
-    Symbol currSymbol = currentTable.find(currentOp3);
-    String currOffset = String.format("%d", currSymbol.getOffset());
-    String doOffset = "-" + currOffset + "(%rbp)";
-    ICode move = new ICode("movl", "%edi", doOffset);
-    move.print();
-   }
-
-    //handle comparison intermediate code
-   else if(c.getOpCode() == "CMP"){
-    SymbolTable currentTable = myTables.getLast();
-    Symbol currSymbol = currentTable.find(currentOp);
-    String currOffset = String.format("%d", currSymbol.getOffset());
-    String doOffset = "-" + currOffset + "(%rbp)";
-    ICode cmpl = new ICode("cmpl", "$" + currentOp2, doOffset);
-    cmpl.print();
-   }*/
 
    /*List<String> operands2 = c.getOperands();
    if(operands2.size()>=1){
