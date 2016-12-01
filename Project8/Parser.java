@@ -367,7 +367,7 @@ final static String yyrule[] = {
 "elsepart :",
 };
 
-//#line 428 "project8.java"
+//#line 430 "project8.java"
 
 //##############################################################################
 
@@ -498,32 +498,41 @@ public static void main(String args[])
  par.setup(args[0]);
  par.yyparse();
 
+  //go through all intermediate code statements
  for(ICode c: ICode.stmtList){
    String currentOp = "";
    String currentOp2 = "";
    String currentOp3 = "";
+
+    //get the current table
    SymbolTable currentTable = myTables.getLast();
    String tableSize = String.format("%d", currentTable.getSize());
+
+    //print the intermediate code as a comment
    System.out.print("#");
    c.print();
 
    List<String> operands = c.getOperands();
+
+      //current intermediate code has 1 operand
     if(operands.size()>=1){
       currentOp = operands.get(0);
     }
 
+      //current intermediate code has 2 operands
     if(operands.size()>=2){
       currentOp = operands.get(0);
       currentOp2 = operands.get(1);
     }
 
+      //current intermediate code has 3 operands
     if(operands.size()>=3){
       currentOp = operands.get(0);
       currentOp2 = operands.get(1);
       currentOp3 = operands.get(2);
     }
 
-    //hit a new function
+    //hit a new function / label
    if(c.getOpCode() == "NOP"){
      System.out.println(c.getLabel() + ":");
      ICode newReg = new ICode("pushq", "%rbp");
@@ -534,11 +543,34 @@ public static void main(String args[])
      subq.print();
    }
 
+    //process parameters
    else if(c.getOpCode() == "PARAM"){
+      //move parameter value into register
      ICode param = new ICode("movl", "$" + currentOp, "%eax");
      param.print();
    }
 
+   else if(c.getOpCode() == "MOV"){
+      //see if the value is a number
+     try{
+      Integer.parseInt(currentOp);
+      Symbol currSymbol = currentTable.find(currentOp2);
+      String currOffset = String.format("%d", currSymbol.getOffset());
+      String doOffset = "-" + currOffset + "(%rbp)";
+
+      ICode movlNumber = new ICode("movl", "$" + currentOp, "%eax");
+      ICode movlTemp = new ICode("movl", "%eax", doOffset);
+
+      movlNumber.print();
+      movlTemp.print();
+     }
+      //not a number...
+     catch (NumberFormatException ex){
+      System.out.println("IS NOT a number");
+     }
+   }
+
+    //call the current function
    else if(c.getOpCode() == "CALL"){
      ICode callFunc = new ICode("call", currentOp);
      callFunc.print();
@@ -590,7 +622,7 @@ public static void main(String args[])
    System.out.println();
  }
 }
-//#line 522 "Parser.java"
+//#line 554 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -873,12 +905,14 @@ case 26:
 {
             /*generate intermediate code for assignment operator*/
             /*and emit the code*/
-          ICode assignStmt = new ICode("MOV", val_peek(0).sval, val_peek(2).sval);
+          String tempAssignOp = ICode.genTemp();
+          currTable.add(tempAssignOp, "int");
+          ICode assignStmt = new ICode("MOV", val_peek(0).sval, tempAssignOp);
           assignStmt.emit();
         }
 break;
 case 28:
-//#line 167 "project8.java"
+//#line 169 "project8.java"
 {
           /*create temp for result*/
         String tempAddOp = ICode.genTemp();
@@ -901,7 +935,7 @@ case 28:
       }
 break;
 case 30:
-//#line 191 "project8.java"
+//#line 193 "project8.java"
 {
           /*generate temp for result of MULOP*/
         String tempMulOp = ICode.genTemp();
@@ -923,11 +957,11 @@ case 30:
       }
 break;
 case 31:
-//#line 212 "project8.java"
+//#line 214 "project8.java"
 {yyval.sval = val_peek(0).sval;}
 break;
 case 32:
-//#line 214 "project8.java"
+//#line 216 "project8.java"
 {
           /*convert numbers to string*/
         String numberString = String.format("%d", val_peek(0).ival);
@@ -935,11 +969,11 @@ case 32:
       }
 break;
 case 33:
-//#line 219 "project8.java"
+//#line 221 "project8.java"
 {yyval.sval = val_peek(1).sval;}
 break;
 case 34:
-//#line 221 "project8.java"
+//#line 223 "project8.java"
 {
           /*generate temp for negative value*/
         String negTemp = ICode.genTemp();
@@ -955,7 +989,7 @@ case 34:
       }
 break;
 case 37:
-//#line 239 "project8.java"
+//#line 241 "project8.java"
 {
           /*compare the two temps from for the comparison to branch*/
         ICode andCmp = new ICode("CMP", cmpStack.pop(), cmpStack.pop());
@@ -968,7 +1002,7 @@ case 37:
       }
 break;
 case 39:
-//#line 253 "project8.java"
+//#line 255 "project8.java"
 {
           /*compare the two temps from for the comparison to branch*/
         ICode andCmp = new ICode("CMP", cmpStack.pop(), cmpStack.pop());
@@ -980,7 +1014,7 @@ case 39:
       }
 break;
 case 41:
-//#line 266 "project8.java"
+//#line 268 "project8.java"
 {
           /*peform a logical NOT*/
         String notTemp = ICode.genTemp();
@@ -989,7 +1023,7 @@ case 41:
       }
 break;
 case 42:
-//#line 275 "project8.java"
+//#line 277 "project8.java"
 {
         String temp, temp2;
 
@@ -1048,7 +1082,7 @@ case 42:
       }
 break;
 case 44:
-//#line 335 "project8.java"
+//#line 337 "project8.java"
 {
           /*generate intermediate code for function*/
           /*with no parameters*/
@@ -1064,7 +1098,7 @@ case 44:
       }
 break;
 case 45:
-//#line 349 "project8.java"
+//#line 351 "project8.java"
 {
           /*generate intermediate code for function with parameters*/
         String stretTemp = ICode.genTemp();
@@ -1085,7 +1119,7 @@ case 45:
       }
 break;
 case 49:
-//#line 376 "project8.java"
+//#line 378 "project8.java"
 {
           /*generate label for while loop*/
         String topLabel = ICode.genLabel();
@@ -1098,7 +1132,7 @@ case 49:
       }
 break;
 case 50:
-//#line 388 "project8.java"
+//#line 390 "project8.java"
 {
           /*jump back to the top*/
         ICode jump = new ICode("JMP", whileLabelStack.pop());
@@ -1111,7 +1145,7 @@ case 50:
       }
 break;
 case 52:
-//#line 404 "project8.java"
+//#line 406 "project8.java"
 {
               /*generate label for branching to else*/
             String branchAlwaysIfLbl = ICode.genLabel();
@@ -1129,7 +1163,7 @@ case 52:
           }
 break;
 case 53:
-//#line 420 "project8.java"
+//#line 422 "project8.java"
 {
               /*create a branch to get past the IF statement*/
             ICode afterElse = new ICode("NOP");
@@ -1137,7 +1171,7 @@ case 53:
             afterElse.emit();
           }
 break;
-//#line 1064 "Parser.java"
+//#line 1098 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

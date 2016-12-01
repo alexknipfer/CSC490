@@ -157,7 +157,9 @@ assign: ID ASSIGNOP expr
         {
             //generate intermediate code for assignment operator
             //and emit the code
-          ICode assignStmt = new ICode("MOV", $3.sval, $1.sval);
+          String tempAssignOp = ICode.genTemp();
+          currTable.add(tempAssignOp, "int");
+          ICode assignStmt = new ICode("MOV", $3.sval, tempAssignOp);
           assignStmt.emit();
         }
     ;
@@ -605,6 +607,26 @@ public static void main(String args[])
       //move parameter value into register
      ICode param = new ICode("movl", "$" + currentOp, "%eax");
      param.print();
+   }
+
+   else if(c.getOpCode() == "MOV"){
+      //see if the value is a number
+     try{
+      Integer.parseInt(currentOp);
+      Symbol currSymbol = currentTable.find(currentOp2);
+      String currOffset = String.format("%d", currSymbol.getOffset());
+      String doOffset = "-" + currOffset + "(%rbp)";
+
+      ICode movlNumber = new ICode("movl", "$" + currentOp, "%eax");
+      ICode movlTemp = new ICode("movl", "%eax", doOffset);
+
+      movlNumber.print();
+      movlTemp.print();
+     }
+      //not a number...
+     catch (NumberFormatException ex){
+      System.out.println("IS NOT a number");
+     }
    }
 
     //call the current function
