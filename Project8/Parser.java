@@ -532,6 +532,8 @@ public static void main(String args[])
       currentOp3 = operands.get(2);
     }
 
+//********************* NOP ******************************************
+
     //hit a new function / label
    if(c.getOpCode() == "NOP"){
      System.out.println(c.getLabel() + ":");
@@ -542,6 +544,8 @@ public static void main(String args[])
      newFunc.print();
      subq.print();
    }
+
+//********************** PARAM *****************************************
 
     //process parameters
    else if(c.getOpCode() == "PARAM"){
@@ -562,6 +566,8 @@ public static void main(String args[])
       paramVar.print();
      }
    }
+
+//*********************** MOV ***************************************
 
    else if(c.getOpCode() == "MOV"){
       //see if the value is a number
@@ -592,11 +598,26 @@ public static void main(String args[])
      }
    }
 
+//************************** CALL *************************************
+
     //call the current function
    else if(c.getOpCode() == "CALL"){
      ICode callFunc = new ICode("call", currentOp);
      callFunc.print();
    }
+
+//************************** STRET *************************************
+
+  else if(c.getOpCode() == "STRET"){
+    Symbol currSymbol = currentTable.find(currentOp);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+
+    ICode storet = new ICode("movl", "%eax", doOffset);
+    storet.print();
+  }
+
+//************************ RET    *************************************
 
     //end of function reached, return!
    else if(c.getOpCode() == "RET"){
@@ -606,45 +627,10 @@ public static void main(String args[])
      ret.print();
    }
 
-    //handle function parameters
-   /*else if(c.getOpCode() == "PLIST"){
-    SymbolTable currentTable = myTables.getLast();
-    Symbol currSymbol = currentTable.find(currentOp);
-    String currOffset = String.format("%d", currSymbol.getOffset());
-    String doOffset = "-" + currOffset + "(%rbp)";
-    ICode move = new ICode("movl", "%edi", doOffset);
-    move.print();
-   }
-
-    //handle less than intermediate code
-   else if(c.getOpCode() == "LT"){
-    SymbolTable currentTable = myTables.getLast();
-    Symbol currSymbol = currentTable.find(currentOp3);
-    String currOffset = String.format("%d", currSymbol.getOffset());
-    String doOffset = "-" + currOffset + "(%rbp)";
-    ICode move = new ICode("movl", "%edi", doOffset);
-    move.print();
-   }
-
-    //handle comparison intermediate code
-   else if(c.getOpCode() == "CMP"){
-    SymbolTable currentTable = myTables.getLast();
-    Symbol currSymbol = currentTable.find(currentOp);
-    String currOffset = String.format("%d", currSymbol.getOffset());
-    String doOffset = "-" + currOffset + "(%rbp)";
-    ICode cmpl = new ICode("cmpl", "$" + currentOp2, doOffset);
-    cmpl.print();
-   }*/
-
-   /*List<String> operands2 = c.getOperands();
-   if(operands2.size()>=1){
-     System.out.println(operands2.get(0));
-   }*/
-
    System.out.println();
  }
 }
-//#line 576 "Parser.java"
+//#line 562 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1195,7 +1181,7 @@ case 53:
             afterElse.emit();
           }
 break;
-//#line 1122 "Parser.java"
+//#line 1108 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

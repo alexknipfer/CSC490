@@ -593,6 +593,8 @@ public static void main(String args[])
       currentOp3 = operands.get(2);
     }
 
+//********************* NOP ******************************************
+
     //hit a new function / label
    if(c.getOpCode() == "NOP"){
      System.out.println(c.getLabel() + ":");
@@ -603,6 +605,8 @@ public static void main(String args[])
      newFunc.print();
      subq.print();
    }
+
+//********************** PARAM *****************************************
 
     //process parameters
    else if(c.getOpCode() == "PARAM"){
@@ -623,6 +627,8 @@ public static void main(String args[])
       paramVar.print();
      }
    }
+
+//*********************** MOV ***************************************
 
    else if(c.getOpCode() == "MOV"){
       //see if the value is a number
@@ -653,11 +659,26 @@ public static void main(String args[])
      }
    }
 
+//************************** CALL *************************************
+
     //call the current function
    else if(c.getOpCode() == "CALL"){
      ICode callFunc = new ICode("call", currentOp);
      callFunc.print();
    }
+
+//************************** STRET *************************************
+
+  else if(c.getOpCode() == "STRET"){
+    Symbol currSymbol = currentTable.find(currentOp);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+
+    ICode storet = new ICode("movl", "%eax", doOffset);
+    storet.print();
+  }
+
+//************************ RET    *************************************
 
     //end of function reached, return!
    else if(c.getOpCode() == "RET"){
@@ -666,11 +687,6 @@ public static void main(String args[])
      leave.print();
      ret.print();
    }
-
-   /*List<String> operands2 = c.getOperands();
-   if(operands2.size()>=1){
-     System.out.println(operands2.get(0));
-   }*/
 
    System.out.println();
  }
