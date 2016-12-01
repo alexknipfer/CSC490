@@ -500,12 +500,25 @@ public static void main(String args[])
 
  for(ICode c: ICode.stmtList){
    String currentOp = "";
+   String currentOp2 = "";
+   String currentOp3 = "";
    System.out.print("#");
    c.print();
 
    List<String> operands = c.getOperands();
     if(operands.size()>=1){
       currentOp = operands.get(0);
+    }
+
+    if(operands.size()>=2){
+      currentOp = operands.get(0);
+      currentOp2 = operands.get(1);
+    }
+
+    if(operands.size()>=3){
+      currentOp = operands.get(0);
+      currentOp2 = operands.get(1);
+      currentOp3 = operands.get(2);
     }
 
     //hit a new function
@@ -522,7 +535,7 @@ public static void main(String args[])
      System.out.println("retq");
    }
 
-
+    //handle function parameters
    else if(c.getOpCode() == "PLIST"){
     SymbolTable currentTable = myTables.getLast();
     Symbol currSymbol = currentTable.find(currentOp);
@@ -532,28 +545,33 @@ public static void main(String args[])
     move.print();
    }
 
-   /*else if(c.getOpCode() == "CMP"){
-    List<String> operands = c.getOperands();
-    if(operands.size()>=1){
-      String currentOp = operands.get(0);
-      SymbolTable currentTable = myTables.getLast();
-      Symbol currSymbol = currentTable.find(currentOp);
-      String currOffset = String.format("%d", currSymbol.getOffset());
-      String doOffset = "-" + currOffset + "(%rbp)";
-      ICode move = new ICode("movl", "%edi", doOffset);
-      move.print();
-    }
-   }*/
+   else if(c.getOpCode() == "LT"){
+    SymbolTable currentTable = myTables.getLast();
+    Symbol currSymbol = currentTable.find(currentOp3);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+    ICode move = new ICode("movl", "%edi", doOffset);
+    move.print();
+   }
 
-   /*List<String> operands = c.getOperands();
-   if(operands.size()>=1){
-     System.out.println(operands.get(0));
+   else if(c.getOpCode() == "CMP"){
+    SymbolTable currentTable = myTables.getLast();
+    Symbol currSymbol = currentTable.find(currentOp);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+    ICode cmpl = new ICode("cmpl", "$" + currentOp2, doOffset);
+    cmpl.print();
+   }
+
+   /*List<String> operands2 = c.getOperands();
+   if(operands2.size()>=1){
+     System.out.println(operands2.get(0));
    }*/
 
    System.out.println();
  }
 }
-//#line 485 "Parser.java"
+//#line 503 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1100,7 +1118,7 @@ case 53:
             afterElse.emit();
           }
 break;
-//#line 1027 "Parser.java"
+//#line 1045 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
