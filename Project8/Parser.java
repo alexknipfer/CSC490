@@ -536,7 +536,7 @@ public static void main(String args[])
    }
 
     //handle function parameters
-   else if(c.getOpCode() == "PLIST"){
+   /*else if(c.getOpCode() == "PLIST"){
     SymbolTable currentTable = myTables.getLast();
     Symbol currSymbol = currentTable.find(currentOp);
     String currOffset = String.format("%d", currSymbol.getOffset());
@@ -545,6 +545,7 @@ public static void main(String args[])
     move.print();
    }
 
+    //handle less than intermediate code
    else if(c.getOpCode() == "LT"){
     SymbolTable currentTable = myTables.getLast();
     Symbol currSymbol = currentTable.find(currentOp3);
@@ -554,6 +555,7 @@ public static void main(String args[])
     move.print();
    }
 
+    //handle comparison intermediate code
    else if(c.getOpCode() == "CMP"){
     SymbolTable currentTable = myTables.getLast();
     Symbol currSymbol = currentTable.find(currentOp);
@@ -561,7 +563,7 @@ public static void main(String args[])
     String doOffset = "-" + currOffset + "(%rbp)";
     ICode cmpl = new ICode("cmpl", "$" + currentOp2, doOffset);
     cmpl.print();
-   }
+   }*/
 
    /*List<String> operands2 = c.getOperands();
    if(operands2.size()>=1){
@@ -571,7 +573,7 @@ public static void main(String args[])
    System.out.println();
  }
 }
-//#line 503 "Parser.java"
+//#line 505 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1118,7 +1120,7 @@ case 53:
             afterElse.emit();
           }
 break;
-//#line 1045 "Parser.java"
+//#line 1047 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

@@ -587,13 +587,14 @@ public static void main(String args[])
      newFunc.print();
    }
 
+
     //end of function reached, return!
    else if(c.getOpCode() == "RET"){
      System.out.println("retq");
    }
 
     //handle function parameters
-   else if(c.getOpCode() == "PLIST"){
+   /*else if(c.getOpCode() == "PLIST"){
     SymbolTable currentTable = myTables.getLast();
     Symbol currSymbol = currentTable.find(currentOp);
     String currOffset = String.format("%d", currSymbol.getOffset());
@@ -620,7 +621,7 @@ public static void main(String args[])
     String doOffset = "-" + currOffset + "(%rbp)";
     ICode cmpl = new ICode("cmpl", "$" + currentOp2, doOffset);
     cmpl.print();
-   }
+   }*/
 
    /*List<String> operands2 = c.getOperands();
    if(operands2.size()>=1){
