@@ -283,54 +283,56 @@ bterm: expr RELOP expr
         String newTemp = ICode.genTemp();
         cmpStack.push(newTemp);
 
+        String newLabel = ICode.genLabel();
+        genLabelStack.push(newLabel);
+
           //add temp to table
         currTable.add(newTemp, "int");
 
           //generate code for less than comparison
         if($2.sval.equals("<")){
-          ICode lessThan = new ICode("LT", $1.sval, $3.sval, newTemp);
+          ICode lessThan = new ICode("LT", $1.sval, $3.sval, newLabel);
           lessThan.emit();
         }
 
           //generate code for greater than comparison
         else if($2.sval.equals(">")){
-          ICode greaterThan = new ICode("GT", $1.sval, $3.sval, newTemp);
+          ICode greaterThan = new ICode("GT", $1.sval, $3.sval, newLabel);
           greaterThan.emit();
         }
 
           //generate code for less than equal comparison
         else if($2.sval.equals("<=")){
-          ICode lessThanEqual = new ICode("LE", $1.sval, $3.sval, newTemp);
+          ICode lessThanEqual = new ICode("LE", $1.sval, $3.sval, newLabel);
           lessThanEqual.emit();
         }
 
           //generate code for greater than equal
         else if($2.sval.equals(">=")){
-          ICode greaterThanEqual = new ICode("GE", $1.sval, $3.sval, newTemp);
+          ICode greaterThanEqual = new ICode("GE", $1.sval, $3.sval, newLabel);
           greaterThanEqual.emit();
         }
 
           //generate code for equal to
         else if($2.sval.equals("==")){
-          ICode equalTo = new ICode("EQ", $1.sval, $3.sval, newTemp);
+          ICode equalTo = new ICode("EQ", $1.sval, $3.sval, newLabel);
           equalTo.emit();
         }
 
           //generate code for NOT equal
         else if($2.sval.equals("!=")){
-          ICode notEqual = new ICode("NEQ", $1.sval, $3.sval, newTemp);
+          ICode notEqual = new ICode("NEQ", $1.sval, $3.sval, newLabel);
           notEqual.emit();
         }
 
           //compare the results
-        ICode compare = new ICode("CMP", newTemp, "0");
+        /*ICode compare = new ICode("CMP", newTemp, "0");
         compare.emit();
         String newLabel = ICode.genLabel();
         genLabelStack.push(newLabel);
-
           //branch if result is true
         ICode branchOnEqual = new ICode("BE", newLabel);
-        branchOnEqual.emit();
+        branchOnEqual.emit();*/
       }
     | PARENL bterm PARENR
 
@@ -634,14 +636,13 @@ public static void main(String args[])
     //process parameters
    else if(c.getOpCode() == "PARAM"){
 
-     try{
-      Integer.parseInt(currentOp);
-        //move parameter value into register
+     if(par.isNumber(currentOp)){
+         //move parameter value into register
       ICode param = new ICode("movl", "$" + currentOp, "%eax");
       param.print();
      }
-      //not a number...
-     catch (NumberFormatException ex){
+
+     else{
       Symbol currSymbol = currentTable.find(currentOp);
       String currOffset = String.format("%d", currSymbol.getOffset());
       String doOffset = "-" + currOffset + "(%rbp)";
@@ -654,42 +655,77 @@ public static void main(String args[])
 //*********************** MOV ***************************************
 
    else if(c.getOpCode() == "MOV"){
-      //see if the value is a number
-     try{
-      Integer.parseInt(currentOp);
-      Symbol currSymbol = currentTable.find(currentOp2);
-      String currOffset = String.format("%d", currSymbol.getOffset());
-      String doOffset = "-" + currOffset + "(%rbp)";
+      
+      if(par.isNumber(currentOp)){
+        Symbol currSymbol = currentTable.find(currentOp2);
+        String currOffset = String.format("%d", currSymbol.getOffset());
+        String doOffset = "-" + currOffset + "(%rbp)";
 
-      ICode movlNumber = new ICode("movl", "$" + currentOp, "%eax");
-      ICode movlTemp = new ICode("movl", "%eax", doOffset);
+        ICode movlNumber = new ICode("movl", "$" + currentOp, "%eax");
+        ICode movlTemp = new ICode("movl", "%eax", doOffset);
 
-      movlNumber.print();
-      movlTemp.print();
-     }
-      //not a number...
-     catch (NumberFormatException ex){
-      Symbol currSymbol = currentTable.find(currentOp);
-      String currOffset = String.format("%d", currSymbol.getOffset());
-      String doOffset = "-" + currOffset + "(%rbp)";
-      Symbol currSymbol2 = currentTable.find(currentOp2);
-      String currOffset2 = String.format("%d", currSymbol2.getOffset());
-      String doOffset2 = "-" + currOffset2 + "(%rbp)";
-      ICode move = new ICode("movl", doOffset, "%eax");
-      ICode move2 = new ICode("movl", "%eax", doOffset2);
-      move.print();
-      move2.print();
-     }
+        movlNumber.print();
+        movlTemp.print();
+      }
+
+      else{
+        Symbol currSymbol = currentTable.find(currentOp);
+        String currOffset = String.format("%d", currSymbol.getOffset());
+        String doOffset = "-" + currOffset + "(%rbp)";
+        Symbol currSymbol2 = currentTable.find(currentOp2);
+        String currOffset2 = String.format("%d", currSymbol2.getOffset());
+        String doOffset2 = "-" + currOffset2 + "(%rbp)";
+        ICode move = new ICode("movl", doOffset, "%eax");
+        ICode move2 = new ICode("movl", "%eax", doOffset2);
+        move.print();
+        move2.print();
+      }
    }
 
 //************************** LT *************************************
 
 else if(c.getOpCode() == "LT"){
+
+    //1st operator is a number
   if(par.isNumber(currentOp)){
-    System.out.println("is a number!!!");
+
+      //1st number is operator, 2nd number is operator
+    if(par.isNumber(currentOp2)){
+      ICode cmp3 = new ICode("cmp", "$" + currentOp2, "$" + currentOp);
+      cmp3.print();
+    }
+
+      //1st operator is number, 2nd is NOT
+    else{
+      Symbol currSymbol3 = currentTable.find(currentOp2);
+      String currOffset3 = String.format("%d", currSymbol3.getOffset());
+      String doOffset3 = "-" + currOffset3 + "(%rbp)";
+      ICode cmp4 = new ICode("cmp", doOffset3, "$" + currentOp);
+      cmp4.print();
+    }
   }
+
+    //1st operator is not a number
   else{
-    System.out.println("NOT a number");
+
+      //get the 1st operator's offset
+    Symbol currSymbol = currentTable.find(currentOp);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+
+      //1st operator is not an number, 2nd is a number
+    if(par.isNumber(currentOp2)){
+      ICode cmp1 = new ICode("cmp", "$" + currentOp2, doOffset);
+      cmp1.print();
+    }
+      //1st operator is not a number, 2nd is not a number
+    else{
+      Symbol currSymbol2 = currentTable.find(currentOp2);
+      String currOffset2 = String.format("%d", currSymbol2.getOffset());
+      String doOffset2 = "-" + currOffset2 + "(%rbp)";
+      ICode cmp2 = new ICode("cmp", doOffset2, doOffset);
+      cmp2.print();
+    }
   }
 }
 

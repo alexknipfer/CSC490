@@ -367,7 +367,7 @@ final static String yyrule[] = {
 "elsepart :",
 };
 
-//#line 438 "project8.java"
+//#line 440 "project8.java"
 
 //##############################################################################
 
@@ -567,14 +567,13 @@ public static void main(String args[])
     //process parameters
    else if(c.getOpCode() == "PARAM"){
 
-     try{
-      Integer.parseInt(currentOp);
-        //move parameter value into register
+     if(par.isNumber(currentOp)){
+         //move parameter value into register
       ICode param = new ICode("movl", "$" + currentOp, "%eax");
       param.print();
      }
-      //not a number...
-     catch (NumberFormatException ex){
+
+     else{
       Symbol currSymbol = currentTable.find(currentOp);
       String currOffset = String.format("%d", currSymbol.getOffset());
       String doOffset = "-" + currOffset + "(%rbp)";
@@ -587,42 +586,77 @@ public static void main(String args[])
 //*********************** MOV ***************************************
 
    else if(c.getOpCode() == "MOV"){
-      //see if the value is a number
-     try{
-      Integer.parseInt(currentOp);
-      Symbol currSymbol = currentTable.find(currentOp2);
-      String currOffset = String.format("%d", currSymbol.getOffset());
-      String doOffset = "-" + currOffset + "(%rbp)";
+      
+      if(par.isNumber(currentOp)){
+        Symbol currSymbol = currentTable.find(currentOp2);
+        String currOffset = String.format("%d", currSymbol.getOffset());
+        String doOffset = "-" + currOffset + "(%rbp)";
 
-      ICode movlNumber = new ICode("movl", "$" + currentOp, "%eax");
-      ICode movlTemp = new ICode("movl", "%eax", doOffset);
+        ICode movlNumber = new ICode("movl", "$" + currentOp, "%eax");
+        ICode movlTemp = new ICode("movl", "%eax", doOffset);
 
-      movlNumber.print();
-      movlTemp.print();
-     }
-      //not a number...
-     catch (NumberFormatException ex){
-      Symbol currSymbol = currentTable.find(currentOp);
-      String currOffset = String.format("%d", currSymbol.getOffset());
-      String doOffset = "-" + currOffset + "(%rbp)";
-      Symbol currSymbol2 = currentTable.find(currentOp2);
-      String currOffset2 = String.format("%d", currSymbol2.getOffset());
-      String doOffset2 = "-" + currOffset2 + "(%rbp)";
-      ICode move = new ICode("movl", doOffset, "%eax");
-      ICode move2 = new ICode("movl", "%eax", doOffset2);
-      move.print();
-      move2.print();
-     }
+        movlNumber.print();
+        movlTemp.print();
+      }
+
+      else{
+        Symbol currSymbol = currentTable.find(currentOp);
+        String currOffset = String.format("%d", currSymbol.getOffset());
+        String doOffset = "-" + currOffset + "(%rbp)";
+        Symbol currSymbol2 = currentTable.find(currentOp2);
+        String currOffset2 = String.format("%d", currSymbol2.getOffset());
+        String doOffset2 = "-" + currOffset2 + "(%rbp)";
+        ICode move = new ICode("movl", doOffset, "%eax");
+        ICode move2 = new ICode("movl", "%eax", doOffset2);
+        move.print();
+        move2.print();
+      }
    }
 
 //************************** LT *************************************
 
 else if(c.getOpCode() == "LT"){
+
+    //1st operator is a number
   if(par.isNumber(currentOp)){
-    System.out.println("is a number!!!");
+
+      //1st number is operator, 2nd number is operator
+    if(par.isNumber(currentOp2)){
+      ICode cmp3 = new ICode("cmp", "$" + currentOp2, "$" + currentOp);
+      cmp3.print();
+    }
+
+      //1st operator is number, 2nd is NOT
+    else{
+      Symbol currSymbol3 = currentTable.find(currentOp2);
+      String currOffset3 = String.format("%d", currSymbol3.getOffset());
+      String doOffset3 = "-" + currOffset3 + "(%rbp)";
+      ICode cmp4 = new ICode("cmp", doOffset3, "$" + currentOp);
+      cmp4.print();
+    }
   }
+
+    //1st operator is not a number
   else{
-    System.out.println("NOT a number");
+
+      //get the 1st operator's offset
+    Symbol currSymbol = currentTable.find(currentOp);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+
+      //1st operator is not an number, 2nd is a number
+    if(par.isNumber(currentOp2)){
+      ICode cmp1 = new ICode("cmp", "$" + currentOp2, doOffset);
+      cmp1.print();
+    }
+      //1st operator is not a number, 2nd is not a number
+    else{
+      Symbol currSymbol2 = currentTable.find(currentOp2);
+      String currOffset2 = String.format("%d", currSymbol2.getOffset());
+      String doOffset2 = "-" + currOffset2 + "(%rbp)";
+      ICode cmp2 = new ICode("cmp", doOffset2, doOffset);
+      cmp2.print();
+    }
   }
 }
 
@@ -659,7 +693,7 @@ else if(c.getOpCode() == "LT"){
    System.out.println();
  }
 }
-//#line 591 "Parser.java"
+//#line 625 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1070,12 +1104,15 @@ case 42:
         String newTemp = ICode.genTemp();
         cmpStack.push(newTemp);
 
+        String newLabel = ICode.genLabel();
+        genLabelStack.push(newLabel);
+
           /*add temp to table*/
         currTable.add(newTemp, "int");
 
           /*generate code for less than comparison*/
         if(val_peek(1).sval.equals("<")){
-          ICode lessThan = new ICode("LT", val_peek(2).sval, val_peek(0).sval, newTemp);
+          ICode lessThan = new ICode("LT", val_peek(2).sval, val_peek(0).sval, newLabel);
           lessThan.emit();
         }
 
@@ -1110,18 +1147,17 @@ case 42:
         }
 
           /*compare the results*/
-        ICode compare = new ICode("CMP", newTemp, "0");
+        /*ICode compare = new ICode("CMP", newTemp, "0");
         compare.emit();
         String newLabel = ICode.genLabel();
         genLabelStack.push(newLabel);
-
-          /*branch if result is true*/
+          //branch if result is true
         ICode branchOnEqual = new ICode("BE", newLabel);
-        branchOnEqual.emit();
+        branchOnEqual.emit();*/
       }
 break;
 case 44:
-//#line 339 "project8.java"
+//#line 341 "project8.java"
 {
           /*generate intermediate code for function*/
           /*with no parameters*/
@@ -1137,7 +1173,7 @@ case 44:
       }
 break;
 case 45:
-//#line 353 "project8.java"
+//#line 355 "project8.java"
 {
           /*generate intermediate code for function with parameters*/
         String stretTemp = ICode.genTemp();
@@ -1158,7 +1194,7 @@ case 45:
       }
 break;
 case 49:
-//#line 380 "project8.java"
+//#line 382 "project8.java"
 {
           /*generate label for while loop*/
         String topLabel = ICode.genLabel();
@@ -1171,7 +1207,7 @@ case 49:
       }
 break;
 case 50:
-//#line 392 "project8.java"
+//#line 394 "project8.java"
 {
           /*jump back to the top*/
         ICode jump = new ICode("JMP", whileLabelStack.pop());
@@ -1184,7 +1220,7 @@ case 50:
       }
 break;
 case 52:
-//#line 408 "project8.java"
+//#line 410 "project8.java"
 {
               /*generate label for branching to else*/
             String branchAlwaysIfLbl = ICode.genLabel();
@@ -1202,7 +1238,7 @@ case 52:
           }
 break;
 case 53:
-//#line 424 "project8.java"
+//#line 426 "project8.java"
 {
               /*create a branch to get past the IF statement*/
             ICode afterElse = new ICode("NOP");
@@ -1211,7 +1247,7 @@ case 53:
           }
 break;
 case 54:
-//#line 431 "project8.java"
+//#line 433 "project8.java"
 {
             String afterIfLbl = ICode.genLabel();
             ICode afterIf = new ICode("NOPIF");
@@ -1219,7 +1255,7 @@ case 54:
             afterIf.emit();
           }
 break;
-//#line 1146 "Parser.java"
+//#line 1182 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
