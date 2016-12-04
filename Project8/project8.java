@@ -380,7 +380,7 @@ while: WHILE
       {
           //generate label for while loop
         String topLabel = ICode.genLabel();
-        ICode topStatement = new ICode("NOP");
+        ICode topStatement = new ICode("NOPWHILE");
         topStatement.addLabel(topLabel);
         topStatement.emit();
 
@@ -416,7 +416,7 @@ elsepart: ELSE
 
               //branch to get to ELSE
             String elseLabel = genLabelStack.pop();
-            ICode elseBranch = new ICode("NOP");
+            ICode elseBranch = new ICode("NOPELSE");
             elseBranch.addLabel(elseLabel);
             elseBranch.emit();
           }
@@ -427,7 +427,13 @@ elsepart: ELSE
             afterElse.addLabel(branchAlwaysStack.pop());
             afterElse.emit();
           }
-        | /*Epsilon*/
+        | /*Epsilon*/ 
+          {
+            String afterIfLbl = ICode.genLabel();
+            ICode afterIf = new ICode("NOPIF");
+            afterIf.addLabel(genLabelStack.pop());
+            afterIf.emit();
+          }
 %%
 
 //##############################################################################
@@ -553,11 +559,28 @@ public int yylex()
 
 //##############################################################################
 
+public boolean isNumber(String currentOp){
+  try{
+    Integer.parseInt(currentOp);
+    return true;
+  }
+  catch(NumberFormatException ex){
+    return false;
+  }
+}
+
+
+//##############################################################################
+
 public static void main(String args[])
 {
  Parser par = new Parser(false);
  par.setup(args[0]);
  par.yyparse();
+
+ for(ICode list: ICode.stmtList){
+   list.print();
+ }
 
   //go through all intermediate code statements
  for(ICode c: ICode.stmtList){
@@ -658,6 +681,18 @@ public static void main(String args[])
       move2.print();
      }
    }
+
+//************************** LT *************************************
+
+else if(c.getOpCode() == "LT"){
+  if(par.isNumber(currentOp)){
+    System.out.println("is a number!!!");
+  }
+  else{
+    System.out.println("NOT a number");
+  }
+}
+
 
 //************************** CALL *************************************
 

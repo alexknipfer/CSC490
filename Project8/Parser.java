@@ -367,7 +367,7 @@ final static String yyrule[] = {
 "elsepart :",
 };
 
-//#line 432 "project8.java"
+//#line 438 "project8.java"
 
 //##############################################################################
 
@@ -492,11 +492,28 @@ public int yylex()
 
 //##############################################################################
 
+public boolean isNumber(String currentOp){
+  try{
+    Integer.parseInt(currentOp);
+    return true;
+  }
+  catch(NumberFormatException ex){
+    return false;
+  }
+}
+
+
+//##############################################################################
+
 public static void main(String args[])
 {
  Parser par = new Parser(false);
  par.setup(args[0]);
  par.yyparse();
+
+ for(ICode list: ICode.stmtList){
+   list.print();
+ }
 
   //go through all intermediate code statements
  for(ICode c: ICode.stmtList){
@@ -598,6 +615,18 @@ public static void main(String args[])
      }
    }
 
+//************************** LT *************************************
+
+else if(c.getOpCode() == "LT"){
+  if(par.isNumber(currentOp)){
+    System.out.println("is a number!!!");
+  }
+  else{
+    System.out.println("NOT a number");
+  }
+}
+
+
 //************************** CALL *************************************
 
     //call the current function
@@ -630,7 +659,7 @@ public static void main(String args[])
    System.out.println();
  }
 }
-//#line 562 "Parser.java"
+//#line 591 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1133,7 +1162,7 @@ case 49:
 {
           /*generate label for while loop*/
         String topLabel = ICode.genLabel();
-        ICode topStatement = new ICode("NOP");
+        ICode topStatement = new ICode("NOPWHILE");
         topStatement.addLabel(topLabel);
         topStatement.emit();
 
@@ -1167,7 +1196,7 @@ case 52:
 
               /*branch to get to ELSE*/
             String elseLabel = genLabelStack.pop();
-            ICode elseBranch = new ICode("NOP");
+            ICode elseBranch = new ICode("NOPELSE");
             elseBranch.addLabel(elseLabel);
             elseBranch.emit();
           }
@@ -1181,7 +1210,16 @@ case 53:
             afterElse.emit();
           }
 break;
-//#line 1108 "Parser.java"
+case 54:
+//#line 431 "project8.java"
+{
+            String afterIfLbl = ICode.genLabel();
+            ICode afterIf = new ICode("NOPIF");
+            afterIf.addLabel(genLabelStack.pop());
+            afterIf.emit();
+          }
+break;
+//#line 1146 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
