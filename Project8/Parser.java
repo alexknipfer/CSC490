@@ -562,6 +562,47 @@ public static void main(String args[])
      subq.print();
    }
 
+//************************** NEG *************************************
+
+      //reached end of if statement label
+    if(c.getOpCode() == "NOPIF"){
+      System.out.println(c.getLabel() + ":");
+    }
+
+//************************** NEG *************************************
+
+      //reached a negative value
+    if(c.getOpCode() == "NEG"){
+
+        //get the temp offset for negative value to be stored
+      Symbol currTemp = currentTable.find(currentOp2);
+      String currTempOffset = String.format("%d", currTemp.getOffset());
+      String tempDoOffset = "-" + currTempOffset + "(%rbp)";
+
+        //see if operator is a number
+      if(par.isNumber(currentOp2)){
+        ICode movNumber = new ICode("movl", "$" + currentOp2, "%eax");
+        movNumber.print();
+      }
+
+        //operator is not a number
+      else{
+          //get the offset of the value to be stored as negative
+        Symbol currSymbol = currentTable.find(currentOp);
+        String currOffset = String.format("%d", currSymbol.getOffset());
+        String doOffset = "-" + currOffset + "(%rbp)";
+        ICode movl = new ICode("movl", doOffset, "%eax");
+        movl.print();
+      }
+
+        //move the negative value into register then store into temp
+      ICode neg = new ICode("neg", "%eax");
+      ICode movl2 = new ICode("movl", "%eax", tempDoOffset);
+      neg.print();
+      movl2.print();
+    }
+
+
 //********************** PARAM *****************************************
 
     //process parameters
@@ -585,13 +626,18 @@ public static void main(String args[])
 
 //*********************** MOV ***************************************
 
+    //move values into registers appropriately
    else if(c.getOpCode() == "MOV"){
       
+        //see if operator is a number
       if(par.isNumber(currentOp)){
+
+          //get the operators offset
         Symbol currSymbol = currentTable.find(currentOp2);
         String currOffset = String.format("%d", currSymbol.getOffset());
         String doOffset = "-" + currOffset + "(%rbp)";
 
+            //move value into register
         ICode movlNumber = new ICode("movl", "$" + currentOp, "%eax");
         ICode movlTemp = new ICode("movl", "%eax", doOffset);
 
@@ -599,13 +645,20 @@ public static void main(String args[])
         movlTemp.print();
       }
 
+        //operator is NOT a number
       else{
+
+          //get offset of operator
         Symbol currSymbol = currentTable.find(currentOp);
         String currOffset = String.format("%d", currSymbol.getOffset());
         String doOffset = "-" + currOffset + "(%rbp)";
+
+          //get offset of second operator
         Symbol currSymbol2 = currentTable.find(currentOp2);
         String currOffset2 = String.format("%d", currSymbol2.getOffset());
         String doOffset2 = "-" + currOffset2 + "(%rbp)";
+
+          //move into register
         ICode move = new ICode("movl", doOffset, "%eax");
         ICode move2 = new ICode("movl", "%eax", doOffset2);
         move.print();
@@ -658,6 +711,9 @@ else if(c.getOpCode() == "LT"){
       cmp2.print();
     }
   }
+
+  ICode jump = new ICode("jg", currentOp3);
+  jump.print();
 }
 
 
@@ -693,7 +749,7 @@ else if(c.getOpCode() == "LT"){
    System.out.println();
  }
 }
-//#line 625 "Parser.java"
+//#line 681 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1053,8 +1109,8 @@ case 34:
         currTable.add(negTemp, "int");
 
           /*convert number to string*/
-        String tempNumber = String.format("%d", val_peek(0).ival);
-        ICode negValue = new ICode("NEG", tempNumber, negTemp);
+        /*String tempNumber = String.format("%d", $2.ival);*/
+        ICode negValue = new ICode("NEG", val_peek(0).sval, negTemp);
         negValue.emit();
 
           /*return the value*/
@@ -1118,31 +1174,31 @@ case 42:
 
           /*generate code for greater than comparison*/
         else if(val_peek(1).sval.equals(">")){
-          ICode greaterThan = new ICode("GT", val_peek(2).sval, val_peek(0).sval, newTemp);
+          ICode greaterThan = new ICode("GT", val_peek(2).sval, val_peek(0).sval, newLabel);
           greaterThan.emit();
         }
 
           /*generate code for less than equal comparison*/
         else if(val_peek(1).sval.equals("<=")){
-          ICode lessThanEqual = new ICode("LE", val_peek(2).sval, val_peek(0).sval, newTemp);
+          ICode lessThanEqual = new ICode("LE", val_peek(2).sval, val_peek(0).sval, newLabel);
           lessThanEqual.emit();
         }
 
           /*generate code for greater than equal*/
         else if(val_peek(1).sval.equals(">=")){
-          ICode greaterThanEqual = new ICode("GE", val_peek(2).sval, val_peek(0).sval, newTemp);
+          ICode greaterThanEqual = new ICode("GE", val_peek(2).sval, val_peek(0).sval, newLabel);
           greaterThanEqual.emit();
         }
 
           /*generate code for equal to*/
         else if(val_peek(1).sval.equals("==")){
-          ICode equalTo = new ICode("EQ", val_peek(2).sval, val_peek(0).sval, newTemp);
+          ICode equalTo = new ICode("EQ", val_peek(2).sval, val_peek(0).sval, newLabel);
           equalTo.emit();
         }
 
           /*generate code for NOT equal*/
         else if(val_peek(1).sval.equals("!=")){
-          ICode notEqual = new ICode("NEQ", val_peek(2).sval, val_peek(0).sval, newTemp);
+          ICode notEqual = new ICode("NEQ", val_peek(2).sval, val_peek(0).sval, newLabel);
           notEqual.emit();
         }
 
@@ -1255,7 +1311,7 @@ case 54:
             afterIf.emit();
           }
 break;
-//#line 1182 "Parser.java"
+//#line 1238 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

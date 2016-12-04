@@ -228,8 +228,8 @@ term: ID {$$.sval = $1.sval;}
         currTable.add(negTemp, "int");
 
           //convert number to string
-        String tempNumber = String.format("%d", $2.ival);
-        ICode negValue = new ICode("NEG", tempNumber, negTemp);
+        //String tempNumber = String.format("%d", $2.ival);
+        ICode negValue = new ICode("NEG", $2.sval, negTemp);
         negValue.emit();
 
           //return the value
@@ -631,6 +631,47 @@ public static void main(String args[])
      subq.print();
    }
 
+//************************** NEG *************************************
+
+      //reached end of if statement label
+    if(c.getOpCode() == "NOPIF"){
+      System.out.println(c.getLabel() + ":");
+    }
+
+//************************** NEG *************************************
+
+      //reached a negative value
+    if(c.getOpCode() == "NEG"){
+
+        //get the temp offset for negative value to be stored
+      Symbol currTemp = currentTable.find(currentOp2);
+      String currTempOffset = String.format("%d", currTemp.getOffset());
+      String tempDoOffset = "-" + currTempOffset + "(%rbp)";
+
+        //see if operator is a number
+      if(par.isNumber(currentOp2)){
+        ICode movNumber = new ICode("movl", "$" + currentOp2, "%eax");
+        movNumber.print();
+      }
+
+        //operator is not a number
+      else{
+          //get the offset of the value to be stored as negative
+        Symbol currSymbol = currentTable.find(currentOp);
+        String currOffset = String.format("%d", currSymbol.getOffset());
+        String doOffset = "-" + currOffset + "(%rbp)";
+        ICode movl = new ICode("movl", doOffset, "%eax");
+        movl.print();
+      }
+
+        //move the negative value into register then store into temp
+      ICode neg = new ICode("neg", "%eax");
+      ICode movl2 = new ICode("movl", "%eax", tempDoOffset);
+      neg.print();
+      movl2.print();
+    }
+
+
 //********************** PARAM *****************************************
 
     //process parameters
@@ -654,13 +695,18 @@ public static void main(String args[])
 
 //*********************** MOV ***************************************
 
+    //move values into registers appropriately
    else if(c.getOpCode() == "MOV"){
       
+        //see if operator is a number
       if(par.isNumber(currentOp)){
+
+          //get the operators offset
         Symbol currSymbol = currentTable.find(currentOp2);
         String currOffset = String.format("%d", currSymbol.getOffset());
         String doOffset = "-" + currOffset + "(%rbp)";
 
+            //move value into register
         ICode movlNumber = new ICode("movl", "$" + currentOp, "%eax");
         ICode movlTemp = new ICode("movl", "%eax", doOffset);
 
@@ -668,13 +714,20 @@ public static void main(String args[])
         movlTemp.print();
       }
 
+        //operator is NOT a number
       else{
+
+          //get offset of operator
         Symbol currSymbol = currentTable.find(currentOp);
         String currOffset = String.format("%d", currSymbol.getOffset());
         String doOffset = "-" + currOffset + "(%rbp)";
+
+          //get offset of second operator
         Symbol currSymbol2 = currentTable.find(currentOp2);
         String currOffset2 = String.format("%d", currSymbol2.getOffset());
         String doOffset2 = "-" + currOffset2 + "(%rbp)";
+
+          //move into register
         ICode move = new ICode("movl", doOffset, "%eax");
         ICode move2 = new ICode("movl", "%eax", doOffset2);
         move.print();
@@ -727,6 +780,9 @@ else if(c.getOpCode() == "LT"){
       cmp2.print();
     }
   }
+
+  ICode jump = new ICode("jg", currentOp3);
+  jump.print();
 }
 
 
