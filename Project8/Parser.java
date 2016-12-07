@@ -716,6 +716,62 @@ else if(c.getOpCode() == "LT"){
   jump.print();
 }
 
+//************************** CALL *************************************
+
+else if(c.getOpCode() == "ADD"){
+  if(par.isNumber(currentOp) && par.isNumber(currentOp2)){
+    ICode movl = new ICode("movl", "$" + currentOp, "%edx");
+    ICode movl2 = new ICode("movl", "$" + currentOp2, "%eax");
+    movl.print();
+    movl2.print();
+  }
+  else if(!par.isNumber(currentOp) && !par.isNumber(currentOp2)){
+    Symbol currSymbol = currentTable.find(currentOp);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+
+    Symbol currSymbol2 = currentTable.find(currentOp2);
+    String currOffset2 = String.format("%d", currSymbol2.getOffset());
+    String doOffset2 = "-" + currOffset2 + "(%rbp)";
+
+    ICode movl = new ICode("movl", doOffset, "%edx");
+    ICode movl2 = new ICode("movl", doOffset2, "%eax");
+
+    movl.print();
+    movl2.print();
+  }
+  else if(par.isNumber(currentOp) && !par.isNumber(currentOp2)){
+    Symbol currSymbol = currentTable.find(currentOp2);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+
+    ICode movl = new ICode("movl", "$" + currentOp, "%edx");
+    ICode movl2 = new ICode("movl", doOffset, "%eax");
+    movl.print();
+    movl2.print();
+  }
+  else if(!par.isNumber(currentOp) && par.isNumber(currentOp2)){
+    Symbol currSymbol = currentTable.find(currentOp2);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+
+    ICode movl = new ICode("movl", doOffset, "%edx");
+    ICode movl2 = new ICode("movl", "$" + currentOp2, "%eax");
+    movl.print();
+    movl2.print();
+  }
+
+  Symbol currSymbol = currentTable.find(currentOp3);
+  String currOffset = String.format("%d", currSymbol.getOffset());
+  String doOffset = "-" + currOffset + "(%rbp)";
+
+
+  ICode addl = new ICode("addl", "%edx", "%eax");
+  ICode movel = new ICode("movl", "%eax", doOffset);
+  addl.print();
+  movel.print();
+}
+
 
 //************************** CALL *************************************
 
@@ -749,7 +805,7 @@ else if(c.getOpCode() == "LT"){
    System.out.println();
  }
 }
-//#line 681 "Parser.java"
+//#line 737 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1311,7 +1367,7 @@ case 54:
             afterIf.emit();
           }
 break;
-//#line 1238 "Parser.java"
+//#line 1294 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####

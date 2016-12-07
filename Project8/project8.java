@@ -785,6 +785,84 @@ else if(c.getOpCode() == "LT"){
   jump.print();
 }
 
+//************************** CALL *************************************
+
+else if(c.getOpCode() == "ADD"){
+
+    //both ops are numbers
+  if(par.isNumber(currentOp) && par.isNumber(currentOp2)){
+      //move the values into registers
+    ICode movl = new ICode("movl", "$" + currentOp, "%edx");
+    ICode movl2 = new ICode("movl", "$" + currentOp2, "%eax");
+    movl.print();
+    movl2.print();
+  }
+
+    //1st and 2nd ops are not numbers
+  else if(!par.isNumber(currentOp) && !par.isNumber(currentOp2)){
+
+      //get the offset for op1
+    Symbol currSymbol = currentTable.find(currentOp);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+
+      //get the offset for op2
+    Symbol currSymbol2 = currentTable.find(currentOp2);
+    String currOffset2 = String.format("%d", currSymbol2.getOffset());
+    String doOffset2 = "-" + currOffset2 + "(%rbp)";
+
+      //move the values into registers
+    ICode movl = new ICode("movl", doOffset, "%edx");
+    ICode movl2 = new ICode("movl", doOffset2, "%eax");
+
+    movl.print();
+    movl2.print();
+  }
+
+    //1st op is number 2nd is NOT
+  else if(par.isNumber(currentOp) && !par.isNumber(currentOp2)){
+
+      //get offset of 2nd op
+    Symbol currSymbol = currentTable.find(currentOp2);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+
+      //move values into registers
+    ICode movl = new ICode("movl", "$" + currentOp, "%edx");
+    ICode movl2 = new ICode("movl", doOffset, "%eax");
+    movl.print();
+    movl2.print();
+  }
+
+    //1st op is NOT a number and 2nd is
+  else if(!par.isNumber(currentOp) && par.isNumber(currentOp2)){
+    Symbol currSymbol = currentTable.find(currentOp2);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+
+      //move values into registers
+    ICode movl = new ICode("movl", doOffset, "%edx");
+    ICode movl2 = new ICode("movl", "$" + currentOp2, "%eax");
+
+    movl.print();
+    movl2.print();
+  }
+
+    //get offset of temp to store SUM
+  Symbol currSymbol = currentTable.find(currentOp3);
+  String currOffset = String.format("%d", currSymbol.getOffset());
+  String doOffset = "-" + currOffset + "(%rbp)";
+
+    //add the values
+  ICode addl = new ICode("addl", "%edx", "%eax");
+
+    //move TOTAL into temp
+  ICode movel = new ICode("movl", "%eax", doOffset);
+  
+  addl.print();
+  movel.print();
+}
+
 
 //************************** CALL *************************************
 
