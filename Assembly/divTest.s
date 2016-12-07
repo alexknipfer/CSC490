@@ -1,42 +1,26 @@
-	.section	__TEXT,__text,regular,pure_instructions
-	.macosx_version_min 10, 12
-	.globl	_foo
-	.align	4, 0x90
-_foo:                                   ## @foo
-	pushq	%rbp
-	movq	%rsp, %rbp
-
-	movl	%edi, -4(%rbp)
-	cmpl	$2, -4(%rbp)
-
-
-LBB0_2:
-	popq	%rbp
-	retq
-	.cfi_endproc
-
-	.globl	_main
-	.align	4, 0x90
-_main:                                  ## @main
+	.file	"divTest.c"
+	.text
+	.globl	main
+	.type	main, @function
+main:
+.LFB0:
 	.cfi_startproc
-## BB#0:
 	pushq	%rbp
-Ltmp3:
 	.cfi_def_cfa_offset 16
-Ltmp4:
-	.cfi_offset %rbp, -16
+	.cfi_offset 6, -16
 	movq	%rsp, %rbp
-Ltmp5:
-	.cfi_def_cfa_register %rbp
-	subq	$16, %rsp
-	movl	$4, %edi
-	movl	$0, -4(%rbp)
-	callq	_foo
-	xorl	%eax, %eax
-	addq	$16, %rsp
+	.cfi_def_cfa_register 6
+	movl	$1, -4(%rbp)
+	cmpl	$0, -4(%rbp)
+	jg	.L2
+	movl	$3, -4(%rbp)
+.L2:
+	movl	$0, %eax
 	popq	%rbp
-	retq
+	.cfi_def_cfa 7, 8
+	ret
 	.cfi_endproc
-
-
-.subsections_via_symbols
+.LFE0:
+	.size	main, .-main
+	.ident	"GCC: (Ubuntu 5.4.0-6ubuntu1~16.04.4) 5.4.0 20160609"
+	.section	.note.GNU-stack,"",@progbits

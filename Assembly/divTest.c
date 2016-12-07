@@ -1,12 +1,9 @@
 #include <stdio.h>
 
-void foo(int n){
-  if(n<2){
-    
-  }
-}
-
 int main(void){
-  foo(4);
+  int x = 1;
+	if(x < 1){
+		x = 3;
+	}
   return 0;
 }

@@ -32,11 +32,12 @@ read:
 	leave              #restore old base pointer
 	ret                #return where you were called from
 #### END PREAMBLE ####
-
+ 
+#main:               NOP  
 main:
                     pushq	%rbp
                     movq 	%rsp, %rbp
-                    subq 	$16, %rsp
+                    subq 	$36, %rsp
 
 #                    CALL 	read
                     call 	read
@@ -50,18 +51,61 @@ main:
 
 #                    MOV  	__T1, x
                     movl 	-8(%rbp), %eax
-                    movl 	%eax, -16(%rbp)
+                    movl 	%eax, -36(%rbp)
 
-#                    PARAM	x
-                    movl 	-16(%rbp), %eax
+#                    MOV  	1, __T2
+                    movl 	$1, %eax
+                    movl 	%eax, -12(%rbp)
+
+#                    MOV  	__T2, i
+                    movl 	-12(%rbp), %eax
+                    movl 	%eax, -32(%rbp)
+
+#__L0:               NOPWHILE
+__L0:
+
+#                    LE   	i, x, __L1
+					movl	-32(%rbp), %eax
+					movl	-36(%rbp), %ebx
+					cmpl	%eax, %ebx
+					jle		__L1
+
+#                    PARAM	i
+                    movl 	-32(%rbp), %eax
 
 #                    CALL 	print
                     call 	print
 
-#                    STRET	__T2
-                    movl 	%eax, -12(%rbp)
+#                    STRET	__T4
+                    movl 	%eax, -20(%rbp)
+
+#                    ADD  	i, 1, __T5
+                    movl 	-32(%rbp), %edx
+                    movl 	$1, %eax
+                    addl 	%edx, %eax
+                    movl 	%eax, -24(%rbp)
+
+#                    MOV  	__T5, __T6
+                    movl 	-24(%rbp), %eax
+                    movl 	%eax, -28(%rbp)
+
+#                    MOV  	__T6, i
+                    movl 	-28(%rbp), %eax
+                    movl 	%eax, -32(%rbp)
+
+#                    JMP  	__L0
+					jmp		__L0
+
+#__L1:               NOP  
+__L1:
+                    pushq	%rbp
+                    movq 	%rsp, %rbp
+                    subq 	$36, %rsp
 
 #                    RET  
                     leave
-                    retq 
+                    retq
+
+
+
 

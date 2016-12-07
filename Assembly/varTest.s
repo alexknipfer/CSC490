@@ -1,33 +1,29 @@
-	.section	__TEXT,__text,regular,pure_instructions
-	.macosx_version_min 10, 12
-	.globl	_main
-	.align	4, 0x90
-_main:                                  ## @main
+	.file	"varTest.c"
+	.text
+	.globl	main
+	.type	main, @function
+main:
+.LFB0:
 	.cfi_startproc
-## BB#0:
 	pushq	%rbp
-Ltmp0:
 	.cfi_def_cfa_offset 16
-Ltmp1:
-	.cfi_offset %rbp, -16
+	.cfi_offset 6, -16
 	movq	%rsp, %rbp
-Ltmp2:
-	.cfi_def_cfa_register %rbp
-	movl	$0, -4(%rbp)
+	.cfi_def_cfa_register 6
 	movl	$12, -8(%rbp)
-	movl	$32, -12(%rbp)
-	cmpl	$3, -8(%rbp)
-	jle	LBB0_3
-## BB#1:
-	cmpl	$50, -8(%rbp)
-	jge	LBB0_3
-## BB#2:
-	jmp	LBB0_3
-LBB0_3:
-	movl	-4(%rbp), %eax
+	movl	$32, -4(%rbp)
+	jmp	.L2
+.L3:
+	movl	$5, -8(%rbp)
+.L2:
+	cmpl	$31, -8(%rbp)
+	jle	.L3
+	movl	$0, %eax
 	popq	%rbp
-	retq
+	.cfi_def_cfa 7, 8
+	ret
 	.cfi_endproc
-
-
-.subsections_via_symbols
+.LFE0:
+	.size	main, .-main
+	.ident	"GCC: (Ubuntu 5.4.0-6ubuntu1~16.04.4) 5.4.0 20160609"
+	.section	.note.GNU-stack,"",@progbits
