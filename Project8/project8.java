@@ -36,7 +36,7 @@ import java.util.StringTokenizer;
 %%
     start:  pgm
 {
-    System.out.println(globalTable);
+    //System.out.println(globalTable);
     //System.out.println("The program is correct, and contains:");
     //System.out.printf("%5d statements\n",stmtCount);
     //System.out.printf("%5d function definitions\n",funcCount);
@@ -675,6 +675,7 @@ public static void main(String args[])
    SymbolTable currentTable = myTables.getLast();
    String tableSize = String.format("%d", currentTable.getSize());
 
+
     //print the intermediate code as a comment
    System.out.print("#");
    c.print();
@@ -1114,6 +1115,7 @@ else if(c.getOpCode() == "SUB"){
      ICode ret = new ICode("retq");
      leave.print();
      ret.print();
+     myTables.removeLast();
    }
 
    System.out.println();

@@ -606,6 +606,7 @@ public static void main(String args[])
    SymbolTable currentTable = myTables.getLast();
    String tableSize = String.format("%d", currentTable.getSize());
 
+
     //print the intermediate code as a comment
    System.out.print("#");
    c.print();
@@ -1045,12 +1046,13 @@ else if(c.getOpCode() == "SUB"){
      ICode ret = new ICode("retq");
      leave.print();
      ret.print();
+     myTables.removeLast();
    }
 
    System.out.println();
  }
 }
-//#line 982 "Parser.java"
+//#line 984 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1207,7 +1209,7 @@ boolean doaction;
 case 1:
 //#line 38 "project8.java"
 {
-    System.out.println(globalTable);
+    /*System.out.println(globalTable);*/
     /*System.out.println("The program is correct, and contains:");*/
     /*System.out.printf("%5d statements\n",stmtCount);*/
     /*System.out.printf("%5d function definitions\n",funcCount);*/
@@ -1612,7 +1614,7 @@ case 54:
             afterIf.emit();
           }
 break;
-//#line 1539 "Parser.java"
+//#line 1541 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
