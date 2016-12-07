@@ -561,6 +561,8 @@ public int yylex()
 
 //##############################################################################
 
+
+  //check to see if current operator is a number or NOT
 public boolean isNumber(String currentOp){
   try{
     Integer.parseInt(currentOp);
@@ -571,6 +573,85 @@ public boolean isNumber(String currentOp){
   }
 }
 
+//##############################################################################
+
+public void printHeader(){
+
+    //print the header from the preamble
+
+  ICode section = new ICode(".section", ".rodata");
+  ICode printL = new ICode(".string", "\"%d\\n\"");
+  printL.addLabel("_printL");
+  ICode readL = new ICode(".string", "\"%d\"");
+  readL.addLabel("_readL");
+  ICode text = new ICode(".text");
+  ICode globl = new ICode(".globl", "main");
+  section.print();
+  printL.print();
+  readL.print();
+  text.print();
+  globl.print();
+}
+
+//##############################################################################
+
+public void printRead(){
+
+  //print the read function from the built in preamble
+
+  System.out.print("read:");
+  ICode pushq = new ICode("pushq", "%rbp");
+  ICode movq = new ICode("movq", "%rsp", "%rbp");
+  ICode subq = new ICode("subq", "$16", "%rsp");
+  ICode leaq = new ICode("leaq", "-4(%rbp)", "%rsi");
+  ICode movq2 = new ICode("movq", "$_readL", "%rdi");
+  ICode movl = new ICode("movl", "$0", "%eax");
+  ICode call = new ICode("call", "scanf");
+  ICode movl2 = new ICode("movl", "-4(%rbp)", "%eax");
+  ICode leave = new ICode("leave");
+  ICode ret = new ICode("ret");
+
+  pushq.print();
+  movq.print();
+  subq.print();
+  System.out.println();
+  leaq.print();
+  movq2.print();
+  movl.print();
+  call.print();
+  movl2.print();
+  System.out.println();
+  leave.print();
+  ret.print();
+}
+
+//##############################################################################
+
+public void printPrint(){
+
+    //print the built in print function from preamble
+
+  System.out.print("print:");
+  ICode pushq = new ICode("pushq", "%rbp");
+  ICode movq = new ICode("movq", "%rsp", "%rbp");
+  ICode movl = new ICode("movl", "%eax", "%esi");
+  ICode movl2 = new ICode("movl", "$_printL", "%edi");
+  ICode movl3 = new ICode("movl", "$0", "%eax");
+  ICode call = new ICode("call", "printf");
+  ICode leave = new ICode("leave");
+  ICode ret = new ICode("ret");
+
+  pushq.print();
+  movq.print();
+  System.out.println();
+  movl.print();
+  movl2.print();
+  movl3.print();
+  call.print();
+  System.out.println();
+  leave.print();
+  ret.print();
+}
 
 //##############################################################################
 
@@ -580,9 +661,9 @@ public static void main(String args[])
  par.setup(args[0]);
  par.yyparse();
 
- for(ICode list: ICode.stmtList){
-   list.print();
- }
+ par.printHeader();
+ par.printPrint();
+ par.printRead();
 
   //go through all intermediate code statements
  for(ICode c: ICode.stmtList){
@@ -631,11 +712,27 @@ public static void main(String args[])
      subq.print();
    }
 
-//************************** NEG *************************************
+//************************** NOP-IF *************************************
 
       //reached end of if statement label
     if(c.getOpCode() == "NOPIF"){
       System.out.println(c.getLabel() + ":");
+    }
+
+
+//************************** NOP-WHILE *************************************
+
+      //reached end of if statement label
+    if(c.getOpCode() == "NOPWHILE"){
+      System.out.println(c.getLabel() + ":");
+    }
+
+//************************** JMP *************************************
+
+      //always jump
+    if(c.getOpCode() == "JMP"){
+      ICode jump = new ICode("jmp", currentOp);
+      jump.print();
     }
 
 //************************** NEG *************************************
@@ -785,9 +882,136 @@ else if(c.getOpCode() == "LT"){
   jump.print();
 }
 
-//************************** CALL *************************************
+//************************** LE *************************************
+
+else if(c.getOpCode() == "LE"){
+    //1st operator is a number
+  if(par.isNumber(currentOp)){
+
+      //1st number is operator, 2nd number is operator
+    if(par.isNumber(currentOp2)){
+      ICode cmp3 = new ICode("cmpl", "$" + currentOp2, "$" + currentOp);
+      cmp3.print();
+    }
+
+      //1st operator is number, 2nd is NOT
+    else{
+      Symbol currSymbol3 = currentTable.find(currentOp2);
+      String currOffset3 = String.format("%d", currSymbol3.getOffset());
+      String doOffset3 = "-" + currOffset3 + "(%rbp)";
+      ICode cmp4 = new ICode("cmpl", doOffset3, "$" + currentOp);
+      cmp4.print();
+    }
+  }
+
+    //1st operator is not a number
+  else{
+
+      //get the 1st operator's offset
+    Symbol currSymbol = currentTable.find(currentOp);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+
+      //1st operator is not an number, 2nd is a number
+    if(par.isNumber(currentOp2)){
+      ICode cmp1 = new ICode("cmpl", "$" + currentOp2, doOffset);
+      cmp1.print();
+    }
+      //1st operator is not a number, 2nd is not a number
+    else{
+      Symbol currSymbol2 = currentTable.find(currentOp2);
+      String currOffset2 = String.format("%d", currSymbol2.getOffset());
+      String doOffset2 = "-" + currOffset2 + "(%rbp)";
+      ICode cmp2 = new ICode("cmpl", doOffset2, doOffset);
+      cmp2.print();
+    }
+  }
+
+  ICode jump = new ICode("jle", currentOp3);
+  jump.print();
+}
+
+//************************** ADD *************************************
 
 else if(c.getOpCode() == "ADD"){
+
+    //both ops are numbers
+  if(par.isNumber(currentOp) && par.isNumber(currentOp2)){
+      //move the values into registers
+    ICode movl = new ICode("movl", "$" + currentOp, "%edx");
+    ICode movl2 = new ICode("movl", "$" + currentOp2, "%eax");
+    movl.print();
+    movl2.print();
+  }
+
+    //1st and 2nd ops are not numbers
+  else if(!par.isNumber(currentOp) && !par.isNumber(currentOp2)){
+
+      //get the offset for op1
+    Symbol currSymbol = currentTable.find(currentOp);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+
+      //get the offset for op2
+    Symbol currSymbol2 = currentTable.find(currentOp2);
+    String currOffset2 = String.format("%d", currSymbol2.getOffset());
+    String doOffset2 = "-" + currOffset2 + "(%rbp)";
+
+      //move the values into registers
+    ICode movl = new ICode("movl", doOffset, "%edx");
+    ICode movl2 = new ICode("movl", doOffset2, "%eax");
+
+    movl.print();
+    movl2.print();
+  }
+
+    //1st op is number 2nd is NOT
+  else if(par.isNumber(currentOp) && !par.isNumber(currentOp2)){
+
+      //get offset of 2nd op
+    Symbol currSymbol = currentTable.find(currentOp2);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+
+      //move values into registers
+    ICode movl = new ICode("movl", "$" + currentOp, "%edx");
+    ICode movl2 = new ICode("movl", doOffset, "%eax");
+    movl.print();
+    movl2.print();
+  }
+
+    //1st op is NOT a number and 2nd is
+  else if(!par.isNumber(currentOp) && par.isNumber(currentOp2)){
+    Symbol currSymbol = currentTable.find(currentOp);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+
+      //move values into registers
+    ICode movl = new ICode("movl", doOffset, "%edx");
+    ICode movl2 = new ICode("movl", "$" + currentOp2, "%eax");
+
+    movl.print();
+    movl2.print();
+  }
+
+    //get offset of temp to store SUM
+  Symbol currSymbol = currentTable.find(currentOp3);
+  String currOffset = String.format("%d", currSymbol.getOffset());
+  String doOffset = "-" + currOffset + "(%rbp)";
+
+    //add the values
+  ICode addl = new ICode("addl", "%edx", "%eax");
+
+    //move TOTAL into temp
+  ICode movel = new ICode("movl", "%eax", doOffset);
+
+  addl.print();
+  movel.print();
+}
+
+//************************** SUB *************************************
+
+else if(c.getOpCode() == "SUB"){
 
     //both ops are numbers
   if(par.isNumber(currentOp) && par.isNumber(currentOp2)){
@@ -854,15 +1078,14 @@ else if(c.getOpCode() == "ADD"){
   String doOffset = "-" + currOffset + "(%rbp)";
 
     //add the values
-  ICode addl = new ICode("addl", "%edx", "%eax");
+  ICode subl = new ICode("subl", "%eax", "%edx");
 
     //move TOTAL into temp
-  ICode movel = new ICode("movl", "%eax", doOffset);
-  
-  addl.print();
+  ICode movel = new ICode("movl", "%edx", doOffset);
+
+  subl.print();
   movel.print();
 }
-
 
 //************************** CALL *************************************
 

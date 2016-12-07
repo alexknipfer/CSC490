@@ -1,0 +1,11 @@
+function main()
+{
+	var x, i, total;
+	x <- read();
+    i <- read();
+
+    total <- x-i;
+    print(total);
+
+}
+
