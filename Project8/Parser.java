@@ -667,6 +667,67 @@ public static void main(String args[])
       jump.print();
     }
 
+//************************** MUL *************************************
+
+      //handle multiplication
+    if(c.getOpCode() == "MUL"){
+      if(par.isNumber(currentOp) && par.isNumber(currentOp2)){
+        ICode movl = new ICode("movl", "$" + currentOp, "%eax");
+        ICode imull = new ICode("imull", "$" + currentOp2, "%eax");
+        movl.print();
+        imull.print();
+      }
+
+      else if(par.isNumber(currentOp) && !par.isNumber(currentOp2)){
+          //get the op offset
+        Symbol currSymbol = currentTable.find(currentOp2);
+        String currOffset = String.format("%d", currSymbol.getOffset());
+        String doOffset = "-" + currOffset + "(%rbp)";
+
+        ICode movl = new ICode("movl", doOffset, "%eax");
+        ICode imull = new ICode("imull", "$" + currentOp, "%eax");
+        movl.print();
+        imull.print();
+      }
+
+      else if(!par.isNumber(currentOp) && par.isNumber(currentOp2)){
+           //get the op offset
+        Symbol currSymbol = currentTable.find(currentOp);
+        String currOffset = String.format("%d", currSymbol.getOffset());
+        String doOffset = "-" + currOffset + "(%rbp)";
+
+        ICode movl = new ICode("movl", doOffset, "%eax");
+        ICode imull = new ICode("imull", "$" + currentOp2, "%eax");
+        movl.print();
+        imull.print();
+      }
+
+      else if(!par.isNumber(currentOp) && !par.isNumber(currentOp2)){
+          //get the op offset
+        Symbol currSymbol = currentTable.find(currentOp);
+        String currOffset = String.format("%d", currSymbol.getOffset());
+        String doOffset = "-" + currOffset + "(%rbp)";
+
+          //get the op offset
+        Symbol currSymbol2 = currentTable.find(currentOp2);
+        String currOffset2 = String.format("%d", currSymbol2.getOffset());
+        String doOffset2 = "-" + currOffset2 + "(%rbp)";
+
+        ICode movl = new ICode("movl", doOffset, "%eax");
+        ICode imull = new ICode("imull", doOffset2, "%eax");
+        movl.print();
+        imull.print();
+      }
+
+        //get the temp offset to store result
+      Symbol currSymbol = currentTable.find(currentOp3);
+      String currOffset = String.format("%d", currSymbol.getOffset());
+      String doOffset = "-" + currOffset + "(%rbp)";
+
+      ICode movl = new ICode("movl", "%eax", doOffset);
+      movl.print();
+    }
+
 //************************** NEG *************************************
 
       //reached a negative value
@@ -1052,7 +1113,7 @@ else if(c.getOpCode() == "SUB"){
    System.out.println();
  }
 }
-//#line 984 "Parser.java"
+//#line 1045 "Parser.java"
 //###############################################################
 // method: yylexdebug : check lexer state
 //###############################################################
@@ -1614,7 +1675,7 @@ case 54:
             afterIf.emit();
           }
 break;
-//#line 1541 "Parser.java"
+//#line 1602 "Parser.java"
 //########## END OF USER-SUPPLIED ACTIONS ##########
     }//switch
     //#### Now let's reduce... ####
