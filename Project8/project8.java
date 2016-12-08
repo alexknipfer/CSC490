@@ -797,6 +797,75 @@ public static void main(String args[])
       movl.print();
     }
 
+//************************** DIV *************************************
+
+      //handle multiplication
+    if(c.getOpCode() == "DIV"){
+      if(par.isNumber(currentOp) && par.isNumber(currentOp2)){
+        ICode movl = new ICode("movl", "$" + currentOp, "%eax");
+        ICode cltd = new ICode("cltd");
+        ICode imull = new ICode("idivl", "$" + currentOp2, "%eax");
+        movl.print();
+        cltd.print();
+        imull.print();
+      }
+
+      else if(par.isNumber(currentOp) && !par.isNumber(currentOp2)){
+          //get the op offset
+        Symbol currSymbol = currentTable.find(currentOp2);
+        String currOffset = String.format("%d", currSymbol.getOffset());
+        String doOffset = "-" + currOffset + "(%rbp)";
+
+        ICode movl = new ICode("movl", doOffset, "%eax");
+        ICode cltd = new ICode("cltd");
+        ICode imull = new ICode("idivl", "$" + currentOp, "%eax");
+        movl.print();
+        cltd.print();
+        imull.print();
+      }
+
+      else if(!par.isNumber(currentOp) && par.isNumber(currentOp2)){
+           //get the op offset
+        Symbol currSymbol = currentTable.find(currentOp);
+        String currOffset = String.format("%d", currSymbol.getOffset());
+        String doOffset = "-" + currOffset + "(%rbp)";
+
+        ICode movl = new ICode("movl", doOffset, "%eax");
+        ICode cltd = new ICode("cltd");
+        ICode imull = new ICode("idivl", "$" + currentOp2, "%eax");
+        movl.print();
+        cltd.print();
+        imull.print();
+      }
+
+      else if(!par.isNumber(currentOp) && !par.isNumber(currentOp2)){
+          //get the op offset
+        Symbol currSymbol = currentTable.find(currentOp);
+        String currOffset = String.format("%d", currSymbol.getOffset());
+        String doOffset = "-" + currOffset + "(%rbp)";
+
+          //get the op offset
+        Symbol currSymbol2 = currentTable.find(currentOp2);
+        String currOffset2 = String.format("%d", currSymbol2.getOffset());
+        String doOffset2 = "-" + currOffset2 + "(%rbp)";
+
+        ICode movl = new ICode("movl", doOffset, "%eax");
+        ICode cltd = new ICode("cltd");
+        ICode imull = new ICode("idivl", doOffset2, "%eax");
+        movl.print();
+        cltd.print();
+        imull.print();
+      }
+
+        //get the temp offset to store result
+      Symbol currSymbol = currentTable.find(currentOp3);
+      String currOffset = String.format("%d", currSymbol.getOffset());
+      String doOffset = "-" + currOffset + "(%rbp)";
+
+      ICode movl = new ICode("movl", "%eax", doOffset);
+      movl.print();
+    }
+
 //************************** NEG *************************************
 
       //reached a negative value
@@ -944,6 +1013,56 @@ else if(c.getOpCode() == "LT"){
   jump.print();
 }
 
+//************************** GT *************************************
+
+else if(c.getOpCode() == "GT"){
+
+    //1st operator is a number
+  if(par.isNumber(currentOp)){
+
+      //1st number is operator, 2nd number is operator
+    if(par.isNumber(currentOp2)){
+      ICode cmp3 = new ICode("cmp", "$" + currentOp2, "$" + currentOp);
+      cmp3.print();
+    }
+
+      //1st operator is number, 2nd is NOT
+    else{
+      Symbol currSymbol3 = currentTable.find(currentOp2);
+      String currOffset3 = String.format("%d", currSymbol3.getOffset());
+      String doOffset3 = "-" + currOffset3 + "(%rbp)";
+      ICode cmp4 = new ICode("cmp", doOffset3, "$" + currentOp);
+      cmp4.print();
+    }
+  }
+
+    //1st operator is not a number
+  else{
+
+      //get the 1st operator's offset
+    Symbol currSymbol = currentTable.find(currentOp);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+
+      //1st operator is not an number, 2nd is a number
+    if(par.isNumber(currentOp2)){
+      ICode cmp1 = new ICode("cmp", "$" + currentOp2, doOffset);
+      cmp1.print();
+    }
+      //1st operator is not a number, 2nd is not a number
+    else{
+      Symbol currSymbol2 = currentTable.find(currentOp2);
+      String currOffset2 = String.format("%d", currSymbol2.getOffset());
+      String doOffset2 = "-" + currOffset2 + "(%rbp)";
+      ICode cmp2 = new ICode("cmp", doOffset2, doOffset);
+      cmp2.print();
+    }
+  }
+
+  ICode jump = new ICode("jl", currentOp3);
+  jump.print();
+}
+
 //************************** LE *************************************
 
 else if(c.getOpCode() == "LE"){
@@ -990,6 +1109,55 @@ else if(c.getOpCode() == "LE"){
   }
 
   ICode jump = new ICode("jle", currentOp3);
+  jump.print();
+}
+
+//************************** GE *************************************
+
+else if(c.getOpCode() == "GE"){
+    //1st operator is a number
+  if(par.isNumber(currentOp)){
+
+      //1st number is operator, 2nd number is operator
+    if(par.isNumber(currentOp2)){
+      ICode cmp3 = new ICode("cmpl", "$" + currentOp2, "$" + currentOp);
+      cmp3.print();
+    }
+
+      //1st operator is number, 2nd is NOT
+    else{
+      Symbol currSymbol3 = currentTable.find(currentOp2);
+      String currOffset3 = String.format("%d", currSymbol3.getOffset());
+      String doOffset3 = "-" + currOffset3 + "(%rbp)";
+      ICode cmp4 = new ICode("cmpl", doOffset3, "$" + currentOp);
+      cmp4.print();
+    }
+  }
+
+    //1st operator is not a number
+  else{
+
+      //get the 1st operator's offset
+    Symbol currSymbol = currentTable.find(currentOp);
+    String currOffset = String.format("%d", currSymbol.getOffset());
+    String doOffset = "-" + currOffset + "(%rbp)";
+
+      //1st operator is not an number, 2nd is a number
+    if(par.isNumber(currentOp2)){
+      ICode cmp1 = new ICode("cmpl", "$" + currentOp2, doOffset);
+      cmp1.print();
+    }
+      //1st operator is not a number, 2nd is not a number
+    else{
+      Symbol currSymbol2 = currentTable.find(currentOp2);
+      String currOffset2 = String.format("%d", currSymbol2.getOffset());
+      String doOffset2 = "-" + currOffset2 + "(%rbp)";
+      ICode cmp2 = new ICode("cmpl", doOffset2, doOffset);
+      cmp2.print();
+    }
+  }
+
+  ICode jump = new ICode("jge", currentOp3);
   jump.print();
 }
 
