@@ -32,79 +32,62 @@ read:
 	leave              #restore old base pointer
 	ret                #return where you were called from
 #### END PREAMBLE ####
- 
-#main:               NOP  
-main:
+
+#doSub:              NOP  
+doSub:
                     pushq	%rbp
                     movq 	%rsp, %rbp
-                    subq 	$36, %rsp
+                    subq 	$8, %rsp
 
-#                    CALL 	read
-                    call 	read
+#                    PLIST	a
 
-#                    STRET	__T0
-                    movl 	%eax, -4(%rbp)
-
-#                    MOV  	__T0, __T1
+#                    PARAM	a
                     movl 	-4(%rbp), %eax
-                    movl 	%eax, -8(%rbp)
-
-#                    MOV  	__T1, x
-                    movl 	-8(%rbp), %eax
-                    movl 	%eax, -36(%rbp)
-
-#                    MOV  	1, __T2
-                    movl 	$1, %eax
-                    movl 	%eax, -12(%rbp)
-
-#                    MOV  	__T2, i
-                    movl 	-12(%rbp), %eax
-                    movl 	%eax, -32(%rbp)
-
-#__L0:               NOPWHILE
-__L0:
-
-#                    LE   	i, x, __L1
-					movl	-32(%rbp), %eax
-					movl	-36(%rbp), %ebx
-					cmpl	%eax, %ebx
-					jle		__L1
-
-#                    PARAM	i
-                    movl 	-32(%rbp), %eax
 
 #                    CALL 	print
                     call 	print
 
-#                    STRET	__T4
-                    movl 	%eax, -20(%rbp)
-
-#                    ADD  	i, 1, __T5
-                    movl 	-32(%rbp), %edx
-                    movl 	$1, %eax
-                    addl 	%edx, %eax
-                    movl 	%eax, -24(%rbp)
-
-#                    MOV  	__T5, __T6
-                    movl 	-24(%rbp), %eax
-                    movl 	%eax, -28(%rbp)
-
-#                    MOV  	__T6, i
-                    movl 	-28(%rbp), %eax
-                    movl 	%eax, -32(%rbp)
-
-#                    JMP  	__L0
-					jmp		__L0
-
-#__L1:               NOP  
-__L1:
-                    pushq	%rbp
-                    movq 	%rsp, %rbp
-                    subq 	$36, %rsp
+#                    STRET	__T0
+                    movl 	%eax, -8(%rbp)
 
 #                    RET  
                     leave
-                    retq
+                    retq 
+
+#main:               NOP  
+main:
+                    pushq	%rbp
+                    movq 	%rsp, %rbp
+                    subq 	$20, %rsp
+
+#                    CALL 	read
+                    call 	read
+
+#                    STRET	__T1
+                    movl 	%eax, -4(%rbp)
+
+#                    MOV  	__T1, __T2
+                    movl 	-4(%rbp), %eax
+                    movl 	%eax, -8(%rbp)
+
+#                    MOV  	__T2, x
+                    movl 	-8(%rbp), %eax
+                    movl 	%eax, -20(%rbp)
+
+#                    PARAM	x
+                    movl 	-20(%rbp), %eax
+
+#                    CALL 	doSub
+                    call 	doSub
+
+#                    STRET	__T3
+                    movl 	%eax, -12(%rbp)
+
+#                    RET  
+                    leave
+                    retq 
+
+
 
 
 
